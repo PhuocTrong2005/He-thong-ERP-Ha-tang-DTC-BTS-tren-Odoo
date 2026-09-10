@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="product_bts_fiber_cable" model="product.template">
+            <field name="name">Cáp quang 24 core</field>
+            <field name="type">product</field>
+            <field name="categ_id" ref="product_category_bts_cable"/>
+            <field name="is_bts_material" eval="True"/>
+            <field name="list_price">125000</field>
+            <field name="standard_price">98000</field>
+            <field name="uom_id" ref="uom.product_uom_meter"/>
+            <field name="uom_po_id" ref="uom.product_uom_meter"/>
+        </record>
+
+        <record id="product_bts_concrete_pole" model="product.template">
+            <field name="name">Cột bê tông 12m</field>
+            <field name="type">product</field>
+            <field name="categ_id" ref="product_category_bts_pole"/>
+            <field name="is_bts_material" eval="True"/>
+            <field name="list_price">3500000</field>
+            <field name="standard_price">2800000</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+        </record>
+
+        <record id="product_bts_splice_closure" model="product.template">
+            <field name="name">Hộp nối quang</field>
+            <field name="type">product</field>
+            <field name="categ_id" ref="product_category_bts_auxiliary"/>
+            <field name="is_bts_material" eval="True"/>
+            <field name="list_price">450000</field>
+            <field name="standard_price">320000</field>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+        </record>
+
+    </data>
+</odoo>

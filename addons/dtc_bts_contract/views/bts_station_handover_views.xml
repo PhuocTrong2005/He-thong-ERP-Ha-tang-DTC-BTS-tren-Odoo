@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- ================================================================== -->
+    <!-- FORM VIEW                                                           -->
+    <!-- ================================================================== -->
+    <record id="view_bts_station_handover_form" model="ir.ui.view">
+        <field name="name">bts.station.handover.form</field>
+        <field name="model">bts.station.handover</field>
+        <field name="arch" type="xml">
+            <form string="Hồ sơ bàn giao trạm BTS">
+                <header>
+                    <button name="action_handover"
+                            string="Xác nhận bàn giao"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_cancel"
+                            string="Hủy"
+                            type="object"
+                            invisible="state != 'draft'"/>
+                    <button name="action_reset_to_draft"
+                            string="Đặt lại Dự thảo"
+                            type="object"
+                            invisible="state != 'cancelled'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,handed_over"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="handover_code"/>
+                        <h1>
+                            <field name="handover_code" readonly="state != 'draft'"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Thông tin bàn giao">
+                            <field name="station_id" readonly="state != 'draft'"/>
+                            <field name="project_id" readonly="1"/>
+                            <field name="handover_date" readonly="state != 'draft'"/>
+                            <field name="handover_by_id" readonly="state != 'draft'"/>
+                            <field name="received_by_id" readonly="state != 'draft'"/>
+                        </group>
+                    </group>
+
+                    <group string="Checklist hồ sơ">
+                        <field name="checklist" nolabel="1" colspan="2"
+                               readonly="state != 'draft'"
+                               placeholder="VD:&#10;☐ Hợp đồng thuê đất&#10;☐ Biên bản nghiệm thu&#10;☐ Hợp đồng thuê hạ tầng&#10;☐ Bản vẽ hoàn công"/>
+                    </group>
+
+                    <group string="Ghi chú">
+                        <field name="notes" nolabel="1" colspan="2"/>
+                    </group>
+
+                    <!-- Tệp đính kèm -->
+                    <field name="message_attachment_count" invisible="1"/>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- ================================================================== -->
+    <!-- TREE VIEW                                                           -->
+    <!-- ================================================================== -->
+    <record id="view_bts_station_handover_tree" model="ir.ui.view">
+        <field name="name">bts.station.handover.tree</field>
+        <field name="model">bts.station.handover</field>
+        <field name="arch" type="xml">
+            <tree string="Hồ sơ bàn giao"
+                  decoration-success="state == 'handed_over'"
+                  decoration-muted="state == 'cancelled'">
+                <field name="handover_code"/>
+                <field name="station_id"/>
+                <field name="project_id"/>
+                <field name="handover_date"/>
+                <field name="handover_by_id"/>
+                <field name="received_by_id"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-success="state == 'handed_over'"
+                       decoration-danger="state == 'cancelled'"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- ================================================================== -->
+    <!-- SEARCH VIEW                                                         -->
+    <!-- ================================================================== -->
+    <record id="view_bts_station_handover_search" model="ir.ui.view">
+        <field name="name">bts.station.handover.search</field>
+        <field name="model">bts.station.handover</field>
+        <field name="arch" type="xml">
+            <search string="Tìm kiếm hồ sơ bàn giao">
+                <field name="handover_code" string="Mã bàn giao"/>
+                <field name="station_id" string="Trạm BTS"/>
+                <field name="project_id" string="Dự án"/>
+                <separator/>
+                <filter name="filter_draft" string="Dự thảo"
+                        domain="[('state', '=', 'draft')]"/>
+                <filter name="filter_handed_over" string="Đã bàn giao"
+                        domain="[('state', '=', 'handed_over')]"/>
+                <separator/>
+                <group expand="0" string="Nhóm theo">
+                    <filter name="group_state" string="Trạng thái"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_project" string="Dự án"
+                            context="{'group_by': 'project_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ================================================================== -->
+    <!-- ACTION                                                              -->
+    <!-- ================================================================== -->
+    <record id="action_bts_station_handover" model="ir.actions.act_window">
+        <field name="name">Hồ sơ bàn giao trạm</field>
+        <field name="res_model">bts.station.handover</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_bts_station_handover_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Chưa có hồ sơ bàn giao nào. Tạo hồ sơ bàn giao đầu tiên!
+            </p>
+        </field>
+    </record>
+
+</odoo>

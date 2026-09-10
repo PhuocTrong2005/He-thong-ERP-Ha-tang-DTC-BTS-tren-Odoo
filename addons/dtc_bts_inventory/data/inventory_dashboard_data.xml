@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="inventory_dashboard_default" model="dtc.bts.inventory.dashboard">
+            <field name="name">Theo dõi cung ứng vật tư công trình</field>
+        </record>
+
+    </data>
+</odoo>

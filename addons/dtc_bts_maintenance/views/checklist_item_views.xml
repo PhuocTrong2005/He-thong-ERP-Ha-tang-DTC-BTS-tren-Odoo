@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_bts_maintenance_checklist_item_tree" model="ir.ui.view">
+        <field name="name">bts.maintenance.checklist.item.tree</field>
+        <field name="model">bts.maintenance.checklist.item</field>
+        <field name="arch" type="xml">
+            <tree string="Checklist mẫu bảo trì BTS">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="category_id"/>
+                <field name="frequency_months"/>
+                <field name="is_external_required"/>
+                <field name="active"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_bts_maintenance_checklist_item_form" model="ir.ui.view">
+        <field name="name">bts.maintenance.checklist.item.form</field>
+        <field name="model">bts.maintenance.checklist.item</field>
+        <field name="arch" type="xml">
+            <form string="Hạng mục checklist bảo trì BTS">
+                <sheet>
+                    <widget name="web_ribbon" title="Ngừng áp dụng" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="Tên hạng mục cần kiểm tra"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="category_id"/>
+                            <field name="frequency_months"/>
+                            <field name="is_external_required"/>
+                        </group>
+                        <group>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bts_maintenance_checklist_item_search" model="ir.ui.view">
+        <field name="name">bts.maintenance.checklist.item.search</field>
+        <field name="model">bts.maintenance.checklist.item</field>
+        <field name="arch" type="xml">
+            <search string="Tìm checklist mẫu bảo trì BTS">
+                <field name="name"/>
+                <field name="category_id"/>
+                <field name="frequency_months"/>
+                <filter
+                    name="category_macro"
+                    string="Trạm Macro"
+                    domain="[('category_id.name', '=', 'Trạm Macro')]"/>
+                <filter
+                    name="category_cell"
+                    string="Trạm Cell"
+                    domain="[('category_id.name', '=', 'Trạm Cell')]"/>
+                <filter
+                    name="external_required"
+                    string="Cần KTV thuê ngoài"
+                    domain="[('is_external_required', '=', True)]"/>
+                <filter
+                    name="active"
+                    string="Đang áp dụng"
+                    domain="[('active', '=', True)]"/>
+                <group expand="0" string="Nhóm theo">
+                    <filter
+                        name="group_by_category"
+                        string="Loại trạm"
+                        context="{'group_by': 'category_id'}"/>
+                    <filter
+                        name="group_by_frequency"
+                        string="Chu kỳ kiểm tra"
+                        context="{'group_by': 'frequency_months'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bts_maintenance_checklist_item" model="ir.actions.act_window">
+        <field name="name">Checklist mẫu</field>
+        <field name="res_model">bts.maintenance.checklist.item</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_bts_maintenance_checklist_item_tree"/>
+        <field name="search_view_id" ref="view_bts_maintenance_checklist_item_search"/>
+        <field name="context">{'search_default_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Chưa có hạng mục checklist mẫu.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_bts_maintenance_checklist_item_tree" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_bts_maintenance_checklist_item_tree"/>
+        <field name="act_window_id" ref="action_bts_maintenance_checklist_item"/>
+    </record>
+
+    <record id="action_bts_maintenance_checklist_item_form" model="ir.actions.act_window.view">
+        <field name="sequence" eval="2"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_bts_maintenance_checklist_item_form"/>
+        <field name="act_window_id" ref="action_bts_maintenance_checklist_item"/>
+    </record>
+
+</odoo>

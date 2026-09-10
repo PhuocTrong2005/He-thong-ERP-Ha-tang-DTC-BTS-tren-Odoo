@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_bts_contract_renewal_form" model="ir.ui.view">
+        <field name="name">bts.contract.renewal.form</field>
+        <field name="model">bts.contract.renewal</field>
+        <field name="arch" type="xml">
+            <form string="Bản ghi gia hạn hợp đồng">
+                <header>
+                    <button name="action_start" string="Bắt đầu thực hiện"
+                            type="object" class="btn-primary"
+                            invisible="state != 'draft'"
+                            groups="dtc_bts_base.group_dtc_bts_infrastructure,base.group_system"/>
+                    <button name="action_complete" string="Gửi BGĐ ký số"
+                            type="object" class="btn-primary"
+                            invisible="state != 'in_progress'"
+                            groups="dtc_bts_base.group_dtc_bts_infrastructure,base.group_system"/>
+                    <button name="action_mark_land_not_renewable"
+                            string="Báo không gia hạn được đất"
+                            type="object"
+                            invisible="state not in ('draft', 'in_progress') or non_renewal_reported_at"
+                            groups="dtc_bts_base.group_dtc_bts_infrastructure,base.group_system"/>
+                    <button name="action_mark_station_not_renewable"
+                            string="Báo không gia hạn được trạm"
+                            type="object"
+                            invisible="state not in ('draft', 'in_progress') or non_renewal_reported_at"
+                            groups="dtc_bts_base.group_dtc_bts_infrastructure,base.group_system"/>
+                    <button name="action_sign_signature"
+                            string="Ký số / xác nhận ký"
+                            type="object"
+                            class="btn-success"
+                            invisible="state != 'pending_signature'"
+                            groups="dtc_bts_contract.group_dtc_bts_contract_director,base.group_system"/>
+                    <button name="action_reject_signature"
+                            string="Từ chối"
+                            type="object"
+                            invisible="state != 'pending_signature'"
+                            groups="dtc_bts_contract.group_dtc_bts_contract_director,base.group_system"/>
+                    <button name="action_director_cancel_station"
+                            string="Loại bỏ trạm"
+                            type="object"
+                            class="btn-danger"
+                            invisible="non_renewal_review_state != 'director_pending' or decision_at"
+                            groups="dtc_bts_contract.group_dtc_bts_contract_director,base.group_system"/>
+                    <button name="action_director_cancel_project"
+                            string="Chấp thuận hủy dự án"
+                            type="object"
+                            class="btn-danger"
+                            invisible="non_renewal_review_state != 'director_pending' or decision_at"
+                            groups="dtc_bts_contract.group_dtc_bts_contract_director,base.group_system"/>
+                    <button name="action_escalate_non_renewal_to_director"
+                            string="Trình báo BGĐ"
+                            type="object" class="btn-primary"
+                            invisible="non_renewal_review_state != 'enterprise_pending'"
+                            groups="dtc_bts_base.group_bts_enterprise_director,base.group_system"/>
+                    <button name="action_enterprise_cancel_project"
+                            string="Hủy dự án"
+                            type="object" class="btn-danger"
+                            invisible="non_renewal_review_state != 'enterprise_pending'"
+                            groups="dtc_bts_base.group_bts_enterprise_director,base.group_system"/>
+                    <button name="action_cancel" string="Hủy"
+                            type="object"
+                            invisible="state in ('pending_signature', 'completed', 'cancelled', 'rejected')"
+                            groups="dtc_bts_base.group_dtc_bts_infrastructure,base.group_system"/>
+                    <button name="action_reset_to_draft" string="Đặt lại Dự thảo"
+                            type="object"
+                            invisible="state not in ('cancelled', 'rejected')"
+                            groups="dtc_bts_base.group_dtc_bts_infrastructure,base.group_system"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,in_progress,pending_signature,completed"/>
+                </header>
+                <sheet>
+                    <field name="can_edit_negotiation" invisible="1"/>
+                    <field name="non_renewal_reported_at" invisible="1"/>
+                    <field name="non_renewal_review_state" invisible="1"/>
+                    <field name="decision_at" invisible="1"/>
+                    <div class="oe_title">
+                        <label for="renewal_code"/>
+                        <h1><field name="renewal_code" readonly="state != 'draft'"/></h1>
+                    </div>
+                    <group>
+                        <group string="Thông tin gia hạn">
+                            <field name="contract_id" readonly="state != 'draft'"/>
+                            <field name="station_id" readonly="1"/>
+                            <field name="contract_type" readonly="1"/>
+                            <field name="performed_by_id" readonly="1"/>
+                            <field name="renewal_date"
+                                   readonly="not can_edit_negotiation or state not in ('draft', 'in_progress')"/>
+                        </group>
+                        <group string="Điều khoản gia hạn mới">
+                            <field name="new_sign_date"
+                                   readonly="not can_edit_negotiation or state not in ('draft', 'in_progress')"/>
+                            <field name="new_effective_date"
+                                   readonly="not can_edit_negotiation or state not in ('draft', 'in_progress')"/>
+                            <field name="new_expiration_date"
+                                   readonly="not can_edit_negotiation or state not in ('draft', 'in_progress')"/>
+                            <field name="new_rental_price" widget="monetary"
+                                   readonly="not can_edit_negotiation or state not in ('draft', 'in_progress')"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <group string="Hồ sơ Tổ hạ tầng xử lý và tải lên">
+                        <field name="renewal_scan"
+                               filename="renewal_scan_filename"
+                               readonly="state not in ('draft', 'in_progress')"
+                               groups="dtc_bts_base.group_dtc_bts_infrastructure,base.group_system"/>
+                        <field name="renewal_scan"
+                               filename="renewal_scan_filename"
+                               readonly="1"
+                               groups="dtc_bts_contract.group_dtc_bts_contract_director,!dtc_bts_base.group_dtc_bts_infrastructure,!base.group_system"/>
+                        <field name="renewal_scan_filename" invisible="1"/>
+                    </group>
+                    <group string="Kết quả gia hạn">
+                        <field name="result"
+                               nolabel="1"
+                               colspan="2"
+                               readonly="not can_edit_negotiation or state not in ('draft', 'in_progress')"/>
+                    </group>
+                    <group string="Ký số bởi BGĐ"
+                           invisible="state not in ('pending_signature', 'completed')">
+                        <field name="signed_document"
+                               filename="signed_document_filename"
+                               readonly="state != 'pending_signature'"
+                               groups="dtc_bts_contract.group_dtc_bts_contract_director,base.group_system"/>
+                        <field name="signed_document"
+                               filename="signed_document_filename"
+                               readonly="1"
+                               groups="dtc_bts_base.group_dtc_bts_infrastructure,!dtc_bts_contract.group_dtc_bts_contract_director,!base.group_system"/>
+                        <field name="signed_document_filename" invisible="1"/>
+                        <field name="signed_by_id" readonly="1"/>
+                        <field name="signed_date" readonly="1"/>
+                    </group>
+                    <group string="Từ chối ký số"
+                           invisible="state not in ('pending_signature', 'rejected')">
+                        <field name="rejection_reason"
+                               placeholder="Nhập lý do trước khi bấm Từ chối..."
+                               readonly="state != 'pending_signature'"
+                               groups="dtc_bts_contract.group_dtc_bts_contract_director,base.group_system"/>
+                        <field name="rejection_reason"
+                               readonly="1"
+                               groups="dtc_bts_base.group_dtc_bts_infrastructure,!dtc_bts_contract.group_dtc_bts_contract_director,!base.group_system"/>
+                        <field name="rejected_by_id" readonly="1"/>
+                        <field name="rejected_date" readonly="1"/>
+                    </group>
+                    <group string="Báo cáo không gia hạn">
+                        <field name="non_renewal_reason"
+                               placeholder="Nhập lý do trước khi bấm nút báo không gia hạn..."
+                               readonly="non_renewal_reported_at"/>
+                        <field name="non_renewal_type" readonly="1"/>
+                        <field name="non_renewal_reported_by_id" readonly="1"/>
+                        <field name="non_renewal_reported_at" readonly="1"/>
+                        <field name="non_renewal_review_state" readonly="1"/>
+                        <field name="non_renewal_escalated_by_id" readonly="1"
+                               invisible="not non_renewal_escalated_at"/>
+                        <field name="non_renewal_escalated_at" readonly="1"
+                               invisible="not non_renewal_escalated_at"/>
+                    </group>
+                    <group string="Quyết định BGĐ"
+                           invisible="not non_renewal_reported_at">
+                        <field name="decision_reason"
+                               placeholder="Nhập lý do trước khi ra quyết định..."
+                               readonly="decision_at"/>
+                        <field name="decision_type" readonly="1"/>
+                        <field name="decision_by_id" readonly="1"/>
+                        <field name="decision_at" readonly="1"/>
+                    </group>
+                    <group string="Ghi chú">
+                        <field name="notes" nolabel="1" colspan="2"/>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bts_contract_renewal_tree" model="ir.ui.view">
+        <field name="name">bts.contract.renewal.tree</field>
+        <field name="model">bts.contract.renewal</field>
+        <field name="arch" type="xml">
+            <tree string="Bản ghi gia hạn"
+                  decoration-success="state == 'completed'"
+                  decoration-muted="state == 'cancelled'">
+                <field name="renewal_code" string="Mã gia hạn"/>
+                <field name="contract_id" string="Hợp đồng gốc"/>
+                <field name="station_id" string="Trạm BTS"/>
+                <field name="project_id" string="Dự án"/>
+                <field name="partner_id" string="Đối tác"/>
+                <field name="non_renewal_reason"
+                       string="Lý do báo cáo" optional="show"/>
+                <field name="non_renewal_review_state"
+                       string="Trạng thái xem xét" widget="badge" optional="show"/>
+                <field name="new_sign_date" string="Ngày ký gia hạn"/>
+                <field name="new_expiration_date" string="Ngày hết hạn mới"/>
+                <field name="new_rental_price" string="Giá thuê mới" widget="monetary"/>
+                <field name="state" string="Trạng thái" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state in ('in_progress', 'pending_signature')"
+                       decoration-success="state == 'completed'"
+                       decoration-danger="state in ('cancelled', 'rejected')"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_bts_contract_renewal" model="ir.actions.act_window">
+        <field name="name">Bản ghi gia hạn hợp đồng</field>
+        <field name="res_model">bts.contract.renewal</field>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Chưa có bản ghi gia hạn nào.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_renewal_failure_enterprise_pending"
+            model="ir.actions.act_window">
+        <field name="name">Gia hạn thất bại chờ xem xét</field>
+        <field name="res_model">bts.contract.renewal</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_bts_contract_renewal_tree"/>
+        <field name="domain">[('non_renewal_review_state', '=', 'enterprise_pending')]</field>
+        <field name="context">{'create': False}</field>
+    </record>
+
+    <record id="action_renewal_failure_director_pending"
+            model="ir.actions.act_window">
+        <field name="name">Đề nghị hủy do gia hạn thất bại</field>
+        <field name="res_model">bts.contract.renewal</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_bts_contract_renewal_tree"/>
+        <field name="domain">[('non_renewal_review_state', '=', 'director_pending')]</field>
+        <field name="context">{'create': False}</field>
+    </record>
+
+    <record id="action_bts_contract_renewal_signature"
+            model="ir.actions.act_window">
+        <field name="name">Hợp đồng gia hạn chờ ký</field>
+        <field name="res_model">bts.contract.renewal</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('state', '=', 'pending_signature')]</field>
+        <field name="context">{'create': False}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Không có hồ sơ gia hạn nào đang chờ ký.
+            </p>
+        </field>
+    </record>
+
+</odoo>

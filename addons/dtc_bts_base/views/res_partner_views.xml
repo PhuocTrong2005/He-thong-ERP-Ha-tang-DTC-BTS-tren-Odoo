@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_dtc_bts_partner_tree" model="ir.ui.view">
+        <field name="name">dtc.bts.partner.tree</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <tree string="Đối tác">
+                <field name="name"/>
+                <field name="partner_type"/>
+                <field name="phone"/>
+                <field name="email"/>
+                <field name="vat"/>
+                <field name="is_company"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_dtc_bts_partner_form" model="ir.ui.view">
+        <field name="name">dtc.bts.partner.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="priority" eval="50"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='vat']" position="after">
+                <field name="partner_type"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_dtc_bts_partner_search" model="ir.ui.view">
+        <field name="name">dtc.bts.partner.search</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <search string="Đối tác BTS">
+                <field name="name"/>
+                <field name="partner_type"/>
+                <field name="phone"/>
+                <field name="email"/>
+                <filter
+                    name="filter_supplier"
+                    string="Nhà cung cấp"
+                    domain="[('partner_type', '=', 'supplier')]"/>
+                <filter
+                    name="filter_landowner"
+                    string="Chủ đất"
+                    domain="[('partner_type', '=', 'landowner')]"/>
+                <filter
+                    name="filter_telecom_partner"
+                    string="Đối tác viễn thông"
+                    domain="[('partner_type', '=', 'telecom_partner')]"/>
+                <filter
+                    name="filter_external_technician"
+                    string="Kỹ thuật viên thuê ngoài"
+                    domain="[('partner_type', '=', 'external_technician')]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_dtc_bts_partner" model="ir.actions.act_window">
+        <field name="name">Đối tác</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_dtc_bts_partner_tree"/>
+        <field name="search_view_id" ref="view_dtc_bts_partner_search"/>
+        <field name="domain">[('partner_type', 'in', ['supplier', 'landowner', 'telecom_partner', 'external_technician']), ('user_ids', '=', False), ('employee', '=', False)]</field>
+        <field name="context">{'default_partner_type': 'supplier'}</field>
+    </record>
+
+</odoo>

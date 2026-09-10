@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem
+        id="menu_dtc_bts_maintenance_root"
+        name="Quản lý bảo trì trạm BTS"
+        action="action_bts_maintenance_dashboard"
+        groups="dtc_bts_base.group_dtc_bts_infrastructure,base.group_system"
+        sequence="30"/>
+
+    <menuitem
+        id="menu_dtc_bts_maintenance_dashboard"
+        name="Dashboard bảo trì"
+        parent="menu_dtc_bts_maintenance_root"
+        action="action_bts_maintenance_dashboard"
+        groups="dtc_bts_base.group_dtc_bts_infrastructure,base.group_system"
+        sequence="10"/>
+
+    <menuitem
+        id="menu_dtc_bts_maintenance_handover"
+        name="Tiếp nhận bàn giao"
+        parent="menu_dtc_bts_maintenance_root"
+        action="action_bts_maintenance_handover_project"
+        groups="dtc_bts_base.group_dtc_bts_infrastructure,base.group_system"
+        sequence="20"/>
+
+    <menuitem
+        id="menu_dtc_bts_due_maintenance_project"
+        name="Danh sách dự án"
+        parent="menu_dtc_bts_maintenance_root"
+        action="action_bts_due_maintenance_project"
+        groups="dtc_bts_base.group_dtc_bts_infrastructure,base.group_system"
+        sequence="30"/>
+
+    <menuitem
+        id="menu_dtc_bts_maintenance_batch"
+        name="Phiếu bảo trì dự án"
+        parent="menu_dtc_bts_maintenance_root"
+        action="action_bts_maintenance_batch"
+        groups="dtc_bts_base.group_dtc_bts_infrastructure,base.group_system"
+        sequence="40"/>
+
+    <menuitem
+        id="menu_dtc_bts_maintenance_checklist_item"
+        name="Checklist mẫu"
+        parent="menu_dtc_bts_maintenance_root"
+        action="action_bts_maintenance_checklist_item"
+        groups="dtc_bts_base.group_dtc_bts_infrastructure,base.group_system"
+        sequence="70"/>
+
+</odoo>

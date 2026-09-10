@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_bts_maintenance_batch_tree" model="ir.ui.view">
+        <field name="name">bts.maintenance.batch.tree</field>
+        <field name="model">bts.maintenance.batch</field>
+        <field name="arch" type="xml">
+            <tree string="Phiếu bảo trì dự án">
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="maintenance_date"/>
+                <field name="maintenance_cycle_months"/>
+                <field name="station_count"/>
+                <field name="completed_station_count"/>
+                <field name="failed_station_count"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_bts_maintenance_batch_form" model="ir.ui.view">
+        <field name="name">bts.maintenance.batch.form</field>
+        <field name="model">bts.maintenance.batch</field>
+        <field name="arch" type="xml">
+            <form string="Phiếu bảo trì dự án">
+                <header>
+                    <button name="action_generate_station_requests"
+                            string="Sinh danh sách trạm và checklist"
+                            type="object" class="btn-primary"
+                            invisible="state not in ('draft', 'generated', 'in_progress')"/>
+                    <button name="action_submit"
+                            string="Gửi tổ hạ tầng kiểm tra"
+                            type="object" class="btn-primary"
+                            invisible="state not in ('generated', 'in_progress')"/>
+                    <button name="action_review"
+                            string="Xác nhận kết quả"
+                            type="object" class="btn-primary"
+                            invisible="state != 'submitted'"/>
+                    <button name="action_create_repair_proposal"
+                            string="Tạo đề xuất sửa chữa"
+                            type="object"
+                            invisible="not has_failure or state in ('draft', 'cancelled')"/>
+                    <button name="action_done"
+                            string="Hoàn tất phiếu"
+                            type="object" class="btn-primary"
+                            invisible="state != 'reviewed'"/>
+                    <button name="action_cancel"
+                            string="Hủy"
+                            type="object"
+                            invisible="state in ('done', 'cancelled')"/>
+                    <field name="state"
+                           widget="statusbar"
+                           statusbar_visible="draft,generated,in_progress,submitted,reviewed,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_create_repair_proposal"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-wrench"
+                                invisible="not repair_proposal_count">
+                            <field name="repair_proposal_count"
+                                   widget="statinfo"
+                                   string="Đề xuất sửa chữa"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="project_id"
+                                   options="{'no_create': True}"
+                                   readonly="state != 'draft'"/>
+                            <field name="station_type" readonly="1"/>
+                            <field name="effective_date" readonly="state != 'draft'"/>
+                        </group>
+                        <group>
+                            <field name="maintenance_date" readonly="state != 'draft'"/>
+                            <field name="maintenance_cycle_months"
+                                   readonly="state != 'draft'"/>
+                            <field name="technician_user_id"/>
+                            <field name="has_failure" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Tổng quan" col="6">
+                        <field name="station_count" readonly="1"/>
+                        <field name="completed_station_count" readonly="1"/>
+                        <field name="failed_station_count" readonly="1"/>
+                        <field name="checklist_line_count" readonly="1"/>
+                        <field name="repair_proposal_count" readonly="1"/>
+                    </group>
+                    <notebook>
+                        <page string="Danh sách trạm kiểm tra">
+                            <field name="request_ids" nolabel="1">
+                                <tree create="false" delete="false">
+                                    <field name="station_sequence"/>
+                                    <field name="station_id"/>
+                                    <field name="equipment_id"/>
+                                    <field name="user_id" string="Người thực hiện"/>
+                                    <field name="station_page_state"/>
+                                    <field name="has_failure"/>
+                                    <field name="checklist_result_count"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Tổng hợp lỗi">
+                            <field name="request_ids"
+                                   nolabel="1"
+                                   domain="[('has_failure', '=', True)]">
+                                <tree create="false" delete="false">
+                                    <field name="station_sequence"/>
+                                    <field name="station_id"/>
+                                    <field name="station_page_state"/>
+                                    <field name="has_failure"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Đề xuất sửa chữa">
+                            <field name="repair_proposal_ids" nolabel="1" readonly="1">
+                                <tree create="false" delete="false">
+                                    <field name="name"/>
+                                    <field name="project_id"/>
+                                    <field name="proposed_by_id"/>
+                                    <field name="priority"/>
+                                    <field name="state"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bts_maintenance_batch_search" model="ir.ui.view">
+        <field name="name">bts.maintenance.batch.search</field>
+        <field name="model">bts.maintenance.batch</field>
+        <field name="arch" type="xml">
+            <search string="Tìm phiếu bảo trì dự án">
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="technician_user_id"/>
+                <filter name="has_failure" string="Có hư hỏng"
+                        domain="[('has_failure', '=', True)]"/>
+                <filter name="maintenance_date" date="maintenance_date"/>
+                <group expand="0" string="Nhóm theo">
+                    <filter name="group_project" string="Dự án"
+                            context="{'group_by': 'project_id'}"/>
+                    <filter name="group_state" string="Trạng thái"
+                            context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bts_maintenance_batch" model="ir.actions.act_window">
+        <field name="name">Phiếu bảo trì dự án</field>
+        <field name="res_model">bts.maintenance.batch</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_bts_maintenance_batch_tree"/>
+        <field name="search_view_id" ref="view_bts_maintenance_batch_search"/>
+    </record>
+
+</odoo>

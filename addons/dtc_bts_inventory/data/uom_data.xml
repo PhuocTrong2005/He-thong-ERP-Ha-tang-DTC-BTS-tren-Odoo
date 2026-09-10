@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Vietnamese counting units used by the material import files.
+             They convert one-to-one with Odoo's reference "Units" UoM. -->
+        <record id="product_uom_piece_vi" model="uom.uom">
+            <field name="name">Cái</field>
+            <field name="category_id" ref="uom.product_uom_categ_unit"/>
+            <field name="factor" eval="1.0"/>
+            <field name="uom_type">smaller</field>
+        </record>
+
+        <record id="product_uom_set_vi" model="uom.uom">
+            <field name="name">Bộ</field>
+            <field name="category_id" ref="uom.product_uom_categ_unit"/>
+            <field name="factor" eval="1.0"/>
+            <field name="uom_type">smaller</field>
+        </record>
+
+        <record id="product_uom_bag_vi" model="uom.uom">
+            <field name="name">Bao</field>
+            <field name="category_id" ref="uom.product_uom_categ_unit"/>
+            <field name="factor" eval="1.0"/>
+            <field name="uom_type">smaller</field>
+        </record>
+
+        <record id="product_uom_box_vi" model="uom.uom">
+            <field name="name">Thùng</field>
+            <field name="category_id" ref="uom.product_uom_categ_unit"/>
+            <field name="factor" eval="1.0"/>
+            <field name="uom_type">smaller</field>
+        </record>
+
+        <record id="product_uom_packet_vi" model="uom.uom">
+            <field name="name">Bịch</field>
+            <field name="category_id" ref="uom.product_uom_categ_unit"/>
+            <field name="factor" eval="1.0"/>
+            <field name="uom_type">smaller</field>
+        </record>
+
+        <!-- ASCII aliases match spreadsheet values while retaining the
+             correct Surface and Volume conversion categories. -->
+        <record id="product_uom_square_meter_ascii" model="uom.uom">
+            <field name="name">m2</field>
+            <field name="category_id" ref="uom.uom_categ_surface"/>
+            <field name="factor" eval="1.0"/>
+            <field name="uom_type">smaller</field>
+        </record>
+
+        <record id="product_uom_cubic_meter_ascii" model="uom.uom">
+            <field name="name">m3</field>
+            <field name="category_id" ref="uom.product_uom_categ_vol"/>
+            <field name="factor_inv" eval="1000.0"/>
+            <field name="uom_type">bigger</field>
+        </record>
+
+    </data>
+</odoo>

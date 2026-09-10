@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <menuitem id="menu_dtc_bts_contract_root"
+              name="Quản lý hợp đồng BTS"
+              action="action_bts_contract_dashboard"
+              sequence="40"
+              groups="dtc_bts_contract.group_dtc_bts_contract_director,dtc_bts_base.group_dtc_bts_infrastructure,base.group_system"/>
+
+    <!-- Explicitly clear the old parent when upgrading an existing database. -->
+    <record id="menu_dtc_bts_contract_root" model="ir.ui.menu">
+        <field name="parent_id" eval="False"/>
+        <field name="groups_id" eval="[(6, 0, [
+            ref('dtc_bts_contract.group_dtc_bts_contract_director'),
+            ref('dtc_bts_base.group_dtc_bts_infrastructure'),
+            ref('base.group_system')
+        ])]"/>
+    </record>
+
+    <menuitem id="menu_bts_contract_dashboard"
+              name="Tổng quan"
+              parent="menu_dtc_bts_contract_root"
+              action="action_bts_contract_dashboard"
+              sequence="5"
+              groups="dtc_bts_contract.group_dtc_bts_contract_director,dtc_bts_base.group_dtc_bts_infrastructure,base.group_system"/>
+
+    <menuitem id="menu_bts_contract_all"
+              name="Danh sách dự án"
+              parent="menu_dtc_bts_contract_root"
+              action="action_bts_contract_project_overview"
+              sequence="10"
+              groups="dtc_bts_contract.group_dtc_bts_contract_director,dtc_bts_base.group_dtc_bts_infrastructure,base.group_system"/>
+
+    <!-- Replace legacy group assignments left on menus by older module versions. -->
+    <record id="menu_bts_contract_dashboard" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [
+            ref('dtc_bts_contract.group_dtc_bts_contract_director'),
+            ref('dtc_bts_base.group_dtc_bts_infrastructure'),
+            ref('base.group_system')
+        ])]"/>
+    </record>
+
+    <record id="menu_bts_contract_all" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [
+            ref('dtc_bts_contract.group_dtc_bts_contract_director'),
+            ref('dtc_bts_base.group_dtc_bts_infrastructure'),
+            ref('base.group_system')
+        ])]"/>
+    </record>
+
+    <menuitem id="menu_bts_contract_renewal"
+              name="Gia hạn hợp đồng"
+              parent="menu_dtc_bts_contract_root"
+              action="action_bts_contract_renewal"
+              sequence="30"
+              groups="dtc_bts_contract.group_dtc_bts_contract_director,dtc_bts_base.group_dtc_bts_infrastructure,base.group_system"/>
+
+    <record id="menu_bts_contract_renewal" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [
+            ref('dtc_bts_contract.group_dtc_bts_contract_director'),
+            ref('dtc_bts_base.group_dtc_bts_infrastructure'),
+            ref('base.group_system')
+        ])]"/>
+    </record>
+
+    <menuitem id="menu_failure_enterprise_pending"
+              name="Báo cáo chờ xem xét"
+              parent="dtc_bts_base.menu_dtc_bts_root"
+              sequence="20"
+              groups="dtc_bts_base.group_bts_enterprise_director,base.group_system"/>
+    <menuitem id="menu_initial_failure_enterprise_pending"
+              name="Đàm phán thuê đất"
+              parent="menu_failure_enterprise_pending"
+              action="action_initial_failure_enterprise_pending"
+              sequence="10"
+              groups="dtc_bts_base.group_bts_enterprise_director,base.group_system"/>
+    <menuitem id="menu_renewal_failure_enterprise_pending"
+              name="Gia hạn hợp đồng"
+              parent="menu_failure_enterprise_pending"
+              action="action_renewal_failure_enterprise_pending"
+              sequence="20"
+              groups="dtc_bts_base.group_bts_enterprise_director,base.group_system"/>
+
+    <menuitem id="menu_failure_director_pending"
+              name="Đề nghị hủy dự án/chờ quyết định"
+              parent="menu_dtc_bts_contract_root"
+              sequence="25"
+              groups="dtc_bts_contract.group_dtc_bts_contract_director,base.group_system"/>
+    <menuitem id="menu_initial_failure_director_pending"
+              name="Đàm phán thuê đất"
+              parent="menu_failure_director_pending"
+              action="action_initial_failure_director_pending"
+              sequence="10"
+              groups="dtc_bts_contract.group_dtc_bts_contract_director,base.group_system"/>
+    <menuitem id="menu_renewal_failure_director_pending"
+              name="Gia hạn hợp đồng"
+              parent="menu_failure_director_pending"
+              action="action_renewal_failure_director_pending"
+              sequence="20"
+              groups="dtc_bts_contract.group_dtc_bts_contract_director,base.group_system"/>
+
+    <menuitem id="menu_bts_contract_signature_batch"
+              name="Ký số hợp đồng"
+              parent="menu_dtc_bts_contract_root"
+              sequence="40"
+              groups="dtc_bts_contract.group_dtc_bts_contract_director,base.group_system"/>
+
+    <record id="menu_bts_contract_signature_batch" model="ir.ui.menu">
+        <field name="action" eval="False"/>
+        <field name="groups_id" eval="[(6, 0, [
+            ref('dtc_bts_contract.group_dtc_bts_contract_director'),
+            ref('base.group_system')
+        ])]"/>
+    </record>
+
+    <menuitem id="menu_bts_contract_signature_batch_initial"
+              name="Batch hợp đồng ban đầu"
+              parent="menu_bts_contract_signature_batch"
+              action="action_bts_contract_signature_batch"
+              sequence="10"
+              groups="dtc_bts_contract.group_dtc_bts_contract_director,base.group_system"/>
+
+    <menuitem id="menu_bts_contract_renewal_signature"
+              name="Hợp đồng gia hạn chờ ký"
+              parent="menu_bts_contract_signature_batch"
+              action="action_bts_contract_renewal_signature"
+              sequence="20"
+              groups="dtc_bts_contract.group_dtc_bts_contract_director,base.group_system"/>
+
+</odoo>

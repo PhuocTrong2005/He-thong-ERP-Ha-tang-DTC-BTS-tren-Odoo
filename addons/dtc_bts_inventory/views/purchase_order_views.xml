@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!--
+        Primary views are selected only by the BTS action below. This keeps the
+        standard Purchase application unchanged while reusing Odoo's PO flow.
+    -->
+    <record id="view_purchase_order_form_bts_inventory" model="ir.ui.view">
+        <field name="name">purchase.order.form.bts.inventory</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="mode">primary</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="attributes">
+                <attribute name="string">Đơn mua hàng BTS</attribute>
+            </xpath>
+
+            <!-- Email and vendor-bill actions are outside the MIS demo scope. -->
+            <xpath expr="//header/button[@name='action_rfq_send']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="(//header/button[@name='action_rfq_send'])[2]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="(//header/button[@name='action_rfq_send'])[3]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//header/button[@name='action_create_invoice']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="(//header/button[@name='action_create_invoice'])[2]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//button[@name='action_view_invoice']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <xpath expr="//button[@name='action_view_picking']" position="attributes">
+                <attribute name="string">Phiếu nhập kho</attribute>
+            </xpath>
+            <xpath expr="(//button[@name='action_view_picking'])[2]" position="attributes">
+                <attribute name="string">Phiếu nhập kho</attribute>
+            </xpath>
+
+            <xpath expr="//div[hasclass('oe_title')]/span" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="(//div[hasclass('oe_title')]/span)[2]" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//div[hasclass('oe_title')]" position="inside">
+                <span class="o_form_label">Đơn mua hàng BTS</span>
+            </xpath>
+
+            <xpath expr="//field[@name='partner_id']" position="attributes">
+                <attribute name="string">Nhà cung cấp</attribute>
+                <attribute name="placeholder">Chọn nhà cung cấp</attribute>
+                <attribute name="context">{'res_partner_search_mode': 'supplier', 'show_vat': False}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='partner_id']" position="after">
+                <field
+                    name="bts_project_id"
+                    string="Dự án BTS"
+                    required="1"
+                    options="{'no_create': True}"
+                    readonly="state in ('cancel', 'done', 'purchase')"/>
+                <field name="bts_project_code" string="Mã dự án" readonly="1"/>
+                <field
+                    name="bts_material_request_id"
+                    string="Yêu cầu vật tư"
+                    domain="[('bts_project_id', '=', bts_project_id)]"
+                    options="{'no_create': True}"
+                    readonly="state in ('cancel', 'done', 'purchase')"/>
+            </xpath>
+
+            <xpath expr="//field[@name='date_order']" position="attributes">
+                <attribute name="string">Ngày lập đơn</attribute>
+            </xpath>
+            <xpath expr="//field[@name='date_planned']" position="attributes">
+                <attribute name="string">Ngày hàng về dự kiến</attribute>
+            </xpath>
+            <xpath expr="//field[@name='effective_date']" position="attributes">
+                <attribute name="string">Ngày hàng về thực tế</attribute>
+            </xpath>
+
+            <xpath expr="//page[@name='products']" position="attributes">
+                <attribute name="string">Danh sách vật tư</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']" position="attributes">
+                <attribute name="mode">tree</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/tree/control/create[@name='add_product_control']" position="attributes">
+                <attribute name="string">Thêm vật tư</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/tree/control/button[@name='action_add_from_catalog']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/tree//field[@name='product_id']" position="attributes">
+                <attribute name="string">Vật tư</attribute>
+                <attribute name="domain">[('purchase_ok', '=', True), ('is_bts_material', '=', True), '|', ('company_id', '=', False), ('company_id', 'parent_of', parent.company_id)]</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/tree//field[@name='product_qty']" position="attributes">
+                <attribute name="string">Số lượng</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/tree//field[@name='qty_received']" position="attributes">
+                <attribute name="string">Đã nhận</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/tree//field[@name='price_unit']" position="attributes">
+                <attribute name="string">Đơn giá</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/tree//field[@name='price_subtotal']" position="attributes">
+                <attribute name="string">Thành tiền</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/tree//field[@name='date_planned']" position="attributes">
+                <attribute name="string">Ngày về dự kiến</attribute>
+                <attribute name="optional">hide</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/tree//field[@name='qty_invoiced']" position="attributes">
+                <attribute name="column_invisible">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/tree//field[@name='taxes_id']" position="attributes">
+                <attribute name="column_invisible">True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/tree//field[@name='price_total']" position="attributes">
+                <attribute name="column_invisible">True</attribute>
+            </xpath>
+
+            <xpath expr="//field[@name='order_line']/form//field[@name='qty_invoiced']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/form//field[@name='product_id']" position="attributes">
+                <attribute name="domain">[('purchase_ok', '=', True), ('is_bts_material', '=', True), '|', ('company_id', '=', False), ('company_id', '=', parent.company_id)]</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/form//field[@name='taxes_id']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <xpath expr="//field[@name='order_line']/form//page[@name='invoices_incoming_shiptments']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+
+            <!-- Replace tax summary with the material value used by the project. -->
+            <xpath expr="//group[hasclass('oe_subtotal_footer')]" position="replace">
+                <group class="oe_subtotal_footer">
+                    <field
+                        name="amount_untaxed"
+                        string="Tổng giá trị vật tư"
+                        widget="monetary"
+                        options="{'currency_field': 'currency_id'}"
+                        readonly="1"/>
+                </group>
+            </xpath>
+
+            <!-- Payment terms, fiscal position and invoice status are not in scope. -->
+            <xpath expr="//page[@name='purchase_delivery_invoice']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_purchase_order_tree_bts_inventory" model="ir.ui.view">
+        <field name="name">purchase.order.tree.bts.inventory</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" eval="False"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <tree string="Đơn mua hàng BTS" decoration-muted="state == 'cancel'">
+                <field name="name" string="Đơn mua hàng" readonly="1"/>
+                <field name="partner_id" string="Nhà cung cấp"/>
+                <field name="bts_project_code" string="Mã dự án"/>
+                <field name="bts_project_id" string="Dự án BTS" optional="show"/>
+                <field name="bts_material_request_id" string="Yêu cầu vật tư"/>
+                <field name="date_planned" string="Ngày hàng về dự kiến"/>
+                <field name="effective_date" string="Ngày hàng về thực tế" optional="show"/>
+                <field
+                    name="amount_untaxed"
+                    string="Tổng giá trị vật tư"
+                    sum="Tổng giá trị vật tư"
+                    widget="monetary"/>
+                <field name="currency_id" column_invisible="True"/>
+                <field
+                    name="state"
+                    string="Trạng thái"
+                    widget="badge"
+                    decoration-info="state in ('draft', 'sent')"
+                    decoration-warning="state == 'to approve'"
+                    decoration-success="state in ('purchase', 'done')"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_purchase_order_search_bts_inventory" model="ir.ui.view">
+        <field name="name">purchase.order.search.bts.inventory</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" eval="False"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <search string="Tìm đơn mua hàng BTS">
+                <field name="name" string="Đơn mua hàng"/>
+                <field name="partner_id" string="Nhà cung cấp"/>
+                <field name="bts_project_id" string="Dự án BTS"/>
+                <field name="bts_project_code" string="Mã dự án"/>
+                <field name="bts_material_request_id" string="Yêu cầu vật tư"/>
+                <filter name="draft" string="Dự thảo" domain="[('state', '=', 'draft')]"/>
+                <filter name="confirmed" string="Đã xác nhận" domain="[('state', 'in', ('purchase', 'done'))]"/>
+                <filter name="cancelled" string="Đã hủy" domain="[('state', '=', 'cancel')]"/>
+                <group expand="0" string="Nhóm theo">
+                    <filter name="group_bts_project" string="Dự án BTS" context="{'group_by': 'bts_project_id'}"/>
+                    <filter name="group_vendor" string="Nhà cung cấp" context="{'group_by': 'partner_id'}"/>
+                    <filter name="group_state" string="Trạng thái" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_dtc_bts_purchase_order" model="ir.actions.act_window">
+        <field name="name">Đơn mua hàng BTS</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('view_purchase_order_tree_bts_inventory')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_purchase_order_form_bts_inventory')})
+        ]"/>
+        <field name="search_view_id" ref="view_purchase_order_search_bts_inventory"/>
+        <field name="domain">[('bts_project_id', '!=', False)]</field>
+        <field name="context">{'bts_purchase_scope': True}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Tạo đơn mua vật tư cho dự án BTS.</p>
+        </field>
+    </record>
+
+    <record id="view_purchase_order_tree_bts_inventory_warehouse" model="ir.ui.view">
+        <field name="name">purchase.order.tree.bts.inventory.warehouse</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="view_purchase_order_tree_bts_inventory"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="attributes">
+                <attribute name="create">0</attribute>
+                <attribute name="edit">0</attribute>
+                <attribute name="delete">0</attribute>
+                <attribute name="import">0</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_purchase_order_form_bts_inventory_warehouse" model="ir.ui.view">
+        <field name="name">purchase.order.form.bts.inventory.warehouse</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="view_purchase_order_form_bts_inventory"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="attributes">
+                <attribute name="create">0</attribute>
+                <attribute name="edit">0</attribute>
+                <attribute name="delete">0</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_dtc_bts_purchase_order_warehouse" model="ir.actions.act_window">
+        <field name="name">Đơn mua hàng BTS</field>
+        <field name="res_model">purchase.order</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('view_purchase_order_tree_bts_inventory_warehouse')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_purchase_order_form_bts_inventory_warehouse')})
+        ]"/>
+        <field name="search_view_id" ref="view_purchase_order_search_bts_inventory"/>
+        <field name="domain">[('bts_project_id', '!=', False)]</field>
+        <field name="context">{'bts_purchase_scope': True, 'bts_warehouse_readonly': True}</field>
+    </record>
+
+</odoo>

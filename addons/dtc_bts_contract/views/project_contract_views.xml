@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_bts_contract_project_tree" model="ir.ui.view">
+        <field name="name">bts.contract.project.tree</field>
+        <field name="model">project.project</field>
+        <field name="arch" type="xml">
+            <tree string="Danh sách dự án"
+                  create="false"
+                  default_order="contract_due_priority asc, nearest_contract_expiration_date asc, project_code asc"
+                  decoration-danger="contract_due_status == 'overdue'"
+                  decoration-warning="contract_due_status == 'expiring'">
+                <field name="project_code" string="Mã dự án"/>
+                <field name="name" string="Tên dự án"/>
+                <field name="station_count" string="Tổng trạm"/>
+                <field name="expiring_station_count"
+                       string="Trạm có HĐ sắp hết hạn"/>
+                <field name="overdue_contract_count" string="HĐ quá hạn"/>
+                <field name="nearest_contract_expiration_date"
+                       string="Ngày hết hạn gần nhất"/>
+                <field name="nearest_contract_days_left"
+                       string="Còn lại (ngày)"/>
+                <field name="contract_action_required"
+                       string="Cần xử lý"
+                       widget="badge"
+                       decoration-danger="contract_action_required == 'renew_land_first'"
+                       decoration-warning="contract_action_required == 'renew_infrastructure'"
+                       decoration-success="contract_action_required == 'monitor'"/>
+                <field name="contract_due_status"
+                       string="Trạng thái hợp đồng"
+                       widget="badge"
+                       decoration-danger="contract_due_status == 'overdue'"
+                       decoration-warning="contract_due_status == 'expiring'"
+                       decoration-success="contract_due_status == 'valid'"
+                       decoration-muted="contract_due_status == 'no_active'"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_bts_contract_project_form" model="ir.ui.view">
+        <field name="name">bts.contract.project.form</field>
+        <field name="model">project.project</field>
+        <field name="arch" type="xml">
+            <form string="Theo dõi hợp đồng dự án"
+                  create="false"
+                  edit="false"
+                  delete="false">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" string="Tên dự án" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="project_code"
+                                   string="Mã dự án"
+                                   readonly="1"/>
+                            <field name="station_count"
+                                   string="Tổng trạm"
+                                   readonly="1"/>
+                            <field name="expiring_station_count"
+                                   string="Trạm có hợp đồng sắp hết hạn"
+                                   readonly="1"/>
+                            <field name="overdue_contract_count"
+                                   string="Hợp đồng quá hạn"
+                                   readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="nearest_contract_expiration_date"
+                                   string="Ngày hết hạn gần nhất"
+                                   readonly="1"/>
+                            <field name="nearest_contract_days_left"
+                                   string="Còn lại (ngày)"
+                                   readonly="1"/>
+                            <field name="contract_action_required"
+                                   string="Cần xử lý"
+                                   widget="badge"
+                                   readonly="1"
+                                   decoration-danger="contract_action_required == 'renew_land_first'"
+                                   decoration-warning="contract_action_required == 'renew_infrastructure'"
+                                   decoration-success="contract_action_required == 'monitor'"/>
+                            <field name="contract_due_status"
+                                   string="Trạng thái hợp đồng"
+                                   widget="badge"
+                                   readonly="1"
+                                   decoration-danger="contract_due_status == 'overdue'"
+                                   decoration-warning="contract_due_status == 'expiring'"
+                                   decoration-success="contract_due_status == 'valid'"
+                                   decoration-muted="contract_due_status == 'no_active'"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="dtc_bts_contract_due_stations"
+                              string="Trạm có hợp đồng đến hạn">
+                            <field name="task_ids"
+                                   domain="[('contract_action_required', '!=', 'monitor')]"
+                                   readonly="1">
+                                <tree string="Hợp đồng theo trạm"
+                                      create="false"
+                                      delete="false">
+                                    <field name="station_code"
+                                           string="Mã trạm"/>
+                                    <field name="name"
+                                           string="Tên trạm"/>
+                                    <field name="overview_land_contract_id"
+                                           string="HĐ thuê đất"/>
+                                    <field name="overview_infrastructure_contract_id"
+                                           string="HĐ cho thuê trạm"/>
+                                    <field name="nearest_contract_expiration_date"
+                                           string="Ngày hết hạn gần nhất"/>
+                                    <field name="nearest_contract_days_left"
+                                           string="Còn lại (ngày)"/>
+                                    <field name="contract_action_required"
+                                           string="Cần xử lý"
+                                           widget="badge"
+                                           decoration-danger="contract_action_required == 'renew_land_first'"
+                                           decoration-warning="contract_action_required == 'renew_infrastructure'"
+                                           decoration-success="contract_action_required == 'monitor'"/>
+                                    <button name="action_open_station_contracts"
+                                            string="Xem hợp đồng"
+                                            type="object"
+                                            icon="fa-external-link"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bts_contract_project_overview"
+            model="ir.actions.act_window">
+        <field name="name">Danh sách dự án</field>
+        <field name="res_model">project.project</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_bts_contract_project_tree"/>
+        <field name="context">{'create': False, 'contract_project_overview': True}</field>
+    </record>
+
+    <record id="action_bts_contract_project_overview_tree"
+            model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_bts_contract_project_tree"/>
+        <field name="act_window_id"
+               ref="action_bts_contract_project_overview"/>
+    </record>
+
+    <record id="action_bts_contract_project_overview_form"
+            model="ir.actions.act_window.view">
+        <field name="sequence" eval="2"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_bts_contract_project_form"/>
+        <field name="act_window_id"
+               ref="action_bts_contract_project_overview"/>
+    </record>
+
+    <record id="view_dtc_bts_project_contract_tab" model="ir.ui.view">
+        <field name="name">dtc.bts.project.contract.upload.tab</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="dtc_bts_base.view_dtc_bts_project_form"/>
+        <field name="priority" eval="60"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='dtc_bts_project_stations']" position="after">
+                <page name="dtc_bts_station_contracts"
+                      string="Hợp đồng trạm"
+                      groups="dtc_bts_base.group_dtc_bts_ksgs,base.group_system">
+                    <div class="alert alert-info" role="alert">
+                        KSGS mở từng trạm tại menu Danh sách trạm BTS để nhập ngày
+                        nghiệm thu và tải file scan. Tab này dùng để xem trạng thái
+                        hồ sơ và gửi batch ở cấp dự án.
+                    </div>
+                    <div class="mb-3">
+                        <button name="action_send_contract_signature_batch"
+                                string="Gửi BGĐ ký số"
+                                type="object"
+                                class="btn-primary"
+                                icon="fa-paper-plane"
+                                groups="dtc_bts_base.group_dtc_bts_ksgs,base.group_system"/>
+                    </div>
+                    <field name="task_ids"
+                           context="{'default_project_id': id}"
+                           readonly="1">
+                        <tree string="Hồ sơ hợp đồng theo trạm"
+                              editable="bottom"
+                              create="false"
+                              delete="false">
+                            <field name="station_code" readonly="1"/>
+                            <field name="name" string="Trạm BTS" readonly="1"/>
+                            <field name="acceptance_date"
+                                   string="Ngày nghiệm thu/Bàn giao"
+                                   readonly="1"/>
+                            <field name="land_contract_scan"
+                                   string="1. Scan HĐ thuê đất"
+                                   filename="land_contract_scan_filename"
+                                   readonly="1"
+                                   groups="dtc_bts_base.group_dtc_bts_ksgs,base.group_system"/>
+                            <field name="land_contract_scan_filename" column_invisible="True"/>
+                            <field name="negotiation_minutes_scan"
+                                   string="2. Scan BB đàm phán"
+                                   filename="negotiation_minutes_scan_filename"
+                                   readonly="1"
+                                   groups="dtc_bts_base.group_dtc_bts_ksgs,base.group_system"/>
+                            <field name="negotiation_minutes_scan_filename" column_invisible="True"/>
+                            <field name="station_lease_contract_scan"
+                                   string="3. Scan HĐ cho thuê trạm"
+                                   filename="station_lease_contract_scan_filename"
+                                   readonly="1"
+                                   groups="dtc_bts_base.group_dtc_bts_ksgs,base.group_system"/>
+                            <field name="station_lease_contract_scan_filename" column_invisible="True"/>
+                            <field name="land_contract_dossier_state"
+                                   column_invisible="True"/>
+                            <field name="negotiation_dossier_state"
+                                   column_invisible="True"/>
+                            <field name="station_lease_dossier_state"
+                                   column_invisible="True"/>
+                            <button name="action_open_station_contract_dossiers"
+                                    string="Chi tiết hợp đồng"
+                                    type="object"
+                                    icon="fa-file-text-o"
+                                    groups="dtc_bts_base.group_dtc_bts_ksgs,base.group_system"/>
+                            <button name="action_open_station_negotiation_dossiers"
+                                    string="Chi tiết BB đàm phán"
+                                    type="object"
+                                    icon="fa-file-o"
+                                    groups="dtc_bts_base.group_dtc_bts_ksgs,base.group_system"/>
+                            <button name="action_report_land_negotiation_failure"
+                                    string="Báo đàm phán thuê đất thất bại"
+                                    type="object"
+                                    icon="fa-exclamation-triangle"
+                                    class="btn-warning"
+                                    groups="dtc_bts_base.group_dtc_bts_ksgs,base.group_system"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_dtc_bts_station_contract_dossier" model="ir.ui.view">
+        <field name="name">dtc.bts.station.contract.dossier</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="dtc_bts_base.view_dtc_bts_station_form"/>
+        <field name="priority" eval="60"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='dtc_bts_station_info']" position="after">
+                <page name="dtc_bts_station_contract_dossier"
+                      string="Hồ sơ hợp đồng"
+                      groups="dtc_bts_base.group_dtc_bts_ksgs,base.group_system">
+                    <div class="alert alert-info" role="alert">
+                        KSGS nhập hồ sơ trên bản ghi trạm. HĐ cho thuê trạm chỉ
+                        được tải sau khi trạm có ngày nghiệm thu/bàn giao.
+                    </div>
+                    <button name="action_report_land_negotiation_failure"
+                            string="Báo đàm phán thuê đất thất bại"
+                            type="object"
+                            icon="fa-exclamation-triangle"
+                            class="btn-warning"
+                            groups="dtc_bts_base.group_dtc_bts_ksgs,base.group_system"/>
+                    <group>
+                        <group string="Hồ sơ ban đầu">
+                            <field name="land_contract_scan"
+                                   string="1. Scan HĐ thuê đất"
+                                   filename="land_contract_scan_filename"
+                                   readonly="land_contract_dossier_state not in ('missing', 'uploaded')"/>
+                            <field name="land_contract_scan_filename"
+                                   invisible="1"/>
+                            <field name="negotiation_minutes_scan"
+                                   string="2. Scan BB đàm phán"
+                                   filename="negotiation_minutes_scan_filename"
+                                   readonly="negotiation_dossier_state not in ('missing', 'uploaded')"/>
+                            <field name="negotiation_minutes_scan_filename"
+                                   invisible="1"/>
+                            <field name="station_lease_contract_scan"
+                                   string="3. Scan HĐ cho thuê trạm"
+                                   filename="station_lease_contract_scan_filename"
+                                   readonly="not acceptance_date or station_lease_dossier_state not in ('missing', 'uploaded')"/>
+                            <field name="station_lease_contract_scan_filename"
+                                   invisible="1"/>
+                        </group>
+                        <group string="Trạng thái hồ sơ">
+                            <field name="land_contract_dossier_state"
+                                   readonly="1"/>
+                            <field name="negotiation_dossier_state"
+                                   readonly="1"/>
+                            <field name="station_lease_dossier_state"
+                                   readonly="1"/>
+                            <field name="digital_signature_state"
+                                   readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <button name="action_open_station_contract_dossiers"
+                                string="Chi tiết hợp đồng"
+                                type="object"
+                                class="btn-secondary"
+                                icon="fa-file-text-o"/>
+                        <button name="action_open_station_negotiation_dossiers"
+                                string="Chi tiết BB đàm phán"
+                                type="object"
+                                class="btn-secondary"
+                                icon="fa-file-o"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

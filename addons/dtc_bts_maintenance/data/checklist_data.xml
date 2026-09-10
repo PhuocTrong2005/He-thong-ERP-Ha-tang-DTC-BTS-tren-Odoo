@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data noupdate="1">
+
+        <record id="category_bts_macro" model="maintenance.equipment.category">
+            <field name="name">Trạm Macro</field>
+        </record>
+
+        <record id="category_bts_cell" model="maintenance.equipment.category">
+            <field name="name">Trạm Cell</field>
+        </record>
+
+        <record id="checklist_item_macro_01" model="bts.maintenance.checklist.item">
+            <field name="name">Mái tole và lỗ thoát nước sê-nô</field>
+            <field name="category_id" ref="category_bts_macro"/>
+            <field name="frequency_months">3</field>
+            <field name="is_external_required" eval="False"/>
+            <field name="sequence">10</field>
+        </record>
+
+        <record id="checklist_item_macro_02" model="bts.maintenance.checklist.item">
+            <field name="name">Tường/cột ngoài nhà trạm</field>
+            <field name="category_id" ref="category_bts_macro"/>
+            <field name="frequency_months">3</field>
+            <field name="is_external_required" eval="False"/>
+            <field name="sequence">20</field>
+        </record>
+
+        <record id="checklist_item_macro_03" model="bts.maintenance.checklist.item">
+            <field name="name">Tam cấp/cầu thang phòng thiết bị</field>
+            <field name="category_id" ref="category_bts_macro"/>
+            <field name="frequency_months">3</field>
+            <field name="is_external_required" eval="False"/>
+            <field name="sequence">30</field>
+        </record>
+
+        <record id="checklist_item_macro_04" model="bts.maintenance.checklist.item">
+            <field name="name">Cánh cửa phòng thiết bị hoặc phòng máy nổ</field>
+            <field name="category_id" ref="category_bts_macro"/>
+            <field name="frequency_months">3</field>
+            <field name="is_external_required" eval="False"/>
+            <field name="sequence">40</field>
+        </record>
+
+        <record id="checklist_item_macro_05" model="bts.maintenance.checklist.item">
+            <field name="name">Tường trong nhà và trần nhà</field>
+            <field name="category_id" ref="category_bts_macro"/>
+            <field name="frequency_months">3</field>
+            <field name="is_external_required" eval="False"/>
+            <field name="sequence">50</field>
+        </record>
+
+        <record id="checklist_item_macro_06" model="bts.maintenance.checklist.item">
+            <field name="name">Vệ sinh phòng thiết bị và phòng máy nổ</field>
+            <field name="category_id" ref="category_bts_macro"/>
+            <field name="frequency_months">3</field>
+            <field name="is_external_required" eval="False"/>
+            <field name="sequence">60</field>
+        </record>
+
+        <record id="checklist_item_macro_07" model="bts.maintenance.checklist.item">
+            <field name="name">Cột anten và cầu cáp</field>
+            <field name="category_id" ref="category_bts_macro"/>
+            <field name="frequency_months">3</field>
+            <field name="is_external_required" eval="False"/>
+            <field name="sequence">70</field>
+        </record>
+
+        <record id="checklist_item_macro_08" model="bts.maintenance.checklist.item">
+            <field name="name">Dây co căng chỉnh</field>
+            <field name="category_id" ref="category_bts_macro"/>
+            <field name="frequency_months">3</field>
+            <field name="is_external_required" eval="False"/>
+            <field name="sequence">80</field>
+        </record>
+
+        <record id="checklist_item_macro_09" model="bts.maintenance.checklist.item">
+            <field name="name">Dây co trụ anten</field>
+            <field name="category_id" ref="category_bts_macro"/>
+            <field name="frequency_months">3</field>
+            <field name="is_external_required" eval="True"/>
+            <field name="sequence">90</field>
+        </record>
+
+        <record id="checklist_item_macro_10" model="bts.maintenance.checklist.item">
+            <field name="name">Tăng đơ, ma ní, đệm cáp, ốc xiết cáp, móc neo, bu-lông móng cột</field>
+            <field name="category_id" ref="category_bts_macro"/>
+            <field name="frequency_months">6</field>
+            <field name="is_external_required" eval="True"/>
+            <field name="sequence">100</field>
+        </record>
+
+        <record id="checklist_item_macro_11" model="bts.maintenance.checklist.item">
+            <field name="name">Tiếp đất trụ anten và phòng máy</field>
+            <field name="category_id" ref="category_bts_macro"/>
+            <field name="frequency_months">3</field>
+            <field name="is_external_required" eval="False"/>
+            <field name="sequence">110</field>
+        </record>
+
+        <record id="checklist_item_macro_12" model="bts.maintenance.checklist.item">
+            <field name="name">Hệ thống tiếp đất, điện AC/DC, cắt lọc sét, bình chữa cháy, đèn, công tắc</field>
+            <field name="category_id" ref="category_bts_macro"/>
+            <field name="frequency_months">3</field>
+            <field name="is_external_required" eval="False"/>
+            <field name="sequence">120</field>
+        </record>
+
+        <record id="checklist_item_macro_13" model="bts.maintenance.checklist.item">
+            <field name="name">Máy điều hòa không khí</field>
+            <field name="category_id" ref="category_bts_macro"/>
+            <field name="frequency_months">3</field>
+            <field name="is_external_required" eval="True"/>
+            <field name="sequence">130</field>
+        </record>
+
+        <record id="checklist_item_macro_14" model="bts.maintenance.checklist.item">
+            <field name="name">Máy phát điện</field>
+            <field name="category_id" ref="category_bts_macro"/>
+            <field name="frequency_months">1</field>
+            <field name="is_external_required" eval="False"/>
+            <field name="sequence">140</field>
+        </record>
+
+        <record id="checklist_item_macro_15" model="bts.maintenance.checklist.item">
+            <field name="name">Máy nổ</field>
+            <field name="category_id" ref="category_bts_macro"/>
+            <field name="frequency_months">6</field>
+            <field name="is_external_required" eval="True"/>
+            <field name="sequence">150</field>
+        </record>
+
+        <record id="checklist_item_macro_16" model="bts.maintenance.checklist.item">
+            <field name="name">Đường vào trạm</field>
+            <field name="category_id" ref="category_bts_macro"/>
+            <field name="frequency_months">3</field>
+            <field name="is_external_required" eval="False"/>
+            <field name="sequence">160</field>
+        </record>
+
+        <record id="checklist_item_macro_17" model="bts.maintenance.checklist.item">
+            <field name="name">Cây xanh va cáp quang/cáp nguồn</field>
+            <field name="category_id" ref="category_bts_macro"/>
+            <field name="frequency_months">3</field>
+            <field name="is_external_required" eval="False"/>
+            <field name="sequence">170</field>
+        </record>
+
+        <record id="checklist_item_macro_18" model="bts.maintenance.checklist.item">
+            <field name="name">Cây xanh xung quanh nhà trạm và trụ anten</field>
+            <field name="category_id" ref="category_bts_macro"/>
+            <field name="frequency_months">3</field>
+            <field name="is_external_required" eval="False"/>
+            <field name="sequence">180</field>
+        </record>
+
+        <record id="checklist_item_macro_19" model="bts.maintenance.checklist.item">
+            <field name="name">Cỏ mọc và dây leo</field>
+            <field name="category_id" ref="category_bts_macro"/>
+            <field name="frequency_months">3</field>
+            <field name="is_external_required" eval="False"/>
+            <field name="sequence">190</field>
+        </record>
+
+        <record id="checklist_item_macro_20" model="bts.maintenance.checklist.item">
+            <field name="name">Rãnh thoát nước thân trụ anten</field>
+            <field name="category_id" ref="category_bts_macro"/>
+            <field name="frequency_months">3</field>
+            <field name="is_external_required" eval="False"/>
+            <field name="sequence">200</field>
+        </record>
+
+        <record id="checklist_item_macro_21" model="bts.maintenance.checklist.item">
+            <field name="name">Đường dây cấp điện AC</field>
+            <field name="category_id" ref="category_bts_macro"/>
+            <field name="frequency_months">3</field>
+            <field name="is_external_required" eval="False"/>
+            <field name="sequence">210</field>
+        </record>
+
+        <record id="checklist_item_macro_22" model="bts.maintenance.checklist.item">
+            <field name="name">Hệ thống tiếp địa</field>
+            <field name="category_id" ref="category_bts_macro"/>
+            <field name="frequency_months">1</field>
+            <field name="is_external_required" eval="False"/>
+            <field name="sequence">220</field>
+        </record>
+
+        <record id="checklist_item_macro_23" model="bts.maintenance.checklist.item">
+            <field name="name">Nguồn AC/DC và UPS</field>
+            <field name="category_id" ref="category_bts_macro"/>
+            <field name="frequency_months">1</field>
+            <field name="is_external_required" eval="False"/>
+            <field name="sequence">230</field>
+        </record>
+
+        <record id="checklist_item_macro_24" model="bts.maintenance.checklist.item">
+            <field name="name">Tủ BTS và môi trường trạm</field>
+            <field name="category_id" ref="category_bts_macro"/>
+            <field name="frequency_months">1</field>
+            <field name="is_external_required" eval="False"/>
+            <field name="sequence">240</field>
+        </record>
+
+        <record id="checklist_item_cell_01" model="bts.maintenance.checklist.item">
+            <field name="name">Vỏ tủ outdoor cabinet</field>
+            <field name="category_id" ref="category_bts_cell"/>
+            <field name="frequency_months">3</field>
+            <field name="is_external_required" eval="False"/>
+            <field name="sequence">10</field>
+        </record>
+
+        <record id="checklist_item_cell_02" model="bts.maintenance.checklist.item">
+            <field name="name">Gioăng cao su, ron chống nước và chống bụi</field>
+            <field name="category_id" ref="category_bts_cell"/>
+            <field name="frequency_months">3</field>
+            <field name="is_external_required" eval="False"/>
+            <field name="sequence">20</field>
+        </record>
+
+        <record id="checklist_item_cell_03" model="bts.maintenance.checklist.item">
+            <field name="name">Khóa, bản lề tủ outdoor cabinet</field>
+            <field name="category_id" ref="category_bts_cell"/>
+            <field name="frequency_months">3</field>
+            <field name="is_external_required" eval="False"/>
+            <field name="sequence">30</field>
+        </record>
+
+        <record id="checklist_item_cell_04" model="bts.maintenance.checklist.item">
+            <field name="name">Vệ sinh tủ outdoor cabinet</field>
+            <field name="category_id" ref="category_bts_cell"/>
+            <field name="frequency_months">3</field>
+            <field name="is_external_required" eval="False"/>
+            <field name="sequence">40</field>
+        </record>
+
+        <record id="checklist_item_cell_05" model="bts.maintenance.checklist.item">
+            <field name="name">Cột hoặc giá đỡ anten</field>
+            <field name="category_id" ref="category_bts_cell"/>
+            <field name="frequency_months">3</field>
+            <field name="is_external_required" eval="False"/>
+            <field name="sequence">50</field>
+        </record>
+
+        <record id="checklist_item_cell_06" model="bts.maintenance.checklist.item">
+            <field name="name">Bu-lông ốc xiết móc treo</field>
+            <field name="category_id" ref="category_bts_cell"/>
+            <field name="frequency_months">6</field>
+            <field name="is_external_required" eval="True"/>
+            <field name="sequence">60</field>
+        </record>
+
+        <record id="checklist_item_cell_07" model="bts.maintenance.checklist.item">
+            <field name="name">Tiếp đất cột/giá đỡ</field>
+            <field name="category_id" ref="category_bts_cell"/>
+            <field name="frequency_months">3</field>
+            <field name="is_external_required" eval="False"/>
+            <field name="sequence">70</field>
+        </record>
+
+        <record id="checklist_item_cell_08" model="bts.maintenance.checklist.item">
+            <field name="name">Hệ thống tiếp đất, điện AC/DC, cắt lọc sét</field>
+            <field name="category_id" ref="category_bts_cell"/>
+            <field name="frequency_months">3</field>
+            <field name="is_external_required" eval="False"/>
+            <field name="sequence">80</field>
+        </record>
+
+        <record id="checklist_item_cell_09" model="bts.maintenance.checklist.item">
+            <field name="name">Bình ắc-quy hoặc UPS dự phòng</field>
+            <field name="category_id" ref="category_bts_cell"/>
+            <field name="frequency_months">3</field>
+            <field name="is_external_required" eval="False"/>
+            <field name="sequence">90</field>
+        </record>
+
+        <record id="checklist_item_cell_10" model="bts.maintenance.checklist.item">
+            <field name="name">Quạt làm mát hoặc thông gió tủ</field>
+            <field name="category_id" ref="category_bts_cell"/>
+            <field name="frequency_months">3</field>
+            <field name="is_external_required" eval="False"/>
+            <field name="sequence">100</field>
+        </record>
+
+        <record id="checklist_item_cell_11" model="bts.maintenance.checklist.item">
+            <field name="name">Công tắc, cầu dao, hệ thống chống sét</field>
+            <field name="category_id" ref="category_bts_cell"/>
+            <field name="frequency_months">3</field>
+            <field name="is_external_required" eval="False"/>
+            <field name="sequence">110</field>
+        </record>
+
+        <record id="checklist_item_cell_12" model="bts.maintenance.checklist.item">
+            <field name="name">Đường vào vị trí lắp đặt</field>
+            <field name="category_id" ref="category_bts_cell"/>
+            <field name="frequency_months">3</field>
+            <field name="is_external_required" eval="False"/>
+            <field name="sequence">120</field>
+        </record>
+
+        <record id="checklist_item_cell_13" model="bts.maintenance.checklist.item">
+            <field name="name">Cây xanh va dây leo</field>
+            <field name="category_id" ref="category_bts_cell"/>
+            <field name="frequency_months">3</field>
+            <field name="is_external_required" eval="False"/>
+            <field name="sequence">130</field>
+        </record>
+
+        <record id="checklist_item_cell_14" model="bts.maintenance.checklist.item">
+            <field name="name">Đường dây cấp điện AC</field>
+            <field name="category_id" ref="category_bts_cell"/>
+            <field name="frequency_months">3</field>
+            <field name="is_external_required" eval="False"/>
+            <field name="sequence">140</field>
+        </record>
+
+    </data>
+
+</odoo>

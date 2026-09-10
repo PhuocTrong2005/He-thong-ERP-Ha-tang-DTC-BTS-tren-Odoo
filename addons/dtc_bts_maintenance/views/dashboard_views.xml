@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="bts_maintenance_dashboard_main" model="bts.maintenance.dashboard">
+        <field name="name">Dashboard bảo trì trạm BTS</field>
+    </record>
+
+    <record id="view_bts_maintenance_dashboard_form" model="ir.ui.view">
+        <field name="name">bts.maintenance.dashboard.form</field>
+        <field name="model">bts.maintenance.dashboard</field>
+        <field name="arch" type="xml">
+            <form
+                string="Dashboard bảo trì"
+                create="false"
+                edit="false"
+                delete="false">
+                <field name="dashboard_html" nolabel="1" readonly="1"/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bts_maintenance_dashboard" model="ir.actions.act_window">
+        <field name="name">Dashboard bảo trì</field>
+        <field name="res_model">bts.maintenance.dashboard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_bts_maintenance_dashboard_form"/>
+        <field name="res_id" ref="bts_maintenance_dashboard_main"/>
+        <field name="target">current</field>
+        <field name="context">{'create': False, 'edit': False, 'delete': False}</field>
+    </record>
+
+</odoo>

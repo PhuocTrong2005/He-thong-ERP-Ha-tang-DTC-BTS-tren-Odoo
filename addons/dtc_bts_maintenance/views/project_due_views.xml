@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_bts_due_project_tree" model="ir.ui.view">
+        <field name="name">project.project.bts.maintenance.list.tree</field>
+        <field name="model">project.project</field>
+        <field name="arch" type="xml">
+            <tree string="Danh sách dự án"
+                  create="false"
+                  delete="false"
+                  default_order="maintenance_next_due_date asc, id asc">
+                <field name="project_code"/>
+                <field name="name"/>
+                <field name="station_type"/>
+                <field name="maintenance_equipment_count"/>
+                <field name="maintenance_next_due_date"/>
+                <field name="maintenance_open_batch_count"/>
+                <field name="maintenance_handover_state"/>
+                <button name="action_create_maintenance_batch"
+                        string="Tạo phiếu bảo trì dự án"
+                        type="object"
+                        class="btn-primary"
+                        invisible="maintenance_equipment_count == 0"/>
+                <button name="action_open_maintenance_equipment_bulk_wizard"
+                        string="Tạo hồ sơ bảo trì cho dự án"
+                        type="object"
+                        class="btn-primary"
+                        invisible="maintenance_equipment_count != 0"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_bts_due_project_form" model="ir.ui.view">
+        <field name="name">project.project.bts.maintenance.list.form</field>
+        <field name="model">project.project</field>
+        <field name="arch" type="xml">
+            <form string="Dự án bảo trì" create="false" delete="false">
+                <header>
+                    <button name="action_create_maintenance_batch"
+                            string="Tạo phiếu bảo trì dự án"
+                            type="object"
+                            class="btn-primary"
+                            invisible="maintenance_equipment_count == 0"/>
+                    <button name="action_open_maintenance_equipment_bulk_wizard"
+                            string="Tạo hồ sơ bảo trì cho dự án"
+                            type="object"
+                            class="btn-primary"
+                            invisible="maintenance_equipment_count != 0"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="project_code" readonly="1"/>
+                            <field name="station_type" readonly="1"/>
+                            <field name="province" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="project_manager_id" readonly="1"/>
+                            <field name="maintenance_handover_state" readonly="1"/>
+                            <field name="maintenance_equipment_count" readonly="1"/>
+                            <field name="maintenance_next_due_date" readonly="1"/>
+                            <field name="maintenance_open_batch_count" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bts_maintenance_project_search" model="ir.ui.view">
+        <field name="name">project.project.bts.maintenance.list.search</field>
+        <field name="model">project.project</field>
+        <field name="arch" type="xml">
+            <search string="Tìm dự án bảo trì">
+                <field name="project_code"/>
+                <field name="name"/>
+                <field name="project_manager_id"/>
+                <filter name="due"
+                        string="Đến hạn bảo trì"
+                        domain="[('maintenance_next_due_date', '&lt;=', context_today())]"/>
+                <filter name="not_due"
+                        string="Chưa đến hạn"
+                        domain="['|', ('maintenance_next_due_date', '=', False), ('maintenance_next_due_date', '&gt;', context_today())]"/>
+                <filter name="accepted"
+                        string="Đã tiếp nhận bảo trì"
+                        domain="[('maintenance_handover_state', '=', 'accepted')]"/>
+                <group expand="0" string="Nhóm theo">
+                    <filter name="group_station_type"
+                            string="Loại trạm"
+                            context="{'group_by': 'station_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bts_due_maintenance_project" model="ir.actions.act_window">
+        <field name="name">Danh sách dự án</field>
+        <field name="res_model">project.project</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_bts_due_project_tree"/>
+        <field name="search_view_id" ref="view_bts_maintenance_project_search"/>
+        <field name="domain">[('maintenance_handover_state', '=', 'accepted')]</field>
+        <field name="context">{'create': False}</field>
+    </record>
+
+    <record id="action_bts_due_maintenance_project_form" model="ir.actions.act_window.view">
+        <field name="sequence" eval="2"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_bts_due_project_form"/>
+        <field name="act_window_id" ref="action_bts_due_maintenance_project"/>
+    </record>
+
+    <record id="action_bts_due_maintenance_project_tree"
+            model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_bts_due_project_tree"/>
+        <field name="act_window_id" ref="action_bts_due_maintenance_project"/>
+    </record>
+
+</odoo>

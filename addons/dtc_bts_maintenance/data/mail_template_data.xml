@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="mail_template_project_completed" model="mail.template">
+            <field name="name">Dự án - KSGS báo hoàn thành</field>
+            <field name="model_id" ref="project.model_project_project"/>
+            <field name="subject">[DTC BTS] Dự án đã hoàn thành, đề nghị thực hiện bàn giao - {{ object.project_code }}</field>
+            <field name="email_from">{{ user.email_formatted }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="font-family:Arial,sans-serif;color:#1f2937;max-width:760px;margin:0 auto;background:#ffffff;border:1px solid #bfdbfe;border-top:8px solid #0b5ed7;border-radius:10px;padding:26px">
+                    <p style="margin:0 0 8px;color:#0b5ed7;font-size:13px;font-weight:bold;letter-spacing:.6px">HỆ THỐNG QUẢN LÝ VẬN HÀNH BTS</p>
+                    <h1 style="margin:0 0 24px;color:#0b5ed7;font-size:26px;line-height:1.3;font-weight:700">Dự án đã hoàn thành, chờ bàn giao</h1>
+                    <p>Kính gửi <strong><t t-out="ctx.get('recipient_name') or 'Anh/Chị'"/></strong>,</p>
+                    <p>Hệ thống trân trọng thông báo KSGS đã xác nhận hoàn thành dự án dưới đây:</p>
+                    <table style="border-collapse:collapse;width:100%;margin:18px 0">
+                        <tr><td style="width:32%;padding:9px;background:#f3f6f8;border:1px solid #d8e0e5"><strong>Dự án</strong></td><td style="padding:9px;border:1px solid #d8e0e5"><t t-out="object.project_code"/> - <t t-out="object.display_name"/></td></tr>
+                        <tr><td style="padding:9px;background:#f3f6f8;border:1px solid #d8e0e5"><strong>KSGS phụ trách</strong></td><td style="padding:9px;border:1px solid #d8e0e5"><t t-out="object.project_manager_id.display_name"/></td></tr>
+                        <tr><td style="padding:9px;background:#f3f6f8;border:1px solid #d8e0e5"><strong>Ngày nghiệm thu</strong></td><td style="padding:9px;border:1px solid #d8e0e5"><t t-out="object.acceptance_date or 'Chưa cập nhật'"/></td></tr>
+                        <tr><td style="padding:9px;background:#f3f6f8;border:1px solid #d8e0e5"><strong>Số lượng trạm</strong></td><td style="padding:9px;border:1px solid #d8e0e5"><t t-out="object.station_count"/></td></tr>
+                        <tr><td style="padding:9px;background:#f3f6f8;border:1px solid #d8e0e5"><strong>Thời điểm cập nhật</strong></td><td style="padding:9px;border:1px solid #d8e0e5"><t t-out="format_datetime(object.write_date)"/></td></tr>
+                    </table>
+                    <p>Đề nghị Anh/Chị kiểm tra hồ sơ hoàn công và thực hiện bàn giao dự án cho Tổ hạ tầng.</p>
+                    <p t-if="ctx.get('record_url')"><a t-att-href="ctx.get('record_url')">Mở dự án trong Odoo</a></p>
+                </div>
+            </field>
+        </record>
+
+        <record id="mail_template_project_handover" model="mail.template">
+            <field name="name">Dự án - Bàn giao cho Tổ hạ tầng</field>
+            <field name="model_id" ref="project.model_project_project"/>
+            <field name="subject">[DTC BTS] Đề nghị tiếp nhận bàn giao dự án - {{ object.project_code }} - {{ object.display_name }}</field>
+            <field name="email_from">{{ user.email_formatted }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="font-family:Arial,sans-serif;color:#1f2937;max-width:760px;margin:0 auto;background:#ffffff;border:1px solid #bfdbfe;border-top:8px solid #0b5ed7;border-radius:10px;padding:26px">
+                    <h1 style="margin:0 0 24px;color:#0b5ed7;font-size:26px;line-height:1.3;font-weight:700">Đề nghị tiếp nhận bàn giao dự án</h1>
+                    <p>Kính gửi <strong><t t-out="ctx.get('recipient_name') or 'Anh/Chị'"/></strong>,</p>
+                    <p>Giám đốc Xí nghiệp đã chuyển hồ sơ dự án để Tổ hạ tầng tiếp nhận quản lý vận hành.</p>
+                    <p><strong>Dự án:</strong> <t t-out="object.project_code"/> - <t t-out="object.display_name"/><br/><strong>Người bàn giao:</strong> <t t-out="object.maintenance_handover_by_id.display_name"/><br/><strong>Ngày bàn giao:</strong> <t t-out="object.maintenance_handover_date"/><br/><strong>KSGS phụ trách:</strong> <t t-out="object.project_manager_id.display_name"/><br/><strong>Số lượng trạm:</strong> <t t-out="object.station_count"/></p>
+                    <p t-if="ctx.get('accept_url')"><a t-att-href="ctx.get('accept_url')" style="background:#198754;color:#fff;padding:10px 16px;text-decoration:none;border-radius:4px">Tiếp nhận bàn giao</a></p>
+                    <p>Đề nghị Anh/Chị kiểm tra đầy đủ hồ sơ trước khi xác nhận. Thao tác yêu cầu đăng nhập và sẽ chuyển dự án sang trạng thái hoàn tất bàn giao.</p>
+                </div>
+            </field>
+        </record>
+
+        <record id="mail_template_project_handover_accepted" model="mail.template">
+            <field name="name">Dự án - Hoàn tất bàn giao</field>
+            <field name="model_id" ref="project.model_project_project"/>
+            <field name="subject">[DTC BTS] Xác nhận hoàn tất bàn giao dự án - {{ object.project_code }} - {{ object.display_name }}</field>
+            <field name="email_from">{{ user.email_formatted }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="font-family:Arial,sans-serif;color:#1f2937;max-width:760px;margin:0 auto;background:#ffffff;border:1px solid #bfdbfe;border-top:8px solid #0b5ed7;border-radius:10px;padding:26px">
+                    <h1 style="margin:0 0 24px;color:#0b5ed7;font-size:26px;line-height:1.3;font-weight:700">Hoàn tất bàn giao dự án</h1>
+                    <p>Kính gửi <strong><t t-out="ctx.get('recipient_name') or 'Anh/Chị'"/></strong>,</p>
+                    <p>Hệ thống trân trọng xác nhận Tổ hạ tầng đã hoàn tất tiếp nhận dự án.</p>
+                    <p><strong>Dự án:</strong> <t t-out="object.project_code"/> - <t t-out="object.display_name"/><br/><strong>Người bàn giao:</strong> <t t-out="object.maintenance_handover_by_id.display_name"/><br/><strong>Người tiếp nhận:</strong> <t t-out="object.maintenance_accepted_by_id.display_name"/><br/><strong>Ngày tiếp nhận:</strong> <t t-out="object.maintenance_accepted_date"/><br/><strong>Trạng thái:</strong> Hoàn tất bàn giao</p>
+                    <p>Dự án và các trạm đủ điều kiện đã được chuyển sang phạm vi quản lý vận hành, bảo trì.</p>
+                    <p t-if="ctx.get('record_url')"><a t-att-href="ctx.get('record_url')">Mở dự án trong Odoo</a></p>
+                </div>
+            </field>
+        </record>
+
+        <record id="mail_template_maintenance_due_digest" model="mail.template">
+            <field name="name">Bảo trì - Danh sách dự án đến hạn</field>
+            <field name="model_id" ref="maintenance.model_maintenance_equipment"/>
+            <field name="subject">[DTC BTS] Danh sách dự án đến hạn bảo trì định kỳ</field>
+            <field name="email_from">{{ user.email_formatted }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="font-family:Arial,sans-serif;color:#1f2937;max-width:760px;margin:0 auto;background:#ffffff;border:1px solid #bfdbfe;border-top:8px solid #0b5ed7;border-radius:10px;padding:26px">
+                    <h1 style="margin:0 0 24px;color:#0b5ed7;font-size:26px;line-height:1.3;font-weight:700">Danh sách dự án đến hạn bảo trì</h1>
+                    <p>Kính gửi <strong><t t-out="ctx.get('recipient_name') or 'Anh/Chị'"/></strong>,</p>
+                    <p>Hệ thống kính gửi danh sách dự án và trạm đã đến lịch bảo trì định kỳ để Anh/Chị chủ động tổ chức thực hiện:</p>
+                    <table style="border-collapse:collapse;width:100%">
+                        <thead><tr>
+                            <th style="border:1px solid #ddd;padding:6px">Dự án</th>
+                            <th style="border:1px solid #ddd;padding:6px">Ngày bảo trì</th>
+                            <th style="border:1px solid #ddd;padding:6px">Danh sách trạm</th>
+                        </tr></thead>
+                        <tbody>
+                            <tr t-foreach="ctx.get('digest_projects') or []" t-as="project">
+                                <td style="border:1px solid #ddd;padding:6px"><t t-out="project.get('name')"/> (<t t-out="project.get('code')"/>)</td>
+                                <td style="border:1px solid #ddd;padding:6px"><t t-out="project.get('due_date')"/></td>
+                                <td style="border:1px solid #ddd;padding:6px"><t t-out="project.get('stations')"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p t-if="ctx.get('record_url')"><a t-att-href="ctx.get('record_url')">Truy cập danh sách hồ sơ bảo trì</a></p>
+                    <p>Đề nghị Tổ hạ tầng rà soát phạm vi công việc, lập phiếu bảo trì và cập nhật kết quả trên hệ thống đúng thời hạn.</p>
+                </div>
+            </field>
+        </record>
+        <record id="mail_template_maintenance_due_reminder" model="mail.template">
+            <field name="name">Bảo trì - Nhắc lịch đến hạn</field>
+            <field name="model_id" ref="maintenance.model_maintenance_equipment"/>
+            <field name="subject">[DTC BTS] Nhắc lịch bảo trì - {{ object.station_id.display_name }} - {{ object.next_action_date }}</field>
+            <field name="email_from">{{ user.email_formatted }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="font-family:Arial,sans-serif;color:#1f2937;max-width:760px;margin:0 auto;background:#ffffff;border:1px solid #bfdbfe;border-top:8px solid #0b5ed7;border-radius:10px;padding:26px">
+                    <h1 style="margin:0 0 24px;color:#0b5ed7;font-size:26px;line-height:1.3;font-weight:700">Nhắc lịch bảo trì sắp đến hạn</h1>
+                    <p>Kính gửi <strong><t t-out="ctx.get('recipient_name') or 'Anh/Chị'"/></strong>,</p>
+                    <p>Hệ thống trân trọng thông báo thiết bị/trạm dưới đây sắp đến hạn bảo trì định kỳ.</p>
+                    <p><strong>Thiết bị / Trạm:</strong> <t t-out="object.display_name"/> / <t t-out="object.station_id.display_name"/></p>
+                    <p><strong>Dự án:</strong> <t t-out="object.bts_project_id.display_name"/></p>
+                    <p><strong>Ngày đến hạn:</strong> <t t-out="object.next_action_date"/></p>
+                    <p><strong>Loại bảo trì:</strong> <t t-out="ctx.get('maintenance_type')"/></p>
+                    <p><strong>Người phụ trách:</strong> <t t-out="ctx.get('responsible_name') or ctx.get('recipient_name')"/></p>
+                    <p><strong>SLA nhắc trước:</strong> 3 ngày</p>
+                    <p t-if="ctx.get('record_url')"><a t-att-href="ctx.get('record_url')">Mở hồ sơ thiết bị trong Odoo</a></p>
+                    <p>Đề nghị Anh/Chị lập hoặc cập nhật phiếu bảo trì, chuẩn bị nguồn lực và thực hiện đúng thời hạn quy định.</p>
+                </div>
+            </field>
+        </record>
+    </data>
+</odoo>

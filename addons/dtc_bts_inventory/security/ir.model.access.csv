@@ -1,0 +1,39 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_bts_material_request_user,bts.material.request KSGS,model_bts_material_request,dtc_bts_base.group_dtc_bts_ksgs,1,1,1,0
+access_bts_material_request_enterprise_director,bts.material.request enterprise director,model_bts_material_request,dtc_bts_base.group_bts_enterprise_director,1,0,0,0
+access_material_request_infrastructure,bts.material.request infrastructure,model_bts_material_request,dtc_bts_base.group_dtc_bts_infrastructure,1,1,1,0
+access_material_request_pkh,bts.material.request PKH,model_bts_material_request,dtc_bts_base.group_dtc_bts_pkh,1,1,0,0
+access_material_request_warehouse,bts.material.request warehouse,model_bts_material_request,dtc_bts_base.group_dtc_bts_warehouse,1,1,0,0
+access_material_request_manager,bts.material.request manager,model_bts_material_request,dtc_bts_base.group_dtc_bts_manager,1,1,1,0
+access_material_request_admin,bts.material.request admin,model_bts_material_request,dtc_bts_base.group_dtc_bts_admin,0,0,0,0
+access_bts_material_request_line_user,bts.material.request.line KSGS,model_bts_material_request_line,dtc_bts_base.group_dtc_bts_ksgs,1,1,1,1
+access_bts_material_request_line_enterprise_director,bts.material.request.line enterprise director,model_bts_material_request_line,dtc_bts_base.group_bts_enterprise_director,1,0,0,0
+access_material_request_line_infrastructure,bts.material.request.line infrastructure,model_bts_material_request_line,dtc_bts_base.group_dtc_bts_infrastructure,1,1,1,1
+access_material_request_line_pkh,bts.material.request.line PKH,model_bts_material_request_line,dtc_bts_base.group_dtc_bts_pkh,1,1,0,0
+access_material_request_line_warehouse,bts.material.request.line warehouse,model_bts_material_request_line,dtc_bts_base.group_dtc_bts_warehouse,1,0,0,0
+access_material_request_line_manager,bts.material.request.line manager,model_bts_material_request_line,dtc_bts_base.group_dtc_bts_manager,1,1,1,0
+access_material_request_line_admin,bts.material.request.line admin,model_bts_material_request_line,dtc_bts_base.group_dtc_bts_admin,0,0,0,0
+access_dtc_bts_inventory_dashboard_user,dtc.bts.inventory.dashboard KSGS,model_dtc_bts_inventory_dashboard,dtc_bts_base.group_dtc_bts_ksgs,0,0,0,0
+access_inventory_dashboard_infrastructure,dtc.bts.inventory.dashboard infrastructure,model_dtc_bts_inventory_dashboard,dtc_bts_base.group_dtc_bts_infrastructure,0,0,0,0
+access_inventory_dashboard_pkh,dtc.bts.inventory.dashboard PKH,model_dtc_bts_inventory_dashboard,dtc_bts_base.group_dtc_bts_pkh,1,0,0,0
+access_inventory_dashboard_warehouse,dtc.bts.inventory.dashboard warehouse,model_dtc_bts_inventory_dashboard,dtc_bts_base.group_dtc_bts_warehouse,1,0,0,0
+access_inventory_dashboard_manager,dtc.bts.inventory.dashboard manager,model_dtc_bts_inventory_dashboard,dtc_bts_base.group_dtc_bts_manager,1,0,0,0
+access_inventory_dashboard_admin,dtc.bts.inventory.dashboard admin,model_dtc_bts_inventory_dashboard,dtc_bts_base.group_dtc_bts_admin,0,0,0,0
+access_material_notification_ksgs,bts.material.notification KSGS,model_bts_material_notification,dtc_bts_base.group_dtc_bts_ksgs,1,1,0,0
+access_material_notification_infrastructure,bts.material.notification infrastructure,model_bts_material_notification,dtc_bts_base.group_dtc_bts_infrastructure,1,1,0,0
+access_material_notification_pkh,bts.material.notification PKH,model_bts_material_notification,dtc_bts_base.group_dtc_bts_pkh,1,1,1,0
+access_material_notification_warehouse,bts.material.notification warehouse,model_bts_material_notification,dtc_bts_base.group_dtc_bts_warehouse,1,1,1,0
+access_purchase_order_warehouse_read,purchase.order warehouse read,purchase.model_purchase_order,dtc_bts_base.group_dtc_bts_warehouse,1,0,0,0
+access_purchase_order_line_warehouse_read,purchase.order.line warehouse read,purchase.model_purchase_order_line,dtc_bts_base.group_dtc_bts_warehouse,1,0,0,0
+access_material_notification_manager,bts.material.notification manager,model_bts_material_notification,dtc_bts_base.group_dtc_bts_manager,1,1,1,0
+access_material_notification_admin,bts.material.notification admin,model_bts_material_notification,dtc_bts_base.group_dtc_bts_admin,0,0,0,0
+access_material_request_system,bts.material.request system,model_bts_material_request,base.group_system,1,1,1,1
+access_material_request_line_system,bts.material.request.line system,model_bts_material_request_line,base.group_system,1,1,1,1
+access_inventory_dashboard_system,dtc.bts.inventory.dashboard system,model_dtc_bts_inventory_dashboard,base.group_system,1,1,1,1
+access_material_notification_system,bts.material.notification system,model_bts_material_notification,base.group_system,1,1,1,1
+access_purchase_order_system,purchase.order system,purchase.model_purchase_order,base.group_system,1,1,1,1
+access_purchase_order_line_system,purchase.order.line system,purchase.model_purchase_order_line,base.group_system,1,1,1,1
+access_stock_picking_system,stock.picking system,stock.model_stock_picking,base.group_system,1,1,1,1
+access_stock_move_system,stock.move system,stock.model_stock_move,base.group_system,1,1,1,1
+access_product_template_system,product.template system,product.model_product_template,base.group_system,1,1,1,1
+access_product_product_system,product.product system,product.model_product_product,base.group_system,1,1,1,1

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="user_dtc_ksgs_demo" model="res.users">
+            <field name="name">Kỹ sư giám sát Demo</field>
+            <field name="login">vydtt4947@ut.edu.vn</field>
+            <field name="email">vydtt4947@ut.edu.vn</field>
+            <field name="groups_id" eval="[(6, 0, [ref('base.group_user'), ref('dtc_bts_base.group_dtc_bts_ksgs')])]"/>
+        </record>
+
+        <record id="user_dtc_ksgs_an_demo" model="res.users">
+            <field name="name">KSGS Nguyễn Văn An Demo</field>
+            <field name="login">ksgs.an.demo</field>
+            <field name="email">ksgs.an.demo@example.invalid</field>
+            <field name="groups_id" eval="[(6, 0, [ref('base.group_user'), ref('dtc_bts_base.group_dtc_bts_ksgs')])]"/>
+        </record>
+
+        <record id="user_dtc_ksgs_binh_demo" model="res.users">
+            <field name="name">KSGS Trần Minh Bình Demo</field>
+            <field name="login">ksgs.binh.demo</field>
+            <field name="email">ksgs.binh.demo@example.invalid</field>
+            <field name="groups_id" eval="[(6, 0, [ref('base.group_user'), ref('dtc_bts_base.group_dtc_bts_ksgs')])]"/>
+        </record>
+
+        <record id="user_dtc_ksgs_cuong_demo" model="res.users">
+            <field name="name">KSGS Lê Hoàng Cường Demo</field>
+            <field name="login">ksgs.cuong.demo</field>
+            <field name="email">ksgs.cuong.demo@example.invalid</field>
+            <field name="groups_id" eval="[(6, 0, [ref('base.group_user'), ref('dtc_bts_base.group_dtc_bts_ksgs')])]"/>
+        </record>
+
+        <record id="user_dtc_ksgs_dung_demo" model="res.users">
+            <field name="name">KSGS Phạm Thu Dung Demo</field>
+            <field name="login">ksgs.dung.demo</field>
+            <field name="email">ksgs.dung.demo@example.invalid</field>
+            <field name="groups_id" eval="[(6, 0, [ref('base.group_user'), ref('dtc_bts_base.group_dtc_bts_ksgs')])]"/>
+        </record>
+
+        <record id="user_bts_enterprise_director_demo" model="res.users">
+            <field name="name">Giám đốc Xí nghiệp Demo</field>
+            <field name="login">enterprise.director.demo</field>
+            <field name="email">dthuyvy456@gmail.com</field>
+            <field name="groups_id" eval="[(6, 0, [ref('base.group_user'), ref('dtc_bts_base.group_bts_enterprise_director')])]"/>
+        </record>
+
+        <record id="user_dtc_pkh_demo" model="res.users">
+            <field name="name">Trưởng phòng Kế hoạch Demo</field>
+            <field name="login">tpkh.dtc.demo@gmail.com</field>
+            <field name="email">tpkh.dtc.demo@gmail.com</field>
+            <field name="groups_id" eval="[(6, 0, [ref('base.group_user'), ref('dtc_bts_base.group_dtc_bts_pkh')])]"/>
+        </record>
+
+        <record id="user_dtc_warehouse_demo" model="res.users">
+            <field name="name">Thủ kho Demo</field>
+            <field name="login">warehouse.demo</field>
+            <field name="email">tk.dtc.demo@gmail.com</field>
+            <field name="groups_id" eval="[(6, 0, [ref('base.group_user'), ref('dtc_bts_base.group_dtc_bts_warehouse')])]"/>
+        </record>
+
+        <record id="user_dtc_infrastructure_demo" model="res.users">
+            <field name="name">Tổ quản lý hạ tầng Demo</field>
+            <field name="login">infrastructure.demo</field>
+            <field name="email">qltht.dtc.demo@gmail.com</field>
+            <field name="groups_id" eval="[(6, 0, [ref('base.group_user'), ref('dtc_bts_base.group_dtc_bts_infrastructure')])]"/>
+        </record>
+
+        <record id="user_dtc_manager_demo" model="res.users">
+            <field name="name">Quản lý nghiệp vụ Demo</field>
+            <field name="login">manager.demo</field>
+            <field name="email">manager.dtc.demo@gmail.com</field>
+            <field name="active" eval="False"/>
+            <field name="groups_id" eval="[(6, 0, [ref('base.group_user')])]"/>
+        </record>
+
+        <record id="user_dtc_admin_demo" model="res.users">
+            <field name="name">Quản trị viên DTC BTS Demo</field>
+            <field name="login">admin.dtc.demo@gmail.com</field>
+            <field name="email">admin.dtc.demo@gmail.com</field>
+            <field name="groups_id" eval="[(6, 0, [ref('base.group_user'), ref('dtc_bts_base.group_dtc_bts_admin')])]"/>
+        </record>
+
+    </data>
+</odoo>

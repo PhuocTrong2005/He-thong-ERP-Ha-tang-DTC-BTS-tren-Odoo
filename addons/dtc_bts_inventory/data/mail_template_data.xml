@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="mail_template_material_request_submitted" model="mail.template">
+            <field name="name">Vật tư - Yêu cầu chờ xử lý</field>
+            <field name="model_id" ref="model_bts_material_request"/>
+            <field name="subject">[DTC BTS] Yêu cầu phê duyệt cấp vật tư - {{ object.name }} - {{ object.bts_project_id.display_name }}</field>
+            <field name="email_from">{{ user.email_formatted }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="font-family:Arial,sans-serif;color:#1f2937;max-width:760px;margin:0 auto;background:#ffffff;border:1px solid #bfdbfe;border-top:8px solid #0b5ed7;border-radius:10px;padding:26px">
+                    <p style="margin:0 0 8px;color:#0b5ed7;font-size:13px;font-weight:bold;letter-spacing:.6px">HỆ THỐNG QUẢN LÝ VẬT TƯ BTS</p>
+                    <h1 style="margin:0 0 24px;color:#0b5ed7;font-size:26px;line-height:1.3;font-weight:700">Yêu cầu phê duyệt cấp vật tư</h1>
+                    <p>Kính gửi <strong><t t-out="ctx.get('recipient_name') or 'Anh/Chị'"/></strong>,</p>
+                    <p>Hệ thống kính chuyển Anh/Chị yêu cầu cấp vật tư mới để xem xét và phê duyệt.</p>
+                    <table style="border-collapse:collapse;width:100%;margin:18px 0">
+                        <tr><td style="width:32%;padding:9px;background:#f3f6f8;border:1px solid #d8e0e5"><strong>Mã yêu cầu</strong></td><td style="padding:9px;border:1px solid #d8e0e5"><t t-out="object.name"/></td></tr>
+                        <tr><td style="padding:9px;background:#f3f6f8;border:1px solid #d8e0e5"><strong>Dự án</strong></td><td style="padding:9px;border:1px solid #d8e0e5"><t t-out="object.bts_project_code"/> - <t t-out="object.bts_project_id.display_name"/></td></tr>
+                        <tr><td style="padding:9px;background:#f3f6f8;border:1px solid #d8e0e5"><strong>Người đề nghị</strong></td><td style="padding:9px;border:1px solid #d8e0e5"><t t-out="object.request_user_id.display_name"/></td></tr>
+                        <tr><td style="padding:9px;background:#f3f6f8;border:1px solid #d8e0e5"><strong>Ngày yêu cầu</strong></td><td style="padding:9px;border:1px solid #d8e0e5"><t t-out="object.request_date"/></td></tr>
+                        <tr><td style="padding:9px;background:#f3f6f8;border:1px solid #d8e0e5"><strong>Số loại vật tư</strong></td><td style="padding:9px;border:1px solid #d8e0e5"><t t-out="len(object.line_ids)"/></td></tr>
+                        <tr t-if="object.note"><td style="padding:9px;background:#f3f6f8;border:1px solid #d8e0e5"><strong>Ghi chú</strong></td><td style="padding:9px;border:1px solid #d8e0e5"><t t-out="object.note"/></td></tr>
+                    </table>
+                    <p style="margin:20px 0">
+                        <a t-if="ctx.get('approve_url')" t-att-href="ctx.get('approve_url')" style="background:#198754;color:#fff;padding:10px 16px;text-decoration:none;border-radius:4px">Duyệt</a>
+                        <a t-if="ctx.get('reject_url')" t-att-href="ctx.get('reject_url')" style="background:#b42318;color:#fff;padding:10px 16px;margin-left:8px;text-decoration:none;border-radius:4px">Từ chối</a>
+                        <a t-if="ctx.get('postpone_url')" t-att-href="ctx.get('postpone_url')" style="background:#6c757d;color:#fff;padding:10px 16px;margin-left:8px;text-decoration:none;border-radius:4px">Tạm hoãn</a>
+                    </p>
+                    <p>Đề nghị Anh/Chị kiểm tra thông tin trước khi quyết định. Thao tác từ chối hoặc tạm hoãn bắt buộc ghi rõ lý do.</p>
+                </div>
+            </field>
+        </record>
+
+        <record id="mail_template_material_request_approved" model="mail.template">
+            <field name="name">Vật tư - Yêu cầu được duyệt</field>
+            <field name="model_id" ref="model_bts_material_request"/>
+            <field name="subject">[DTC BTS] Yêu cầu vật tư đã được phê duyệt - {{ object.name }} - {{ object.bts_project_id.display_name }}</field>
+            <field name="email_from">{{ user.email_formatted }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="font-family:Arial,sans-serif;color:#1f2937;max-width:760px;margin:0 auto;background:#ffffff;border:1px solid #bfdbfe;border-top:8px solid #0b5ed7;border-radius:10px;padding:26px">
+                    <h1 style="margin:0 0 24px;color:#0b5ed7;font-size:26px;line-height:1.3;font-weight:700">Yêu cầu vật tư đã được duyệt</h1>
+                    <p>Kính gửi <strong><t t-out="ctx.get('recipient_name') or 'Anh/Chị'"/></strong>,</p>
+                    <p>Hệ thống trân trọng thông báo yêu cầu cấp vật tư đã được Trưởng phòng Kế hoạch phê duyệt.</p>
+                    <p><strong>Mã yêu cầu:</strong> <t t-out="object.name"/><br/><strong>Dự án:</strong> <t t-out="object.bts_project_code"/> - <t t-out="object.bts_project_id.display_name"/><br/><strong>Người đề nghị:</strong> <t t-out="object.request_user_id.display_name"/><br/><strong>Ngày yêu cầu:</strong> <t t-out="object.request_date"/><br/><strong>Số loại vật tư:</strong> <t t-out="len(object.line_ids)"/><br/><strong>Thời điểm phê duyệt:</strong> <t t-out="format_datetime(object.write_date)"/></p>
+                    <p>Đề nghị Anh/Chị tiếp tục theo dõi việc mua hàng, nhập kho và cấp phát theo quy trình.</p>
+                    <p t-if="ctx.get('record_url')"><a t-att-href="ctx.get('record_url')">Mở yêu cầu trong Odoo</a></p>
+                </div>
+            </field>
+        </record>
+
+        <record id="mail_template_material_request_postponed" model="mail.template">
+            <field name="name">Vật tư - Yêu cầu tạm hoãn</field>
+            <field name="model_id" ref="model_bts_material_request"/>
+            <field name="subject">[DTC BTS] Thông báo tạm hoãn yêu cầu vật tư - {{ object.name }} - {{ object.bts_project_id.display_name }}</field>
+            <field name="email_from">{{ user.email_formatted }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="font-family:Arial,sans-serif;color:#1f2937;max-width:760px;margin:0 auto;background:#ffffff;border:1px solid #bfdbfe;border-top:8px solid #0b5ed7;border-radius:10px;padding:26px">
+                    <h1 style="margin:0 0 24px;color:#0b5ed7;font-size:26px;line-height:1.3;font-weight:700">Yêu cầu vật tư tạm hoãn</h1>
+                    <p>Kính gửi <strong><t t-out="ctx.get('recipient_name') or 'Anh/Chị'"/></strong>,</p>
+                    <p>Hệ thống trân trọng thông báo yêu cầu cấp vật tư đã được tạm hoãn.</p>
+                    <p><strong>Mã yêu cầu:</strong> <t t-out="object.name"/><br/><strong>Dự án:</strong> <t t-out="object.bts_project_code"/> - <t t-out="object.bts_project_id.display_name"/><br/><strong>Người đề nghị:</strong> <t t-out="object.request_user_id.display_name"/><br/><strong>Thời điểm xử lý:</strong> <t t-out="format_datetime(object.write_date)"/></p>
+                    <p style="padding:12px;background:#fff7e6;border-left:4px solid #b8892d"><strong>Lý do tạm hoãn:</strong> <t t-out="object.postponement_reason"/></p>
+                    <p>Đề nghị Anh/Chị rà soát nội dung và bổ sung thông tin cần thiết trước khi tiếp tục xử lý.</p>
+                    <p t-if="ctx.get('record_url')"><a t-att-href="ctx.get('record_url')">Mở yêu cầu trong Odoo</a></p>
+                </div>
+            </field>
+        </record>
+
+        <record id="mail_template_material_request_issued" model="mail.template">
+            <field name="name">Vật tư - Xuất kho hoàn tất</field>
+            <field name="model_id" ref="model_bts_material_request"/>
+            <field name="subject">[DTC BTS] Xuất kho hoàn tất - Yêu cầu khóa PO - {{ object.name }}</field>
+            <field name="email_from">{{ user.email_formatted }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="font-family:Arial,sans-serif;color:#1f2937;max-width:760px;margin:0 auto;background:#ffffff;border:1px solid #bfdbfe;border-top:8px solid #0b5ed7;border-radius:10px;padding:26px">
+                    <h1 style="margin:0 0 24px;color:#0b5ed7;font-size:26px;line-height:1.3;font-weight:700">Cấp phát vật tư hoàn tất</h1>
+                    <p>Kính gửi <strong><t t-out="ctx.get('recipient_name') or 'Anh/Chị'"/></strong>,</p>
+                    <p>Hệ thống trân trọng thông báo việc xuất kho vật tư đã hoàn tất.</p>
+                    <p><strong>Mã yêu cầu:</strong> <t t-out="object.name"/><br/><strong>Dự án:</strong> <t t-out="object.bts_project_code"/> - <t t-out="object.bts_project_id.display_name"/><br/><strong>Người nhận vật tư:</strong> <t t-out="object.request_user_id.display_name"/><br/><strong>Số phiếu kho:</strong> <t t-out="object.picking_count"/><br/><strong>Thời điểm hoàn tất:</strong> <t t-out="format_datetime(object.write_date)"/></p>
+                    <p>Đề nghị Anh/Chị mở yêu cầu và thực hiện <strong>Khóa PO</strong> để kết thúc đầy đủ luồng mua hàng và kho.</p>
+                    <p t-if="ctx.get('record_url')"><a t-att-href="ctx.get('record_url')">Mở yêu cầu và khóa PO</a></p>
+                </div>
+            </field>
+        </record>
+        <record id="mail_template_material_request_rejected" model="mail.template">
+            <field name="name">Vật tư - Yêu cầu bị từ chối</field>
+            <field name="model_id" ref="model_bts_material_request"/>
+            <field name="subject">[DTC BTS] Yêu cầu vật tư bị từ chối - {{ object.name }} - {{ object.bts_project_id.display_name }}</field>
+            <field name="email_from">{{ user.email_formatted }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="font-family:Arial,sans-serif;color:#1f2937;max-width:760px;margin:0 auto;background:#ffffff;border:1px solid #bfdbfe;border-top:8px solid #0b5ed7;border-radius:10px;padding:26px">
+                    <h1 style="margin:0 0 24px;color:#0b5ed7;font-size:26px;line-height:1.3;font-weight:700">Yêu cầu vật tư bị từ chối</h1>
+                    <p>Kính gửi <strong><t t-out="ctx.get('recipient_name') or 'Anh/Chị'"/></strong>,</p>
+                    <p>Hệ thống trân trọng thông báo yêu cầu cấp vật tư dưới đây đã bị từ chối.</p>
+                    <p><strong>Mã yêu cầu:</strong> <t t-out="object.name"/></p>
+                    <p><strong>Dự án:</strong> <t t-out="object.bts_project_id.display_name"/></p>
+                    <p><strong>Người yêu cầu:</strong> <t t-out="object.request_user_id.display_name"/></p>
+                    <p><strong>Người từ chối / Thời gian:</strong> <t t-out="user.display_name"/> / <t t-out="format_datetime(object.write_date)"/></p>
+                    <p style="padding:12px;background:#fff1f1;border-left:4px solid #a63d40"><strong>Lý do từ chối:</strong> <t t-out="object.rejection_reason"/></p>
+                    <p><strong>Trạng thái:</strong> <t t-out="ctx.get('state_label')"/></p>
+                    <p t-if="ctx.get('record_url')"><a t-att-href="ctx.get('record_url')">Mở yêu cầu vật tư trong Odoo</a></p>
+                </div>
+            </field>
+        </record>
+
+        <record id="mail_template_material_ready_for_issue" model="mail.template">
+            <field name="name">Vật tư - Sẵn sàng cấp phát</field>
+            <field name="model_id" ref="model_bts_material_request"/>
+            <field name="subject">[DTC BTS] Vật tư đã sẵn sàng cấp phát - {{ object.name }} - {{ object.bts_project_id.display_name }}</field>
+            <field name="email_from">{{ user.email_formatted }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="font-family:Arial,sans-serif;color:#1f2937;max-width:760px;margin:0 auto;background:#ffffff;border:1px solid #bfdbfe;border-top:8px solid #0b5ed7;border-radius:10px;padding:26px">
+                    <h1 style="margin:0 0 24px;color:#0b5ed7;font-size:26px;line-height:1.3;font-weight:700">Vật tư đã sẵn sàng cấp phát</h1>
+                    <p>Kính gửi <strong><t t-out="ctx.get('recipient_name') or 'Anh/Chị'"/></strong>,</p>
+                    <p>Hệ thống trân trọng thông báo vật tư của yêu cầu dưới đây đã sẵn sàng cấp phát.</p>
+                    <p><strong>Mã yêu cầu:</strong> <t t-out="object.name"/></p>
+                    <p><strong>Dự án:</strong> <t t-out="object.bts_project_id.display_name"/></p>
+                    <p><strong>Kho cấp phát:</strong> <t t-out="ctx.get('warehouse_name')"/></p>
+                    <p><strong>Thời gian sẵn sàng:</strong> <t t-out="format_datetime(object.write_date)"/></p>
+                    <p><strong>Người nhận:</strong> <t t-out="object.request_user_id.display_name"/></p>
+                    <table style="border-collapse: collapse; width: 100%; max-width: 720px;">
+                        <thead><tr><th style="border:1px solid #ddd;padding:6px">Vật tư</th><th style="border:1px solid #ddd;padding:6px">Số lượng</th><th style="border:1px solid #ddd;padding:6px">Đơn vị</th></tr></thead>
+                        <tbody><tr t-foreach="ctx.get('material_lines') or []" t-as="line">
+                            <td style="border:1px solid #ddd;padding:6px"><t t-out="line.get('product')"/></td>
+                            <td style="border:1px solid #ddd;padding:6px"><t t-out="line.get('quantity')"/></td>
+                            <td style="border:1px solid #ddd;padding:6px"><t t-out="line.get('uom')"/></td>
+                        </tr></tbody>
+                    </table>
+                    <p t-if="ctx.get('record_url')"><a t-att-href="ctx.get('record_url')">Mở yêu cầu vật tư trong Odoo</a></p>
+                    <p>Vui lòng phối hợp với kho để nhận vật tư theo quy trình cấp phát hiện tại.</p>
+                </div>
+            </field>
+        </record>
+        <record id="mail_template_purchase_order_confirmed_warehouse" model="mail.template">
+            <field name="name">Vật tư - Đơn mua đã đặt, chờ nhập kho</field>
+            <field name="model_id" ref="purchase.model_purchase_order"/>
+            <field name="subject">[DTC BTS] Đơn hàng đã đặt, chờ nhập kho - {{ object.name }} - {{ object.bts_project_id.display_name }}</field>
+            <field name="email_from">{{ user.email_formatted }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="font-family:Arial,sans-serif;color:#1f2937;max-width:760px;margin:0 auto;background:#ffffff;border:1px solid #bfdbfe;border-top:8px solid #0b5ed7;border-radius:10px;padding:26px">
+                    <h1 style="margin:0 0 24px;color:#0b5ed7;font-size:26px;line-height:1.3;font-weight:700">Đơn hàng đã đặt, chờ nhập kho</h1>
+                    <p>Kính gửi <strong><t t-out="ctx.get('recipient_name') or 'Anh/Chị Thủ kho'"/></strong>,</p>
+                    <p>Đơn mua vật tư cho dự án đã được Trưởng phòng Kế hoạch xác nhận. Vui lòng theo dõi hàng về và xác nhận phiếu nhập kho.</p>
+                    <p>
+                        <strong>Đơn mua:</strong> <t t-out="object.name"/><br/>
+                        <strong>Yêu cầu vật tư:</strong> <t t-out="ctx.get('material_request_name')"/><br/>
+                        <strong>Dự án:</strong> <t t-out="ctx.get('project_code')"/> - <t t-out="object.bts_project_id.display_name"/><br/>
+                        <strong>Nhà cung cấp:</strong> <t t-out="object.partner_id.display_name"/><br/>
+                        <strong>Ngày hàng về dự kiến:</strong> <t t-out="object.date_planned"/>
+                    </p>
+                    <p t-if="ctx.get('record_url')"><a t-att-href="ctx.get('record_url')">Mở đơn mua và phiếu nhập kho</a></p>
+                </div>
+            </field>
+        </record>
+    </data>
+</odoo>

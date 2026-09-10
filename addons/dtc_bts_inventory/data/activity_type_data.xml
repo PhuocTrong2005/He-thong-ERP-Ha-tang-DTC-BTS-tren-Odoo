@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo noupdate="1">
+    <record id="mail_activity_type_material_request_rejected" model="mail.activity.type">
+        <field name="name">BTS – Yêu cầu vật tư bị từ chối</field>
+        <field name="summary">Yêu cầu vật tư bị từ chối</field>
+        <field name="res_model">bts.material.request</field>
+        <field name="icon">fa-undo</field>
+        <field name="delay_count">2</field>
+        <field name="delay_unit">days</field>
+    </record>
+</odoo>

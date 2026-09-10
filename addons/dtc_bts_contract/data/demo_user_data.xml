@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="user_dtc_contract_director_demo" model="res.users">
+            <field name="name">Ban Giám đốc Hợp đồng Demo</field>
+            <field name="login">vyhocthcb@gmail.com</field>
+            <field name="email">vyhocthcb@gmail.com</field>
+            <field name="groups_id"
+                   eval="[(6, 0, [ref('base.group_user'), ref('dtc_bts_contract.group_dtc_bts_contract_director')])]"/>
+        </record>
+    </data>
+</odoo>

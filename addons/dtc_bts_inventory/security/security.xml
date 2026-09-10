@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Map DTC business roles to the minimum core Purchase/Stock roles. -->
+    <record id="dtc_bts_base.group_dtc_bts_pkh" model="res.groups">
+        <field name="implied_ids" eval="[(4, ref('purchase.group_purchase_user'))]"/>
+    </record>
+
+    <record id="dtc_bts_base.group_dtc_bts_warehouse" model="res.groups">
+        <field name="implied_ids" eval="[
+            (3, ref('purchase.group_purchase_user')),
+            (4, ref('stock.group_stock_user'))
+        ]"/>
+    </record>
+
+    <record id="dtc_bts_base.group_dtc_bts_manager" model="res.groups">
+        <field name="implied_ids" eval="[
+            (4, ref('purchase.group_purchase_manager')),
+            (4, ref('stock.group_stock_manager'))
+        ]"/>
+    </record>
+
+    <!-- KSGS and Infrastructure only see requests related to their work. -->
+    <record id="rule_material_request_ksgs" model="ir.rule">
+        <field name="name">Yêu cầu vật tư: KSGS liên quan</field>
+        <field name="model_id" ref="model_bts_material_request"/>
+        <field name="groups" eval="[(4, ref('dtc_bts_base.group_dtc_bts_ksgs'))]"/>
+        <field name="domain_force">[('bts_project_id.project_manager_id', '=', user.id)]</field>
+    </record>
+
+    <record id="rule_material_request_infrastructure" model="ir.rule">
+        <field name="name">Yêu cầu vật tư: Tổ hạ tầng liên quan</field>
+        <field name="model_id" ref="model_bts_material_request"/>
+        <field name="groups" eval="[(4, ref('dtc_bts_base.group_dtc_bts_infrastructure'))]"/>
+        <field name="domain_force">[
+            '|',
+            ('request_user_id', '=', user.id),
+            ('bts_project_id.project_manager_id', '=', user.id)
+        ]</field>
+    </record>
+
+    <record id="rule_material_request_line_ksgs" model="ir.rule">
+        <field name="name">Dòng yêu cầu vật tư: KSGS liên quan</field>
+        <field name="model_id" ref="model_bts_material_request_line"/>
+        <field name="groups" eval="[(4, ref('dtc_bts_base.group_dtc_bts_ksgs'))]"/>
+        <field name="domain_force">[('request_id.bts_project_id.project_manager_id', '=', user.id)]</field>
+    </record>
+
+    <record id="rule_material_request_enterprise_director" model="ir.rule">
+        <field name="name">Yêu cầu vật tư: phạm vi Giám đốc Xí nghiệp</field>
+        <field name="model_id" ref="model_bts_material_request"/>
+        <field name="groups" eval="[(4, ref('dtc_bts_base.group_bts_enterprise_director'))]"/>
+        <field name="domain_force">[('bts_project_id.enterprise_director_id', '=', user.id)]</field>
+    </record>
+
+    <record id="rule_material_request_line_enterprise_director" model="ir.rule">
+        <field name="name">Dòng yêu cầu vật tư: phạm vi Giám đốc Xí nghiệp</field>
+        <field name="model_id" ref="model_bts_material_request_line"/>
+        <field name="groups" eval="[(4, ref('dtc_bts_base.group_bts_enterprise_director'))]"/>
+        <field name="domain_force">[('request_id.bts_project_id.enterprise_director_id', '=', user.id)]</field>
+    </record>
+
+    <record id="rule_material_request_line_infrastructure" model="ir.rule">
+        <field name="name">Dòng yêu cầu vật tư: Tổ hạ tầng liên quan</field>
+        <field name="model_id" ref="model_bts_material_request_line"/>
+        <field name="groups" eval="[(4, ref('dtc_bts_base.group_dtc_bts_infrastructure'))]"/>
+        <field name="domain_force">[
+            '|',
+            ('request_id.request_user_id', '=', user.id),
+            ('request_id.bts_project_id.project_manager_id', '=', user.id)
+        ]</field>
+    </record>
+
+    <record id="rule_material_notification_ksgs" model="ir.rule">
+        <field name="name">Thông báo vật tư: KSGS cá nhân</field>
+        <field name="model_id" ref="model_bts_material_notification"/>
+        <field name="groups" eval="[(4, ref('dtc_bts_base.group_dtc_bts_ksgs'))]"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+    </record>
+
+    <record id="rule_material_notification_infrastructure" model="ir.rule">
+        <field name="name">Thông báo vật tư: Tổ hạ tầng cá nhân</field>
+        <field name="model_id" ref="model_bts_material_notification"/>
+        <field name="groups" eval="[(4, ref('dtc_bts_base.group_dtc_bts_infrastructure'))]"/>
+        <field name="domain_force">[('user_id', '=', user.id)]</field>
+    </record>
+
+    <!-- Group rules are OR-combined: this keeps System Administrators
+         unrestricted even if they also carry a limited business role. -->
+    <record id="rule_material_request_system_all" model="ir.rule">
+        <field name="name">Yêu cầu vật tư: System Administrator toàn quyền</field>
+        <field name="model_id" ref="model_bts_material_request"/>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <record id="rule_material_request_line_system_all" model="ir.rule">
+        <field name="name">Dòng yêu cầu vật tư: System Administrator toàn quyền</field>
+        <field name="model_id" ref="model_bts_material_request_line"/>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <record id="rule_material_notification_system_all" model="ir.rule">
+        <field name="name">Thông báo vật tư: System Administrator toàn quyền</field>
+        <field name="model_id" ref="model_bts_material_notification"/>
+        <field name="groups" eval="[(4, ref('base.group_system'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+</odoo>

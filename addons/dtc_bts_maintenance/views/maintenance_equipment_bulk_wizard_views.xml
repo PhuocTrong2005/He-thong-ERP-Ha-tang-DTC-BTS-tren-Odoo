@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_bts_maintenance_equipment_bulk_wizard_form" model="ir.ui.view">
+        <field name="name">bts.maintenance.equipment.bulk.wizard.form</field>
+        <field name="model">bts.maintenance.equipment.bulk.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Tạo hồ sơ bảo trì cho dự án">
+                <group>
+                    <field
+                        name="project_id"
+                        domain="[('maintenance_handover_state', '=', 'accepted')]"
+                        options="{'no_create': True}"/>
+                    <field name="effective_date"
+                           string="Ngày nghiệm thu dự án"
+                           readonly="1"/>
+                    <field name="technician_user_id" options="{'no_create': True}"/>
+                    <field name="category_id" readonly="project_id" options="{'no_create': True}"/>
+                    <field name="only_handed_over"/>
+                </group>
+                <footer>
+                    <button
+                        name="action_create_equipment"
+                        string="Tạo hồ sơ"
+                        type="object"
+                        class="btn-primary"/>
+                    <button string="Hủy" special="cancel" class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_project_form_bts_maintenance_handover" model="ir.ui.view">
+        <field name="name">project.project.form.bts.maintenance.handover</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="project.edit_project"/>
+        <field name="mode">extension</field>
+        <field name="priority" eval="60"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button
+                    name="action_handover_to_maintenance"
+                    string="Bàn giao sang bảo trì"
+                    type="object"
+                    class="btn-primary"
+                    groups="dtc_bts_base.group_bts_enterprise_director,base.group_system"
+                    invisible="not id or state != 'done' or maintenance_handover_state != 'none'"/>
+                <field name="maintenance_handover_state"
+                       widget="statusbar"
+                       readonly="1"
+                       statusbar_visible="none,pending,accepted"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!--
+        Isolate the Project Management action without changing dtc_bts_base.
+        Its form stays on the standard project form inheritance chain, where
+        dtc_bts_base supplies BTS fields and this module adds only handover.
+    -->
+    <record id="dtc_bts_base.action_dtc_bts_project"
+            model="ir.actions.act_window">
+        <field name="view_ids" eval="[
+            (5, 0, 0),
+            (0, 0, {
+                'sequence': 1,
+                'view_mode': 'tree',
+                'view_id': ref('dtc_bts_base.view_dtc_bts_project_tree'),
+            }),
+            (0, 0, {
+                'sequence': 2,
+                'view_mode': 'form',
+                'view_id': ref('project.edit_project'),
+            }),
+            (0, 0, {
+                'sequence': 3,
+                'view_mode': 'kanban',
+                'view_id': ref('dtc_bts_base.view_dtc_bts_project_kanban'),
+            }),
+        ]"/>
+    </record>
+
+    <record id="view_bts_maintenance_handover_project_tree" model="ir.ui.view">
+        <field name="name">project.project.bts.maintenance.handover.tree</field>
+        <field name="model">project.project</field>
+        <field name="arch" type="xml">
+            <tree string="Tiếp nhận bàn giao bảo trì" create="false" delete="false">
+                <field name="project_code"/>
+                <field name="name"/>
+                <field name="station_type"/>
+                <field name="telecom_partner_id"/>
+                <field name="province"/>
+                <field name="station_count"/>
+                <field name="maintenance_handover_date"/>
+                <field name="maintenance_handover_by_id"/>
+                <field name="maintenance_handover_state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_bts_maintenance_handover_project_form" model="ir.ui.view">
+        <field name="name">project.project.bts.maintenance.handover.form</field>
+        <field name="model">project.project</field>
+        <field name="arch" type="xml">
+            <form string="Tiếp nhận bàn giao bảo trì"
+                  create="false"
+                  delete="false">
+                <header>
+                    <button name="action_accept_maintenance_handover"
+                            string="Tiếp nhận bàn giao"
+                            type="object"
+                            class="btn-primary"
+                            groups="dtc_bts_base.group_dtc_bts_infrastructure,base.group_system"
+                            invisible="maintenance_handover_state != 'pending'"/>
+                    <button name="action_open_maintenance_equipment_bulk_wizard"
+                            string="Tạo hồ sơ bảo trì cho dự án"
+                            type="object"
+                            class="btn-primary"
+                            groups="dtc_bts_base.group_dtc_bts_infrastructure,base.group_system"
+                            invisible="maintenance_handover_state != 'accepted' or maintenance_equipment_count != 0"/>
+                    <field name="maintenance_handover_state"
+                           widget="statusbar"
+                           statusbar_visible="pending,accepted"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Thông tin dự án">
+                            <field name="project_code" readonly="1"/>
+                            <field name="station_type" readonly="1"/>
+                            <field name="province" readonly="1"/>
+                            <field name="station_count" readonly="1"/>
+                        </group>
+                        <group string="Thông tin bàn giao">
+                            <field name="maintenance_handover_date" readonly="1"/>
+                            <field name="maintenance_handover_by_id" readonly="1"/>
+                            <field name="maintenance_accepted_date" readonly="1"/>
+                            <field name="maintenance_accepted_by_id" readonly="1"/>
+                            <field name="maintenance_equipment_count" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_bts_maintenance_handover_project" model="ir.actions.act_window">
+        <field name="name">Tiếp nhận bàn giao</field>
+        <field name="res_model">project.project</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_bts_maintenance_handover_project_tree"/>
+        <field name="domain">[('maintenance_handover_state', '=', 'pending')]</field>
+        <field name="context">{'create': False}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Không có dự án nào đang chờ tiếp nhận bảo trì.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_bts_maintenance_handover_project_tree"
+            model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_bts_maintenance_handover_project_tree"/>
+        <field name="act_window_id" ref="action_bts_maintenance_handover_project"/>
+    </record>
+
+    <record id="action_bts_maintenance_handover_project_form"
+            model="ir.actions.act_window.view">
+        <field name="sequence" eval="2"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_bts_maintenance_handover_project_form"/>
+        <field name="act_window_id" ref="action_bts_maintenance_handover_project"/>
+    </record>
+
+</odoo>

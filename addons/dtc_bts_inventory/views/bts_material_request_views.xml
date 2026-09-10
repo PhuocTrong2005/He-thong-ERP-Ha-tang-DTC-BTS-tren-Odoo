@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_bts_material_request_tree" model="ir.ui.view">
+        <field name="name">bts.material.request.tree</field>
+        <field name="model">bts.material.request</field>
+        <field name="arch" type="xml">
+            <tree string="Yêu cầu cấp phát vật tư">
+                <field name="name"/>
+                <field name="bts_project_code"/>
+                <field name="request_user_id"/>
+                <field name="request_date"/>
+                <field name="state" widget="badge"
+                    decoration-info="state == 'draft'"
+                    decoration-warning="state in ('requested', 'approved')"
+                    decoration-success="state == 'issued'"
+                    decoration-muted="state == 'cancelled'"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_bts_material_request_form" model="ir.ui.view">
+        <field name="name">bts.material.request.form</field>
+        <field name="model">bts.material.request</field>
+        <field name="arch" type="xml">
+            <form string="Yêu cầu cấp phát vật tư">
+                <header>
+                    <button name="action_submit" string="Gửi yêu cầu" type="object"
+                        invisible="state != 'draft'" class="btn-primary"
+                        groups="dtc_bts_base.group_dtc_bts_ksgs,dtc_bts_base.group_dtc_bts_infrastructure,base.group_system"/>
+                    <button name="action_approve" string="Duyệt" type="object"
+                        invisible="state != 'requested'" class="btn-primary"
+                        groups="dtc_bts_base.group_dtc_bts_pkh,base.group_system"/>
+                    <button name="action_reject" string="Từ chối" type="object"
+                        invisible="state != 'requested'"
+                        groups="dtc_bts_base.group_dtc_bts_pkh,base.group_system"/>
+                    <button name="action_postpone" string="Tạm hoãn" type="object"
+                        invisible="state != 'requested'"
+                        groups="dtc_bts_base.group_dtc_bts_pkh,base.group_system"/>
+                    <button name="action_create_purchase_order" string="Tạo đơn mua hàng" type="object"
+                        invisible="state not in ('waiting_purchase', 'purchasing', 'partially_delivered')"
+                        groups="dtc_bts_base.group_dtc_bts_pkh,base.group_system"/>
+                    <button name="action_create_delivery" string="Tạo phiếu xuất" type="object"
+                        invisible="state not in ('ready', 'partially_delivered')" class="btn-primary"
+                        groups="dtc_bts_base.group_dtc_bts_warehouse,base.group_system"/>
+                    <button name="action_cancel" string="Hủy" type="object"
+                        invisible="state in ('issued', 'cancelled')"
+                        groups="dtc_bts_base.group_dtc_bts_ksgs,dtc_bts_base.group_dtc_bts_pkh,dtc_bts_base.group_dtc_bts_warehouse,dtc_bts_base.group_dtc_bts_infrastructure,base.group_system"/>
+                    <button name="action_set_draft" string="Đặt lại dự thảo" type="object"
+                        invisible="state not in ('postponed', 'rejected', 'cancelled')"
+                        groups="dtc_bts_base.group_dtc_bts_ksgs,dtc_bts_base.group_dtc_bts_infrastructure,base.group_system"/>
+                    <button name="action_lock_purchase_orders" string="Khóa PO"
+                        type="object" class="btn-primary"
+                        invisible="state != 'issued' or purchase_order_count == 0"
+                        groups="dtc_bts_base.group_dtc_bts_pkh,base.group_system"/>
+                    <field name="state" widget="statusbar"
+                        statusbar_visible="draft,requested,waiting_purchase,purchasing,ready,partially_delivered,issued"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_pickings" type="object"
+                            class="oe_stat_button" icon="fa-truck"
+                            invisible="picking_count == 0"
+                            groups="dtc_bts_base.group_dtc_bts_warehouse,base.group_system">
+                            <field name="picking_count" widget="statinfo" string="Phiếu xuất"/>
+                        </button>
+                        <button name="action_view_purchase_orders" type="object"
+                            class="oe_stat_button" icon="fa-shopping-cart"
+                            invisible="purchase_order_count == 0"
+                            groups="dtc_bts_base.group_dtc_bts_pkh,dtc_bts_base.group_dtc_bts_warehouse,base.group_system">
+                            <field name="purchase_order_count" widget="statinfo" string="Đơn mua"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="bts_project_id" options="{'no_create': True}" readonly="state != 'draft'"/>
+                            <field name="bts_project_code"/>
+                            <field name="source" readonly="state != 'draft'"/>
+                        </group>
+                        <group>
+                            <field name="request_user_id" readonly="state != 'draft'"/>
+                            <field name="request_date" readonly="state != 'draft'"/>
+                            <field name="vendor_id"
+                                readonly="state not in ('requested', 'waiting_purchase', 'purchasing', 'partially_delivered')"
+                                groups="dtc_bts_base.group_dtc_bts_pkh,base.group_system"/>
+                        </group>
+                    </group>
+                    <group string="Xử lý của Trưởng phòng Kế hoạch"
+                        invisible="state not in ('requested', 'postponed', 'rejected')">
+                        <field name="rejection_reason"
+                            readonly="state == 'rejected'"
+                            groups="dtc_bts_base.group_dtc_bts_pkh,base.group_system"/>
+                        <field name="rejection_reason" readonly="1"
+                            groups="dtc_bts_base.group_dtc_bts_ksgs,dtc_bts_base.group_dtc_bts_warehouse,dtc_bts_base.group_dtc_bts_infrastructure"/>
+                        <field name="postponement_reason"
+                            readonly="state == 'postponed'"
+                            groups="dtc_bts_base.group_dtc_bts_pkh,base.group_system"/>
+                        <field name="postponement_reason" readonly="1"
+                            groups="dtc_bts_base.group_dtc_bts_ksgs,dtc_bts_base.group_dtc_bts_warehouse,dtc_bts_base.group_dtc_bts_infrastructure"/>
+                    </group>
+                    <notebook>
+                        <page string="Dòng vật tư">
+                            <field name="line_ids" readonly="state not in ('draft', 'requested')">
+                                <tree editable="bottom">
+                                    <field name="state" column_invisible="True"/>
+                                    <field name="product_id" readonly="state != 'draft'"/>
+                                    <field name="product_uom_id" readonly="state != 'draft'"/>
+                                    <field name="quantity_requested" readonly="state != 'draft'"/>
+                                    <field name="quantity_approved"
+                                        readonly="state != 'requested'"
+                                        groups="dtc_bts_base.group_dtc_bts_pkh,base.group_system"/>
+                                    <field name="quantity_approved" readonly="1"
+                                        groups="dtc_bts_base.group_dtc_bts_ksgs,dtc_bts_base.group_dtc_bts_warehouse,dtc_bts_base.group_dtc_bts_infrastructure"/>
+                                    <field name="quantity_available" readonly="1"/>
+                                    <field name="quantity_to_purchase" readonly="1"/>
+                                    <field name="quantity_issued"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Ghi chú">
+                            <field name="note" readonly="state == 'cancelled'"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bts_material_request_search" model="ir.ui.view">
+        <field name="name">bts.material.request.search</field>
+        <field name="model">bts.material.request</field>
+        <field name="arch" type="xml">
+            <search string="Yêu cầu cấp phát vật tư">
+                <field name="name"/>
+                <field name="bts_project_id"/>
+                <field name="request_user_id"/>
+                <filter string="Dự thảo" name="filter_draft" domain="[('state', '=', 'draft')]"/>
+                <filter string="Chờ duyệt" name="filter_requested" domain="[('state', '=', 'requested')]"/>
+                <filter string="Chờ mua hàng" name="filter_waiting_purchase" domain="[('state', '=', 'waiting_purchase')]"/>
+                <filter string="Đang mua hàng" name="filter_purchasing" domain="[('state', '=', 'purchasing')]"/>
+                <filter string="Sẵn sàng cấp phát" name="filter_ready" domain="[('state', '=', 'ready')]"/>
+                <filter string="Chờ xử lý" name="filter_pending" domain="[('state', 'in', ('requested', 'waiting_purchase', 'purchasing', 'ready', 'partially_delivered'))]"/>
+                <filter string="Đã cấp phát" name="filter_issued" domain="[('state', '=', 'issued')]"/>
+                <group expand="0" string="Nhóm theo">
+                    <filter string="Dự án" name="group_project" context="{'group_by': 'bts_project_id'}"/>
+                    <filter string="Trạng thái" name="group_state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bts_material_request" model="ir.actions.act_window">
+        <field name="name">Yêu cầu cấp phát vật tư</field>
+        <field name="res_model">bts.material.request</field>
+        <field name="view_mode">tree,form</field>
+        <field name="search_view_id" ref="view_bts_material_request_search"/>
+        <field name="context">{'search_default_filter_pending': 0}</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_dtc_bts_maintenance_equipment_tree" model="ir.ui.view">
+        <field name="name">dtc.bts.maintenance.equipment.tree</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="arch" type="xml">
+            <tree string="Hồ sơ thiết bị bảo trì trạm BTS">
+                <field name="name"/>
+                <field name="station_code"/>
+                <field name="station_id"/>
+                <field name="bts_project_id"/>
+                <field name="station_type"/>
+                <field name="category_id"/>
+                <field name="technician_user_id"/>
+                <field name="effective_date" string="Ngày nghiệm thu dự án"/>
+                <field name="next_action_date"/>
+                <field name="last_repair_date"/>
+                <field name="bts_state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_dtc_bts_maintenance_equipment_form" model="ir.ui.view">
+        <field name="name">dtc.bts.maintenance.equipment.form</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="arch" type="xml">
+            <form string="Hồ sơ thiết bị bảo trì trạm BTS">
+                <sheet>
+                    <field name="company_id" invisible="1"/>
+                    <field name="active" invisible="1"/>
+                    <widget name="web_ribbon" title="Đã lưu trữ" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="Mã trạm - Tên trạm"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Thông tin trạm BTS">
+                            <field
+                                name="station_id"
+                                required="1"
+                                domain="[('station_state', '=', 'operating')]"
+                                options="{'no_create': True}"/>
+                            <field name="station_code" readonly="1"/>
+                            <field name="bts_project_id" readonly="1"/>
+                            <field name="station_type" readonly="1"/>
+                            <field name="bts_state"/>
+                        </group>
+                        <group string="Thông tin bảo trì">
+                            <field name="category_id"/>
+                            <field name="technician_user_id" domain="[('share', '=', False)]"/>
+                            <field name="effective_date"
+                                   string="Ngày nghiệm thu dự án"
+                                   readonly="1"/>
+                            <field name="next_action_date"/>
+                            <field name="last_repair_date" readonly="1"/>
+                            <field name="last_repair_note" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_dtc_bts_maintenance_equipment_search" model="ir.ui.view">
+        <field name="name">dtc.bts.maintenance.equipment.search</field>
+        <field name="model">maintenance.equipment</field>
+        <field name="arch" type="xml">
+            <search string="Tìm hồ sơ thiết bị bảo trì trạm BTS">
+                <field name="name"/>
+                <field name="station_code"/>
+                <field name="station_id"/>
+                <field name="bts_project_id"/>
+                <field name="station_type"/>
+                <field name="category_id"/>
+                <field name="technician_user_id"/>
+                <filter
+                    name="bts_state_active"
+                    string="Đang quản lý"
+                    domain="[('bts_state', '=', 'active')]"/>
+                <filter
+                    name="bts_state_inactive"
+                    string="Ngừng quản lý"
+                    domain="[('bts_state', '=', 'inactive')]"/>
+                <group expand="0" string="Nhóm theo">
+                    <filter
+                        name="group_by_project"
+                        string="Dự án BTS"
+                        context="{'group_by': 'bts_project_id'}"/>
+                    <filter
+                        name="group_by_station_type"
+                        string="Loại trạm"
+                        context="{'group_by': 'station_type'}"/>
+                    <filter
+                        name="group_by_bts_state"
+                        string="Trạng thái quản lý"
+                        context="{'group_by': 'bts_state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+</odoo>

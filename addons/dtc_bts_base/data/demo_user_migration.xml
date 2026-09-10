@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <function model="res.users" name="_sync_dtc_demo_roles"/>
+    </data>
+</odoo>

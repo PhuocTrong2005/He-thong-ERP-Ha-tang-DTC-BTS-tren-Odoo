@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="mail_template_signature_stage1_request" model="mail.template">
+            <field name="name">GĐ1 - Yêu cầu Ban Giám đốc ký hồ sơ</field>
+            <field name="model_id" ref="model_bts_contract_signature_batch" />
+            <field name="subject">[DTC BTS] Đề nghị Ban Giám đốc ký số hồ sơ - {{ object.name }} - {{ object.project_id.display_name }}</field>
+            <field name="email_from">{{ user.email_formatted }}</field>
+            <field name="auto_delete" eval="False" />
+            <field name="body_html" type="html">
+                <div style="font-family:Arial,sans-serif;color:#1f2937;max-width:760px;margin:0 auto;background:#ffffff;border:1px solid #bfdbfe;border-top:8px solid #0b5ed7;border-radius:10px;padding:26px">
+                    <p style="margin:0 0 8px;color:#0b5ed7;font-size:13px;font-weight:bold;letter-spacing:.6px">HỆ THỐNG QUẢN LÝ HỢP ĐỒNG BTS</p>
+                    <h1 style="margin:0 0 24px;color:#0b5ed7;font-size:26px;line-height:1.3;font-weight:700">Đề nghị Ban Giám đốc ký hồ sơ</h1>
+                    <p>Kính gửi <strong><t t-out="ctx.get('recipient_name') or 'Anh/Chị'" /></strong>,</p>
+                    <p>Hệ thống kính chuyển Ban Giám đốc batch hồ sơ hợp đồng cần kiểm tra và ký số.</p>
+                    <table style="border-collapse: collapse; width: 100%; max-width: 720px;">
+                        <tr>
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <strong>Mã batch</strong>
+                            </td>
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <t t-out="object.name" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <strong>Dự án</strong>
+                            </td>
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <t t-out="object.project_id.display_name" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <strong>KSGS/người gửi</strong>
+                            </td>
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <t t-out="object.created_by_id.name" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <strong>Thời gian gửi</strong>
+                            </td>
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <t t-out="format_datetime(object.submitted_date)" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <strong>Số hồ sơ cần ký</strong>
+                            </td>
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <t t-out="object.line_count" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <strong>Loại hồ sơ</strong>
+                            </td>
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <t t-out="ctx.get('document_type_names')" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <strong>Trạng thái</strong>
+                            </td>
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <t t-out="ctx.get('state_label')" />
+                            </td>
+                        </tr>
+                        <tr t-if="ctx.get('signature_deadline')">
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <strong>Hạn xử lý</strong>
+                            </td>
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <t t-out="ctx.get('signature_deadline')" />
+                            </td>
+                        </tr>
+                    </table>
+                    <p t-if="ctx.get('record_url')" style="margin: 20px 0;">
+                        <a t-att-href="ctx.get('record_url')"
+                            style="background: #714b67; color: #fff; padding: 10px 16px; text-decoration: none; border-radius: 4px;">Mở
+                            hồ sơ trong Odoo</a>
+                        <a t-if="ctx.get('reject_url')" t-att-href="ctx.get('reject_url')"
+                            style="background: #b42318; color: #fff; padding: 10px 16px; margin-left: 8px; text-decoration: none; border-radius: 4px;">Từ chối ký</a>
+                    </p>
+                    <p>Đề nghị Anh/Chị đăng nhập hệ thống, kiểm tra nội dung và file nguồn trước khi thực hiện ký số. Trường hợp từ chối, vui lòng ghi rõ lý do để đơn vị phụ trách hoàn thiện hồ sơ.</p>
+                    <p style="color: #6c757d; font-size: 12px;">Đây là email tự động từ hệ thống
+                        Odoo. Vui lòng không gửi thông tin đăng nhập hoặc dữ liệu chữ ký số qua
+                        email.</p>
+                </div>
+            </field>
+        </record>
+
+        <record id="mail_template_signature_stage1_rejected" model="mail.template">
+            <field name="name">GĐ1 - Thông báo hồ sơ bị từ chối</field>
+            <field name="model_id" ref="model_bts_contract_signature_batch" />
+            <field name="subject">[DTC BTS] Thông báo từ chối ký số hồ sơ - {{ object.name }} - {{ object.project_id.display_name }}</field>
+            <field name="email_from">{{ user.email_formatted }}</field>
+            <field name="auto_delete" eval="False" />
+            <field name="body_html" type="html">
+                <div style="font-family:Arial,sans-serif;color:#1f2937;max-width:760px;margin:0 auto;background:#ffffff;border:1px solid #bfdbfe;border-top:8px solid #0b5ed7;border-radius:10px;padding:26px">
+                    <p style="margin:0 0 8px;color:#0b5ed7;font-size:13px;font-weight:bold;letter-spacing:.6px">HỆ THỐNG QUẢN LÝ HỢP ĐỒNG BTS</p>
+                    <h1 style="margin:0 0 24px;color:#0b5ed7;font-size:26px;line-height:1.3;font-weight:700">Hồ sơ bị từ chối ký</h1>
+                    <p>Kính gửi <strong><t t-out="ctx.get('recipient_name') or 'Anh/Chị'" /></strong>,</p>
+                    <p>Hệ thống trân trọng thông báo batch hồ sơ ký số đã được Ban Giám đốc xem xét và từ chối.</p>
+                    <table style="border-collapse: collapse; width: 100%; max-width: 720px;">
+                        <tr>
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <strong>Mã batch</strong>
+                            </td>
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <t t-out="object.name" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <strong>Dự án</strong>
+                            </td>
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <t t-out="object.project_id.display_name" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <strong>Người từ chối</strong>
+                            </td>
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <t t-out="object.rejected_by_id.name" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <strong>Thời gian từ chối</strong>
+                            </td>
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <t t-out="format_datetime(object.rejected_date)" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <strong>Lý do</strong>
+                            </td>
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <span style="color:#8f2f33;font-weight:bold"><t t-out="object.rejection_reason" /></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <strong>Hồ sơ bị ảnh hưởng</strong>
+                            </td>
+                            <td style="padding: 6px; border: 1px solid #ddd;"><t
+                                    t-out="object.line_count" /> hồ sơ — <t
+                                    t-out="ctx.get('document_type_names')" /></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <strong>Trạng thái mới</strong>
+                            </td>
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <t t-out="ctx.get('state_label')" />
+                            </td>
+                        </tr>
+                    </table>
+                    <p t-if="ctx.get('record_url')" style="margin: 20px 0;">
+                        <a t-att-href="ctx.get('record_url')"
+                            style="background: #714b67; color: #fff; padding: 10px 16px; text-decoration: none; border-radius: 4px;">Mở
+                            hồ sơ trong Odoo</a>
+                    </p>
+                    <p>Đề nghị Anh/Chị rà soát lý do từ chối, hoàn thiện hồ sơ nguồn và thực hiện vòng trình ký mới theo quy trình.</p>
+                    <p style="color: #6c757d; font-size: 12px;">Đây là email tự động từ hệ thống
+                        Odoo. Vui lòng không gửi thông tin đăng nhập hoặc dữ liệu chữ ký số qua
+                        email.</p>
+                </div>
+            </field>
+        </record>
+
+        <record id="mail_template_signature_stage1_completed" model="mail.template">
+            <field name="name">GĐ1 - Thông báo hoàn tất ký hồ sơ</field>
+            <field name="model_id" ref="model_bts_contract_signature_batch" />
+            <field name="subject">[DTC BTS] Xác nhận hoàn tất ký số hồ sơ - {{ object.name }} - {{ object.project_id.display_name }}</field>
+            <field name="email_from">{{ user.email_formatted }}</field>
+            <field name="auto_delete" eval="False" />
+            <field name="body_html" type="html">
+                <div style="font-family:Arial,sans-serif;color:#1f2937;max-width:760px;margin:0 auto;background:#ffffff;border:1px solid #bfdbfe;border-top:8px solid #0b5ed7;border-radius:10px;padding:26px">
+                    <p style="margin:0 0 8px;color:#0b5ed7;font-size:13px;font-weight:bold;letter-spacing:.6px">HỆ THỐNG QUẢN LÝ HỢP ĐỒNG BTS</p>
+                    <h1 style="margin:0 0 24px;color:#0b5ed7;font-size:26px;line-height:1.3;font-weight:700">Hồ sơ đã ký hoàn tất</h1>
+                    <p>Kính gửi <strong><t t-out="ctx.get('recipient_name') or 'Anh/Chị'" /></strong>,</p>
+                    <p>Hệ thống trân trọng xác nhận toàn bộ hồ sơ trong batch đã được Ban Giám đốc hoàn tất ký số.</p>
+                    <table style="border-collapse: collapse; width: 100%; max-width: 720px;">
+                        <tr>
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <strong>Mã batch</strong>
+                            </td>
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <t t-out="object.name" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <strong>Dự án</strong>
+                            </td>
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <t t-out="object.project_id.display_name" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <strong>Thời gian hoàn tất</strong>
+                            </td>
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <t t-out="format_datetime(object.completed_date)" />
+                            </td>
+                        </tr>
+                        <tr t-if="ctx.get('signer_names')">
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <strong>Người ký</strong>
+                            </td>
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <t t-out="ctx.get('signer_names')" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <strong>Số hồ sơ đã ký</strong>
+                            </td>
+                            <td style="padding: 6px; border: 1px solid #ddd;"><t
+                                    t-out="object.signed_line_count" />/<t t-out="object.line_count" /></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <strong>Loại hồ sơ</strong>
+                            </td>
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <t t-out="ctx.get('document_type_names')" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <strong>Trạng thái</strong>
+                            </td>
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <t t-out="ctx.get('state_label')" />
+                            </td>
+                        </tr>
+                        <tr t-if="ctx.get('signed_file_names')">
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <strong>File đã ký</strong>
+                            </td>
+                            <td style="padding: 6px; border: 1px solid #ddd;">
+                                <t t-out="ctx.get('signed_file_names')" />
+                            </td>
+                        </tr>
+                    </table>
+                    <p t-if="ctx.get('record_url')" style="margin: 20px 0;">
+                        <a t-att-href="ctx.get('record_url')"
+                            style="background: #714b67; color: #fff; padding: 10px 16px; text-decoration: none; border-radius: 4px;">Mở
+                            hồ sơ trong Odoo</a>
+                    </p>
+                    <p>Đề nghị Anh/Chị truy cập hệ thống để kiểm tra, lưu trữ và tiếp tục xử lý hồ sơ theo quy trình. Vì lý do bảo mật, file ký số không được đính kèm trong email.</p>
+                    <p style="color: #6c757d; font-size: 12px;">Đây là email tự động từ hệ thống
+                        Odoo. Vui lòng không gửi thông tin đăng nhập hoặc dữ liệu chữ ký số qua
+                        email.</p>
+                </div>
+            </field>
+        </record>
+
+        <record id="mail_template_signature_otp" model="mail.template">
+            <field name="name">Ký số - Mã OTP xác thực</field>
+            <field name="model_id"
+                   ref="model_bts_contract_signature_batch_line"/>
+            <field name="subject">[DTC BTS] Mã OTP xác thực ký số - {{ object.batch_id.name }}</field>
+            <field name="email_from">{{ user.email_formatted }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="font-family:Arial,sans-serif;color:#1f2937;max-width:760px;margin:0 auto;background:#ffffff;border:1px solid #bfdbfe;border-top:8px solid #0b5ed7;border-radius:10px;padding:26px">
+                    <p style="margin:0 0 8px;color:#0b5ed7;font-size:13px;font-weight:bold;letter-spacing:.6px">HỆ THỐNG QUẢN LÝ HỢP ĐỒNG BTS</p>
+                    <h1 style="margin:0 0 24px;color:#0b5ed7;font-size:26px;line-height:1.3;font-weight:700">Mã OTP xác thực ký số</h1>
+                    <p>Kính gửi <strong><t t-out="ctx.get('recipient_name') or 'Anh/Chị'"/></strong>,</p>
+                    <p>Hệ thống ghi nhận yêu cầu xác thực ký số cho hồ sơ sau:</p>
+                    <table style="border-collapse:collapse;width:100%;margin:18px 0">
+                        <tr><td style="width:32%;padding:9px;background:#f3f6f8;border:1px solid #d8e0e5"><strong>Batch ký số</strong></td><td style="padding:9px;border:1px solid #d8e0e5"><t t-out="object.batch_id.name"/></td></tr>
+                        <tr><td style="padding:9px;background:#f3f6f8;border:1px solid #d8e0e5"><strong>Dự án</strong></td><td style="padding:9px;border:1px solid #d8e0e5"><t t-out="object.batch_id.project_id.display_name"/></td></tr>
+                        <tr><td style="padding:9px;background:#f3f6f8;border:1px solid #d8e0e5"><strong>Trạm BTS</strong></td><td style="padding:9px;border:1px solid #d8e0e5"><t t-out="object.station_id.display_name"/></td></tr>
+                        <tr><td style="padding:9px;background:#f3f6f8;border:1px solid #d8e0e5"><strong>Loại hồ sơ</strong></td><td style="padding:9px;border:1px solid #d8e0e5"><t t-out="dict(object._fields['document_type'].selection).get(object.document_type)"/></td></tr>
+                    </table>
+                    <div style="background:#eef5f7;border:1px solid #c7dce4;padding:18px;text-align:center;margin:22px 0">
+                        <div style="color:#607080;font-size:13px;margin-bottom:8px">MÃ OTP XÁC THỰC</div>
+                        <div style="font-size:30px;font-weight:bold;color:#173f52;letter-spacing:6px"><t t-out="ctx.get('otp_code')"/></div>
+                    </div>
+                    <p>Mã OTP có hiệu lực trong <strong><t t-out="ctx.get('otp_validity_minutes')"/> phút</strong> và chỉ được sử dụng một lần.</p>
+                    <p>Nếu Anh/Chị không thực hiện yêu cầu này, vui lòng không cung cấp mã OTP cho bất kỳ ai và liên hệ quản trị hệ thống.</p>
+                    <p style="border-top:1px solid #d8e0e5;padding-top:16px;color:#6b7780;font-size:12px">Đây là thư tự động chứa thông tin xác thực bảo mật. Không chuyển tiếp email hoặc chia sẻ mã OTP.</p>
+                </div>
+            </field>
+        </record>
+    </data>
+</odoo>

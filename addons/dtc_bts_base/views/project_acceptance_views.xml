@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_dtc_bts_project_acceptance_date" model="ir.ui.view">
+        <field name="name">dtc.bts.project.acceptance.date</field>
+        <field name="model">project.project</field>
+        <field name="inherit_id" ref="dtc_bts_base.view_dtc_bts_project_form"/>
+        <field name="priority" eval="70"/>
+        <field name="arch" type="xml">
+            <xpath
+                expr="//page[@name='dtc_bts_project_info']//field[@name='acceptance_date']"
+                position="attributes">
+                <attribute name="invisible">0</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_dtc_bts_station_hide_legacy_acceptance" model="ir.ui.view">
+        <field name="name">dtc.bts.station.show.acceptance.date</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="dtc_bts_base.view_dtc_bts_station_form"/>
+        <field name="priority" eval="70"/>
+        <field name="arch" type="xml">
+            <xpath
+                expr="//page[@name='dtc_bts_station_info']//field[@name='acceptance_date']"
+                position="attributes">
+                <attribute name="invisible">0</attribute>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

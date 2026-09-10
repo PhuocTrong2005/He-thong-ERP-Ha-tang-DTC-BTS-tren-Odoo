@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <record id="module_category_dtc_bts" model="ir.module.category">
+            <field name="name">Quản lý dự án BTS</field>
+            <field name="description">DTC BTS project and station management</field>
+            <field name="sequence">20</field>
+        </record>
+
+        <record id="group_dtc_bts_ksgs" model="res.groups">
+            <field name="name">Kỹ sư giám sát</field>
+            <field name="category_id" ref="dtc_bts_base.module_category_dtc_bts"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="group_bts_enterprise_director" model="res.groups">
+            <field name="name">Giám đốc Xí nghiệp</field>
+            <field name="category_id" ref="dtc_bts_base.module_category_dtc_bts"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="group_dtc_bts_pkh" model="res.groups">
+            <field name="name">Trưởng phòng Kế hoạch</field>
+            <field name="category_id" ref="dtc_bts_base.module_category_dtc_bts"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="group_dtc_bts_warehouse" model="res.groups">
+            <field name="name">Thủ kho</field>
+            <field name="category_id" ref="dtc_bts_base.module_category_dtc_bts"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="group_dtc_bts_infrastructure" model="res.groups">
+            <field name="name">Tổ quản lý hạ tầng</field>
+            <field name="category_id" ref="dtc_bts_base.module_category_dtc_bts"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="group_dtc_bts_manager" model="res.groups">
+            <field name="name">Quản lý nghiệp vụ (kỹ thuật/dự phòng)</field>
+            <field name="category_id" ref="dtc_bts_base.module_category_dtc_bts"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <record id="group_dtc_bts_admin" model="res.groups">
+            <field name="name">Quản trị viên DTC BTS</field>
+            <field name="category_id" ref="dtc_bts_base.module_category_dtc_bts"/>
+            <field name="implied_ids" eval="[(6, 0, [
+                ref('base.group_user'),
+                ref('base.group_erp_manager')
+            ])]"/>
+        </record>
+
+        <!-- Every Odoo System Administrator is also a full DTC BTS admin. -->
+        <record id="base.group_system" model="res.groups">
+            <field name="implied_ids" eval="[(4, ref('dtc_bts_base.group_dtc_bts_admin'))]"/>
+        </record>
+
+        <record id="rule_dtc_bts_task_reference_only" model="ir.rule">
+            <field name="name">Trạm BTS: vai trò tham chiếu không được chỉnh sửa</field>
+            <field name="model_id" ref="project.model_project_task"/>
+            <field name="groups" eval="[
+                (4, ref('dtc_bts_base.group_dtc_bts_pkh')),
+                (4, ref('dtc_bts_base.group_dtc_bts_warehouse')),
+                (4, ref('dtc_bts_base.group_dtc_bts_infrastructure')),
+                (4, ref('dtc_bts_base.group_dtc_bts_admin'))
+            ]"/>
+            <field name="domain_force">[('id', '=', 0)]</field>
+            <field name="perm_read" eval="False"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="rule_dtc_bts_ksgs_task_manage" model="ir.rule">
+            <field name="name">Trạm BTS: KSGS được quản lý</field>
+            <field name="model_id" ref="project.model_project_task"/>
+            <field name="groups"
+                   eval="[(4, ref('dtc_bts_base.group_dtc_bts_ksgs'))]"/>
+            <field name="domain_force">[('project_id.project_manager_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_dtc_bts_ksgs_project_manage" model="ir.rule">
+            <field name="name">Dự án BTS: KSGS chỉnh sửa dự án được phân công</field>
+            <field name="model_id" ref="project.model_project_project"/>
+            <field name="groups"
+                   eval="[(4, ref('dtc_bts_base.group_dtc_bts_ksgs'))]"/>
+            <field name="domain_force">[('project_manager_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_bts_enterprise_director_project" model="ir.rule">
+            <field name="name">Dự án BTS: phạm vi Giám đốc Xí nghiệp</field>
+            <field name="model_id" ref="project.model_project_project"/>
+            <field name="groups"
+                   eval="[(4, ref('dtc_bts_base.group_bts_enterprise_director'))]"/>
+            <field name="domain_force">[('enterprise_director_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_bts_enterprise_director_task" model="ir.rule">
+            <field name="name">Trạm BTS: phạm vi Giám đốc Xí nghiệp</field>
+            <field name="model_id" ref="project.model_project_task"/>
+            <field name="groups"
+                   eval="[(4, ref('dtc_bts_base.group_bts_enterprise_director'))]"/>
+            <field name="domain_force">[('project_id.enterprise_director_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_bts_enterprise_director_no_unlink_project" model="ir.rule">
+            <field name="name">Dự án BTS: Giám đốc Xí nghiệp không xóa</field>
+            <field name="model_id" ref="project.model_project_project"/>
+            <field name="groups"
+                   eval="[(4, ref('dtc_bts_base.group_bts_enterprise_director'))]"/>
+            <field name="domain_force">[('id', '=', 0)]</field>
+            <field name="perm_read" eval="False"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="rule_bts_enterprise_director_no_unlink_task" model="ir.rule">
+            <field name="name">Trạm BTS: Giám đốc Xí nghiệp không xóa</field>
+            <field name="model_id" ref="project.model_project_task"/>
+            <field name="groups"
+                   eval="[(4, ref('dtc_bts_base.group_bts_enterprise_director'))]"/>
+            <field name="domain_force">[('id', '=', 0)]</field>
+            <field name="perm_read" eval="False"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="rule_dtc_bts_ksgs_task_no_unlink" model="ir.rule">
+            <field name="name">Trạm BTS: KSGS không xóa</field>
+            <field name="model_id" ref="project.model_project_task"/>
+            <field name="groups"
+                   eval="[(4, ref('dtc_bts_base.group_dtc_bts_ksgs'))]"/>
+            <field name="domain_force">[('id', '=', 0)]</field>
+            <field name="perm_read" eval="False"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="rule_dtc_bts_admin_project_hidden" model="ir.rule">
+            <field name="name">DTC Admin: không truy cập dữ liệu dự án</field>
+            <field name="model_id" ref="project.model_project_project"/>
+            <field name="groups"
+                   eval="[(4, ref('dtc_bts_base.group_dtc_bts_admin'))]"/>
+            <field name="domain_force">[('id', '=', 0)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="True"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

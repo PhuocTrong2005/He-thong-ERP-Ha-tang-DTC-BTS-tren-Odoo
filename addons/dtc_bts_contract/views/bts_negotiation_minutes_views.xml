@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- ================================================================== -->
+    <!-- FORM VIEW                                                           -->
+    <!-- ================================================================== -->
+    <record id="view_bts_negotiation_minutes_form" model="ir.ui.view">
+        <field name="name">bts.negotiation.minutes.form</field>
+        <field name="model">bts.negotiation.minutes</field>
+        <field name="arch" type="xml">
+            <form string="Biên bản đàm phán">
+                <header>
+                    <button name="action_submit"
+                            string="Nộp phê duyệt"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'draft'"
+                            groups="dtc_bts_base.group_dtc_bts_infrastructure,base.group_system"/>
+                    <button name="action_confirm"
+                            string="Xác nhận"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'pending_approval'"
+                            groups="dtc_bts_contract.group_dtc_bts_contract_director,base.group_system"/>
+                    <button name="action_reject"
+                            string="Từ chối"
+                            type="object"
+                            invisible="state not in ('pending_approval', 'confirmed')"
+                            groups="dtc_bts_contract.group_dtc_bts_contract_director,base.group_system"/>
+                    <button name="action_reset_to_draft"
+                            string="Đặt lại Dự thảo"
+                            type="object"
+                            invisible="state != 'rejected'"
+                            groups="dtc_bts_base.group_dtc_bts_infrastructure,base.group_system"/>
+                    <button name="action_mark_land_negotiation_failed"
+                            string="Báo không thương lượng được"
+                            type="object"
+                            invisible="state != 'draft' or land_negotiation_failed"
+                            groups="dtc_bts_base.group_dtc_bts_ksgs,base.group_system"/>
+                    <button name="action_director_cancel_station"
+                            string="Loại bỏ trạm"
+                            type="object"
+                            class="btn-danger"
+                            invisible="failure_review_state != 'director_pending' or decision_at"
+                            groups="dtc_bts_contract.group_dtc_bts_contract_director,base.group_system"/>
+                    <button name="action_director_cancel_project"
+                            string="Chấp thuận hủy dự án"
+                            type="object"
+                            class="btn-danger"
+                            invisible="failure_review_state != 'director_pending' or decision_at"
+                            groups="dtc_bts_contract.group_dtc_bts_contract_director,base.group_system"/>
+                    <button name="action_escalate_failure_to_director"
+                            string="Trình báo BGĐ"
+                            type="object" class="btn-primary"
+                            invisible="failure_review_state != 'enterprise_pending'"
+                            groups="dtc_bts_base.group_bts_enterprise_director,base.group_system"/>
+                    <button name="action_enterprise_cancel_project"
+                            string="Hủy dự án"
+                            type="object" class="btn-danger"
+                            invisible="failure_review_state != 'enterprise_pending'"
+                            groups="dtc_bts_base.group_bts_enterprise_director,base.group_system"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,pending_approval,confirmed"/>
+                </header>
+                <sheet>
+                    <field name="land_negotiation_failed" invisible="1"/>
+                    <field name="failure_review_state" invisible="1"/>
+                    <field name="decision_at" invisible="1"/>
+                    <div class="oe_title">
+                        <label for="memo_code"/>
+                        <h1>
+                            <field name="memo_code" readonly="state != 'draft'"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Thông tin chung">
+                            <field name="memo_type" readonly="state != 'draft'"/>
+                            <field name="station_id" readonly="state != 'draft'"
+                                   domain="[('project_id', '!=', False)]"/>
+                            <field name="project_id" readonly="1"/>
+                            <field name="partner_id"
+                                   domain="[('partner_type', 'in', ['landowner', 'telecom_partner'])]"
+                                   readonly="state != 'draft'"/>
+                            <field name="memo_date" readonly="state != 'draft'"/>
+                        </group>
+                        <group string="Kết quả đàm phán">
+                            <field name="agreed_rental_price" widget="monetary"
+                                   readonly="state not in ('draft', 'pending_approval')"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+
+                    <group string="Nội dung đàm phán / Điều khoản đã thảo luận">
+                        <field name="discussed_terms" nolabel="1" colspan="2"
+                               readonly="state not in ('draft', 'pending_approval')"/>
+                    </group>
+
+                    <group string="Ghi chú">
+                        <field name="notes" nolabel="1" colspan="2"/>
+                    </group>
+                    <group string="Không thương lượng được thuê đất">
+                        <field name="land_negotiation_failed_reason"
+                               placeholder="Nhập lý do trước khi báo BGĐ..."
+                               readonly="land_negotiation_failed"/>
+                        <field name="land_negotiation_failed_by_id" readonly="1"/>
+                        <field name="land_negotiation_failed_at" readonly="1"/>
+                        <field name="failure_review_state" readonly="1"/>
+                        <field name="failure_escalated_by_id" readonly="1"
+                               invisible="not failure_escalated_at"/>
+                        <field name="failure_escalated_at" readonly="1"
+                               invisible="not failure_escalated_at"/>
+                    </group>
+                    <group string="Quyết định BGĐ"
+                           invisible="not land_negotiation_failed">
+                        <field name="decision_reason"
+                               placeholder="Nhập lý do trước khi ra quyết định..."
+                               readonly="decision_at"/>
+                        <field name="decision_type" readonly="1"/>
+                        <field name="decision_by_id" readonly="1"/>
+                        <field name="decision_at" readonly="1"/>
+                    </group>
+                    <group string="Tệp biên bản ban đầu">
+                        <field name="initial_document"
+                               filename="initial_document_filename"
+                               readonly="state != 'draft'"/>
+                        <field name="initial_document_filename" invisible="1"/>
+                    </group>
+                    <group string="Biên bản đã ký số"
+                           invisible="not signed_document">
+                        <field name="signed_document"
+                               filename="signed_document_filename"
+                               readonly="1"/>
+                        <field name="signed_document_filename" invisible="1"/>
+                        <field name="approved_by_id" readonly="1"/>
+                        <field name="signed_date" readonly="1"/>
+                    </group>
+                </sheet>
+                <!-- Tệp đính kèm -->
+                <field name="message_attachment_count" invisible="1"/>
+
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bts_negotiation_minutes_project_form" model="ir.ui.view">
+        <field name="name">bts.negotiation.minutes.project.dossier.form</field>
+        <field name="model">bts.negotiation.minutes</field>
+        <field name="arch" type="xml">
+            <form string="Hồ sơ biên bản đàm phán">
+                <sheet>
+                    <field name="state" invisible="1"/>
+                    <field name="currency_id" invisible="1"/>
+                    <div class="oe_title">
+                        <label for="memo_code"/>
+                        <h1>
+                            <field name="memo_code"
+                                   readonly="state != 'draft'"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Thông tin biên bản">
+                            <field name="memo_type"
+                                   readonly="state != 'draft'"/>
+                            <field name="station_id"
+                                   domain="[('project_id', '!=', False)]"
+                                   readonly="state != 'draft'"/>
+                            <field name="project_id" readonly="1"/>
+                            <field name="partner_id"
+                                   domain="[('partner_type', 'in', ['landowner', 'telecom_partner'])]"
+                                   readonly="state != 'draft'"/>
+                            <field name="memo_date"
+                                   readonly="state != 'draft'"/>
+                        </group>
+                        <group string="Kết quả đàm phán">
+                            <field name="agreed_rental_price"
+                                   widget="monetary"
+                                   readonly="state != 'draft'"/>
+                        </group>
+                    </group>
+                    <group string="Nội dung đàm phán">
+                        <field name="discussed_terms"
+                               nolabel="1"
+                               colspan="2"
+                               readonly="state != 'draft'"/>
+                    </group>
+                    <group string="File scan biên bản">
+                        <field name="initial_document"
+                               filename="initial_document_filename"
+                               readonly="state != 'draft'"/>
+                        <field name="initial_document_filename" invisible="1"/>
+                    </group>
+                    <group string="Ghi chú">
+                        <field name="notes"
+                               nolabel="1"
+                               colspan="2"
+                               readonly="state != 'draft'"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bts_negotiation_minutes_project_tree" model="ir.ui.view">
+        <field name="name">bts.negotiation.minutes.project.dossier.tree</field>
+        <field name="model">bts.negotiation.minutes</field>
+        <field name="arch" type="xml">
+            <tree string="Hồ sơ biên bản đàm phán"
+                  decoration-info="state == 'draft'"
+                  decoration-warning="state == 'pending_approval'"
+                  decoration-success="state == 'confirmed'"
+                  decoration-danger="state == 'rejected'">
+                <field name="memo_code"/>
+                <field name="memo_type"/>
+                <field name="station_id"/>
+                <field name="project_id"/>
+                <field name="partner_id"/>
+                <field name="memo_date"/>
+                <field name="initial_document"
+                       filename="initial_document_filename"/>
+                <field name="initial_document_filename"
+                       column_invisible="True"/>
+                <field name="state"
+                       widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state == 'pending_approval'"
+                       decoration-success="state == 'confirmed'"
+                       decoration-danger="state == 'rejected'"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- ================================================================== -->
+    <!-- TREE VIEW                                                           -->
+    <!-- ================================================================== -->
+    <record id="view_bts_negotiation_minutes_tree" model="ir.ui.view">
+        <field name="name">bts.negotiation.minutes.tree</field>
+        <field name="model">bts.negotiation.minutes</field>
+        <field name="arch" type="xml">
+            <tree string="Biên bản đàm phán"
+                  decoration-muted="state in ('rejected', 'converted')"
+                  decoration-success="state == 'confirmed'"
+                  decoration-info="state == 'pending_approval'">
+                <field name="memo_code"/>
+                <field name="memo_type"/>
+                <field name="station_id"/>
+                <field name="project_id"/>
+                <field name="partner_id"/>
+                <field name="memo_date"/>
+                <field name="land_negotiation_failed_reason"
+                       string="Lý do báo cáo" optional="show"/>
+                <field name="failure_review_state"
+                       string="Trạng thái xem xét" widget="badge" optional="show"/>
+                <field name="agreed_rental_price" widget="monetary" optional="show"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state == 'pending_approval'"
+                       decoration-success="state == 'confirmed'"
+                       decoration-primary="state == 'converted'"
+                       decoration-danger="state == 'rejected'"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- ================================================================== -->
+    <!-- SEARCH VIEW                                                         -->
+    <!-- ================================================================== -->
+    <record id="view_bts_negotiation_minutes_search" model="ir.ui.view">
+        <field name="name">bts.negotiation.minutes.search</field>
+        <field name="model">bts.negotiation.minutes</field>
+        <field name="arch" type="xml">
+            <search string="Tìm kiếm biên bản đàm phán">
+                <field name="memo_code" string="Mã biên bản"/>
+                <field name="station_id" string="Trạm BTS"/>
+                <field name="partner_id" string="Đối tác"/>
+                <field name="project_id" string="Dự án"/>
+                <separator/>
+                <filter name="filter_draft"
+                        string="Dự thảo"
+                        domain="[('state', '=', 'draft')]"/>
+                <filter name="filter_pending"
+                        string="Chờ phê duyệt"
+                        domain="[('state', '=', 'pending_approval')]"/>
+                <filter name="filter_confirmed"
+                        string="Đã xác nhận"
+                        domain="[('state', '=', 'confirmed')]"/>
+                <separator/>
+                <filter name="filter_land"
+                        string="Đàm phán thuê đất"
+                        domain="[('memo_type', '=', 'land_lease')]"/>
+                <filter name="filter_infra"
+                        string="Đàm phán thuê hạ tầng"
+                        domain="[('memo_type', '=', 'infrastructure_lease')]"/>
+                <separator/>
+                <group expand="0" string="Nhóm theo">
+                    <filter name="group_state"
+                            string="Trạng thái"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_type"
+                            string="Loại biên bản"
+                            context="{'group_by': 'memo_type'}"/>
+                    <filter name="group_station"
+                            string="Trạm BTS"
+                            context="{'group_by': 'station_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ================================================================== -->
+    <!-- ACTION                                                              -->
+    <!-- ================================================================== -->
+    <record id="action_bts_negotiation_minutes" model="ir.actions.act_window">
+        <field name="name">Biên bản đàm phán</field>
+        <field name="res_model">bts.negotiation.minutes</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_bts_negotiation_minutes_tree"/>
+        <field name="search_view_id" ref="view_bts_negotiation_minutes_search"/>
+        <field name="context">{'create': False}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Chưa có biên bản đàm phán nào.
+            </p>
+            <p>
+                Biên bản ban đầu được tạo từ tab Hợp đồng trạm trên form Dự án.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_initial_failure_enterprise_pending"
+            model="ir.actions.act_window">
+        <field name="name">Đàm phán thuê đất chờ xem xét</field>
+        <field name="res_model">bts.negotiation.minutes</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_bts_negotiation_minutes_tree"/>
+        <field name="search_view_id" ref="view_bts_negotiation_minutes_search"/>
+        <field name="domain">[('failure_review_state', '=', 'enterprise_pending')]</field>
+        <field name="context">{'create': False}</field>
+    </record>
+
+    <record id="action_initial_failure_director_pending"
+            model="ir.actions.act_window">
+        <field name="name">Đề nghị hủy do đàm phán thất bại</field>
+        <field name="res_model">bts.negotiation.minutes</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_bts_negotiation_minutes_tree"/>
+        <field name="search_view_id" ref="view_bts_negotiation_minutes_search"/>
+        <field name="domain">[('failure_review_state', '=', 'director_pending')]</field>
+        <field name="context">{'create': False}</field>
+    </record>
+
+    <record id="action_bts_negotiation_minutes_tree"
+            model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_bts_negotiation_minutes_tree"/>
+        <field name="act_window_id"
+               ref="action_bts_negotiation_minutes"/>
+    </record>
+
+    <record id="action_bts_negotiation_minutes_form"
+            model="ir.actions.act_window.view">
+        <field name="sequence" eval="2"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_bts_negotiation_minutes_form"/>
+        <field name="act_window_id"
+               ref="action_bts_negotiation_minutes"/>
+    </record>
+
+</odoo>

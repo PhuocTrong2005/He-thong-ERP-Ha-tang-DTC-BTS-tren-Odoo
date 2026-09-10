@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_bts_material_request_form_repair_proposal" model="ir.ui.view">
+        <field name="name">bts.material.request.form.repair.proposal</field>
+        <field name="model">bts.material.request</field>
+        <field name="inherit_id" ref="dtc_bts_inventory.view_bts_material_request_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='source']" position="after">
+                <field
+                    name="repair_proposal_id"
+                    readonly="1"
+                    invisible="not repair_proposal_id"/>
+                <field
+                    name="station_id"
+                    readonly="1"
+                    invisible="not station_id"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

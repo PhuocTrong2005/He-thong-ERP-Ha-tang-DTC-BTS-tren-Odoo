@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_bts_repair_proposal_tree" model="ir.ui.view">
+        <field name="name">bts.repair.proposal.tree</field>
+        <field name="model">bts.repair.proposal</field>
+        <field name="arch" type="xml">
+            <tree string="Đề xuất sửa chữa"
+                  decoration-danger="priority == 'urgent' and state not in ('done', 'cancelled')"
+                  decoration-success="state == 'done'"
+                  decoration-muted="state == 'cancelled'">
+                <field name="name"/>
+                <field name="maintenance_batch_id"/>
+                <field name="maintenance_request_id"/>
+                <field name="project_id"/>
+                <field name="proposed_by_id"/>
+                <field name="priority"/>
+                <field name="material_request_count"/>
+                <field name="estimated_cost"/>
+                <field name="state"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_bts_repair_proposal_form" model="ir.ui.view">
+        <field name="name">bts.repair.proposal.form</field>
+        <field name="model">bts.repair.proposal</field>
+        <field name="arch" type="xml">
+            <form string="Đề xuất sửa chữa">
+                <header>
+                    <button name="action_confirm" string="Tổ hạ tầng xác nhận"
+                            type="object" class="btn-primary"
+                            invisible="state != 'draft'"
+                            groups="dtc_bts_base.group_dtc_bts_infrastructure,base.group_system"/>
+                    <button name="action_create_material_request" string="Tạo yêu cầu vật tư"
+                            type="object" class="btn-primary"
+                            invisible="state not in ('confirmed', 'waiting_material') or not material_line_ids"
+                            groups="dtc_bts_base.group_dtc_bts_infrastructure,base.group_system"/>
+                    <button name="action_start_repair" string="Bắt đầu sửa chữa"
+                            type="object" class="btn-primary"
+                            invisible="state != 'ready_to_repair'"
+                            groups="dtc_bts_base.group_dtc_bts_infrastructure,base.group_system"/>
+                    <button name="action_done" string="Hoàn tất sửa chữa"
+                            type="object" class="btn-primary"
+                            invisible="state not in ('ready_to_repair', 'repairing')"
+                            groups="dtc_bts_base.group_dtc_bts_infrastructure,base.group_system"/>
+                    <button name="action_cancel" string="Hủy" type="object"
+                            invisible="state in ('done', 'cancelled')"
+                            groups="dtc_bts_base.group_dtc_bts_infrastructure,base.group_system"/>
+                    <button name="action_reset_to_draft" string="Đưa về nháp"
+                            type="object" invisible="state != 'cancelled'"
+                            groups="dtc_bts_base.group_dtc_bts_infrastructure,base.group_system"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,confirmed,waiting_material,ready_to_repair,repairing,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_material_requests" type="object"
+                                class="oe_stat_button" icon="fa-cubes"
+                                invisible="material_request_count == 0">
+                            <field name="material_request_count" widget="statinfo"
+                                   string="Yêu cầu vật tư"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Nguồn đề xuất">
+                            <field name="maintenance_batch_id" options="{'no_create': True}"
+                                   readonly="state != 'draft'"/>
+                            <field name="project_id" readonly="1"/>
+                            <field name="maintenance_request_id" options="{'no_create': True}"
+                                   invisible="maintenance_batch_id" readonly="state != 'draft'"/>
+                            <field name="equipment_id" readonly="1"/>
+                            <field name="station_id" readonly="1"/>
+                            <field name="bts_project_id" readonly="1"/>
+                            <field name="proposed_by_id" readonly="state != 'draft'"/>
+                        </group>
+                        <group string="Xử lý sửa chữa">
+                            <field name="priority" readonly="state in ('done', 'cancelled')"/>
+                            <field name="estimated_cost" readonly="state in ('done', 'cancelled')"/>
+                            <field name="repair_started_date" readonly="1"/>
+                            <field name="repair_completed_date" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="issue_summary" readonly="state in ('done', 'cancelled')"/>
+                        <field name="material_note" readonly="state in ('done', 'cancelled')"/>
+                        <field name="repair_result"
+                               placeholder="Nhập công việc đã thực hiện và kết quả sau sửa chữa..."
+                               readonly="state in ('draft', 'confirmed', 'waiting_material', 'done', 'cancelled')"/>
+                        <field name="note"/>
+                    </group>
+                    <notebook>
+                        <page string="Chi tiết hư hỏng">
+                            <field name="proposal_line_ids" nolabel="1"
+                                   readonly="state != 'draft'">
+                                <tree editable="bottom">
+                                    <field name="station_id" options="{'no_create': True}"/>
+                                    <field name="item_id" options="{'no_create': True}"/>
+                                    <field name="result_state"/>
+                                    <field name="technician_note"/>
+                                    <field name="material_note"/>
+                                    <field name="estimated_cost"/>
+                                    <field name="maintenance_request_id" column_invisible="True"/>
+                                    <field name="checklist_result_id" column_invisible="True"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Vật tư cần cấp">
+                            <field name="material_line_ids" nolabel="1"
+                                   readonly="state != 'draft'">
+                                <tree editable="bottom">
+                                    <field name="product_id" options="{'no_create': True}"/>
+                                    <field name="product_uom_qty"/>
+                                    <field name="product_uom_id" options="{'no_create': True}"/>
+                                    <field name="note"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Yêu cầu vật tư" invisible="material_request_count == 0">
+                            <field name="material_request_ids" nolabel="1" readonly="1">
+                                <tree create="false" delete="false">
+                                    <field name="name"/>
+                                    <field name="request_date"/>
+                                    <field name="request_user_id"/>
+                                    <field name="state"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bts_repair_proposal_search" model="ir.ui.view">
+        <field name="name">bts.repair.proposal.search</field>
+        <field name="model">bts.repair.proposal</field>
+        <field name="arch" type="xml">
+            <search string="Tìm đề xuất sửa chữa">
+                <field name="name"/>
+                <field name="maintenance_batch_id"/>
+                <field name="project_id"/>
+                <field name="maintenance_request_id"/>
+                <field name="equipment_id"/>
+                <field name="station_id"/>
+                <field name="bts_project_id"/>
+                <field name="proposed_by_id"/>
+                <filter name="urgent" string="Khẩn cấp" domain="[('priority', '=', 'urgent')]"/>
+                <filter name="waiting_material" string="Chờ vật tư"
+                        domain="[('state', '=', 'waiting_material')]"/>
+                <filter name="ready_to_repair" string="Sẵn sàng sửa"
+                        domain="[('state', '=', 'ready_to_repair')]"/>
+                <filter name="open" string="Đang xử lý"
+                        domain="[('state', 'not in', ('done', 'cancelled'))]"/>
+                <group expand="0" string="Nhóm theo">
+                    <filter name="group_project" string="Dự án BTS"
+                            context="{'group_by': 'project_id'}"/>
+                    <filter name="group_state" string="Trạng thái"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_priority" string="Ưu tiên"
+                            context="{'group_by': 'priority'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+</odoo>

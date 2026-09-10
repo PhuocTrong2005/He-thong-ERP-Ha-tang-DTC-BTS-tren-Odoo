@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="group_dtc_bts_contract_director" model="res.groups">
+            <field name="name">Ban Giám đốc - Hợp đồng BTS</field>
+            <field name="category_id" ref="dtc_bts_base.module_category_dtc_bts"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <!-- DTC Admin must not inherit the business Contract Director role. -->
+        <record id="dtc_bts_base.group_dtc_bts_admin" model="res.groups">
+            <field name="implied_ids"
+                   eval="[(3, ref('dtc_bts_contract.group_dtc_bts_contract_director'))]"/>
+        </record>
+
+        <record id="rule_contract_director_task_reference_only" model="ir.rule">
+            <field name="name">BGĐ hợp đồng: trạm chỉ dùng tham chiếu</field>
+            <field name="model_id" ref="project.model_project_task"/>
+            <field name="groups"
+                   eval="[(4, ref('dtc_bts_contract.group_dtc_bts_contract_director'))]"/>
+            <field name="domain_force">[('id', '=', 0)]</field>
+            <field name="perm_read" eval="False"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="True"/>
+            <field name="perm_unlink" eval="True"/>
+        </record>
+
+        <record id="rule_signature_batch_ksgs_own_projects" model="ir.rule">
+            <field name="name">KSGS: batch ký số do mình gửi hoặc nhận thông báo</field>
+            <field name="model_id" ref="model_bts_contract_signature_batch"/>
+            <field name="groups"
+                   eval="[(4, ref('dtc_bts_base.group_dtc_bts_ksgs'))]"/>
+            <field name="domain_force">[('project_id.project_manager_id', '=', user.id)]</field>
+        </record>
+
+        <record id="rule_signature_batch_line_ksgs_own_projects" model="ir.rule">
+            <field name="name">KSGS: dòng batch thuộc batch được phép xem</field>
+            <field name="model_id" ref="model_bts_contract_signature_batch_line"/>
+            <field name="groups"
+                   eval="[(4, ref('dtc_bts_base.group_dtc_bts_ksgs'))]"/>
+            <field name="domain_force">[('batch_id.project_id.project_manager_id', '=', user.id)]</field>
+        </record>
+
+        <record id="rule_contract_ksgs_project" model="ir.rule">
+            <field name="name">KSGS: hợp đồng thuộc dự án được phân công</field>
+            <field name="model_id" ref="model_bts_contract"/>
+            <field name="groups" eval="[(4, ref('dtc_bts_base.group_dtc_bts_ksgs'))]"/>
+            <field name="domain_force">[('project_id.project_manager_id', '=', user.id)]</field>
+        </record>
+
+        <record id="rule_negotiation_minutes_ksgs_project" model="ir.rule">
+            <field name="name">KSGS: biên bản thuộc dự án được phân công</field>
+            <field name="model_id" ref="model_bts_negotiation_minutes"/>
+            <field name="groups" eval="[(4, ref('dtc_bts_base.group_dtc_bts_ksgs'))]"/>
+            <field name="domain_force">[('project_id.project_manager_id', '=', user.id)]</field>
+        </record>
+
+        <record id="rule_contract_enterprise_director" model="ir.rule">
+            <field name="name">Hợp đồng: phạm vi Giám đốc Xí nghiệp</field>
+            <field name="model_id" ref="model_bts_contract"/>
+            <field name="groups" eval="[(4, ref('dtc_bts_base.group_bts_enterprise_director'))]"/>
+            <field name="domain_force">[('project_id.enterprise_director_id', '=', user.id)]</field>
+        </record>
+
+        <record id="rule_contract_renewal_enterprise_director" model="ir.rule">
+            <field name="name">Gia hạn hợp đồng: phạm vi Giám đốc Xí nghiệp</field>
+            <field name="model_id" ref="model_bts_contract_renewal"/>
+            <field name="groups" eval="[(4, ref('dtc_bts_base.group_bts_enterprise_director'))]"/>
+            <field name="domain_force">[('project_id.enterprise_director_id', '=', user.id)]</field>
+        </record>
+
+        <record id="rule_negotiation_minutes_enterprise_director" model="ir.rule">
+            <field name="name">Biên bản đàm phán: phạm vi Giám đốc Xí nghiệp</field>
+            <field name="model_id" ref="model_bts_negotiation_minutes"/>
+            <field name="groups" eval="[(4, ref('dtc_bts_base.group_bts_enterprise_director'))]"/>
+            <field name="domain_force">[('project_id.enterprise_director_id', '=', user.id)]</field>
+        </record>
+
+        <record id="rule_signature_batch_enterprise_director" model="ir.rule">
+            <field name="name">Batch ký số: phạm vi Giám đốc Xí nghiệp</field>
+            <field name="model_id" ref="model_bts_contract_signature_batch"/>
+            <field name="groups" eval="[(4, ref('dtc_bts_base.group_bts_enterprise_director'))]"/>
+            <field name="domain_force">[('project_id.enterprise_director_id', '=', user.id)]</field>
+        </record>
+
+        <record id="rule_signature_batch_line_enterprise_director" model="ir.rule">
+            <field name="name">Dòng batch ký số: phạm vi Giám đốc Xí nghiệp</field>
+            <field name="model_id" ref="model_bts_contract_signature_batch_line"/>
+            <field name="groups" eval="[(4, ref('dtc_bts_base.group_bts_enterprise_director'))]"/>
+            <field name="domain_force">[('batch_id.project_id.enterprise_director_id', '=', user.id)]</field>
+        </record>
+    </data>
+</odoo>

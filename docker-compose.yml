@@ -1,0 +1,57 @@
+﻿services:
+  db:
+    image: postgres:15
+    container_name: mis_odoo_db
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:?POSTGRES_DB is required}
+      POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER is required}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+    volumes:
+      - odoo-db-data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-odoo} -d ${POSTGRES_DB:-odoo}",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  odoo:
+    image: odoo:17
+    container_name: mis_odoo_web
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "${ODOO_BIND_IP:-0.0.0.0}:${ODOO_PORT:-8069}:8069"
+    volumes:
+      - odoo-web-data:/var/lib/odoo
+      - ./addons:/mnt/extra-addons
+      - ./config/odoo.conf:/etc/odoo/odoo.conf:ro
+    command: >
+      odoo
+      --config=/etc/odoo/odoo.conf
+      --db_host=db
+      --db_port=5432
+      --db_user=${POSTGRES_USER:?POSTGRES_USER is required}
+      --db_password=${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      --load-language=vi_VN
+      ${ODOO_DEV_ARGS:-}
+    restart: unless-stopped
+
+volumes:
+  odoo-web-data:
+    driver: local
+  odoo-db-data:
+    driver: local
+
+networks:
+  default:
+    driver: bridge

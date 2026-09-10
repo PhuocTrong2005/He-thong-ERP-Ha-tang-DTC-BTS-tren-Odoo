@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <menuitem
+        id="menu_dtc_bts_inventory_root"
+        name="Quản lý mua hàng và kho vật tư BTS"
+        action="action_dtc_bts_inventory_dashboard"
+        groups="dtc_bts_base.group_dtc_bts_pkh,dtc_bts_base.group_dtc_bts_warehouse,base.group_system"
+        sequence="20"/>
+
+    <!-- Explicitly clear the old parent when upgrading an existing database. -->
+    <record id="menu_dtc_bts_inventory_root" model="ir.ui.menu">
+        <field name="parent_id" eval="False"/>
+    </record>
+
+    <menuitem
+        id="menu_dtc_bts_inventory_dashboard"
+        name="Theo dõi cung ứng vật tư"
+        parent="menu_dtc_bts_inventory_root"
+        action="action_dtc_bts_inventory_dashboard"
+        groups="dtc_bts_base.group_dtc_bts_pkh,dtc_bts_base.group_dtc_bts_warehouse,base.group_system"
+        sequence="10"/>
+
+    <menuitem
+        id="menu_dtc_bts_material_request"
+        name="Yêu cầu cấp phát"
+        parent="menu_dtc_bts_inventory_root"
+        action="action_bts_material_request"
+        groups="dtc_bts_base.group_dtc_bts_pkh,dtc_bts_base.group_dtc_bts_warehouse,base.group_system"
+        sequence="20"/>
+
+    <menuitem
+        id="menu_dtc_bts_purchase_order"
+        name="Đơn mua hàng"
+        parent="menu_dtc_bts_inventory_root"
+        action="action_dtc_bts_purchase_order"
+        groups="dtc_bts_base.group_dtc_bts_pkh,base.group_system"
+        sequence="30"/>
+
+    <menuitem
+        id="menu_dtc_bts_purchase_order_warehouse"
+        name="Đơn mua hàng"
+        parent="menu_dtc_bts_inventory_root"
+        action="action_dtc_bts_purchase_order_warehouse"
+        groups="dtc_bts_base.group_dtc_bts_warehouse"
+        sequence="30"/>
+
+    <menuitem
+        id="menu_dtc_bts_stock_incoming"
+        name="Nhập kho"
+        parent="menu_dtc_bts_inventory_root"
+        action="action_dtc_bts_stock_incoming"
+        groups="dtc_bts_base.group_dtc_bts_pkh,dtc_bts_base.group_dtc_bts_warehouse,base.group_system"
+        sequence="40"/>
+
+    <menuitem
+        id="menu_dtc_bts_stock_outgoing"
+        name="Xuất kho"
+        parent="menu_dtc_bts_inventory_root"
+        action="action_dtc_bts_stock_outgoing"
+        groups="dtc_bts_base.group_dtc_bts_pkh,dtc_bts_base.group_dtc_bts_warehouse,base.group_system"
+        sequence="50"/>
+
+    <menuitem
+        id="menu_dtc_bts_material_product"
+        name="Danh mục vật tư"
+        parent="menu_dtc_bts_inventory_root"
+        action="action_dtc_bts_material_product"
+        groups="dtc_bts_base.group_dtc_bts_pkh,base.group_system"
+        sequence="60"/>
+
+    <menuitem
+        id="menu_dtc_bts_material_product_warehouse"
+        name="Danh mục vật tư"
+        parent="menu_dtc_bts_inventory_root"
+        action="action_dtc_bts_material_product_warehouse"
+        groups="dtc_bts_base.group_dtc_bts_warehouse"
+        sequence="60"/>
+
+    <!-- Replace group assignments left by older module versions. -->
+    <record id="menu_dtc_bts_inventory_root" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [
+            ref('dtc_bts_base.group_dtc_bts_pkh'),
+            ref('dtc_bts_base.group_dtc_bts_warehouse'),
+            ref('base.group_system')
+        ])]"/>
+    </record>
+
+    <record id="menu_dtc_bts_inventory_dashboard" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [
+            ref('dtc_bts_base.group_dtc_bts_pkh'),
+            ref('dtc_bts_base.group_dtc_bts_warehouse'),
+            ref('base.group_system')
+        ])]"/>
+    </record>
+
+    <record id="menu_dtc_bts_material_request" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [
+            ref('dtc_bts_base.group_dtc_bts_pkh'),
+            ref('dtc_bts_base.group_dtc_bts_warehouse'),
+            ref('base.group_system')
+        ])]"/>
+    </record>
+
+    <record id="menu_dtc_bts_purchase_order" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [
+            ref('dtc_bts_base.group_dtc_bts_pkh'),
+            ref('base.group_system')
+        ])]"/>
+    </record>
+
+    <record id="menu_dtc_bts_purchase_order_warehouse" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [
+            ref('dtc_bts_base.group_dtc_bts_warehouse')
+        ])]"/>
+    </record>
+
+    <record id="menu_dtc_bts_stock_incoming" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [
+            ref('dtc_bts_base.group_dtc_bts_pkh'),
+            ref('dtc_bts_base.group_dtc_bts_warehouse'),
+            ref('base.group_system')
+        ])]"/>
+    </record>
+
+    <record id="menu_dtc_bts_stock_outgoing" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [
+            ref('dtc_bts_base.group_dtc_bts_pkh'),
+            ref('dtc_bts_base.group_dtc_bts_warehouse'),
+            ref('base.group_system')
+        ])]"/>
+    </record>
+
+    <record id="menu_dtc_bts_material_product" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [
+            ref('dtc_bts_base.group_dtc_bts_pkh'),
+            ref('base.group_system')
+        ])]"/>
+    </record>
+
+    <record id="menu_dtc_bts_material_product_warehouse" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [
+            ref('dtc_bts_base.group_dtc_bts_warehouse')
+        ])]"/>
+    </record>
+
+</odoo>

@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="mail_template_renewal_signature_request" model="mail.template">
+            <field name="name">Gia hạn - Yêu cầu BGĐ ký</field>
+            <field name="model_id" ref="model_bts_contract_renewal"/>
+            <field name="subject">[DTC BTS] Đề nghị ký số hợp đồng gia hạn - {{ object.renewal_code }} - {{ object.project_id.display_name }}</field>
+            <field name="email_from">{{ user.email_formatted }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="font-family:Arial,sans-serif;color:#1f2937;max-width:760px;margin:0 auto;background:#ffffff;border:1px solid #bfdbfe;border-top:8px solid #0b5ed7;border-radius:10px;padding:26px">
+                    <p style="margin:0 0 8px;color:#0b5ed7;font-size:13px;font-weight:bold;letter-spacing:.6px">HỆ THỐNG QUẢN LÝ HỢP ĐỒNG BTS</p>
+                    <h1 style="margin:0 0 24px;color:#0b5ed7;font-size:26px;line-height:1.3;font-weight:700">Đề nghị ký hồ sơ gia hạn</h1>
+                    <p>Kính gửi <strong><t t-out="ctx.get('recipient_name') or 'Anh/Chị'"/></strong>,</p>
+                    <p>Tổ hạ tầng kính trình Ban Giám đốc hồ sơ gia hạn hợp đồng để kiểm tra và ký số.</p>
+                    <table style="border-collapse: collapse; width: 100%; max-width: 720px;">
+                        <tr><td style="border:1px solid #ddd;padding:6px"><strong>Mã gia hạn</strong></td><td style="border:1px solid #ddd;padding:6px"><t t-out="object.renewal_code"/></td></tr>
+                        <tr><td style="border:1px solid #ddd;padding:6px"><strong>Dự án / Trạm</strong></td><td style="border:1px solid #ddd;padding:6px"><t t-out="object.project_id.display_name"/> / <t t-out="object.station_id.display_name"/></td></tr>
+                        <tr><td style="border:1px solid #ddd;padding:6px"><strong>Hợp đồng / Loại</strong></td><td style="border:1px solid #ddd;padding:6px"><t t-out="object.contract_id.contract_code"/> / <t t-out="ctx.get('contract_type_label')"/></td></tr>
+                        <tr><td style="border:1px solid #ddd;padding:6px"><strong>Người gửi</strong></td><td style="border:1px solid #ddd;padding:6px"><t t-out="object.performed_by_id.display_name"/></td></tr>
+                        <tr><td style="border:1px solid #ddd;padding:6px"><strong>Thời gian / Trạng thái</strong></td><td style="border:1px solid #ddd;padding:6px"><t t-out="format_datetime(object.write_date)"/> / <t t-out="ctx.get('state_label')"/></td></tr>
+                    </table>
+                    <p t-if="ctx.get('record_url')" style="margin:20px 0">
+                        <a t-att-href="ctx.get('record_url')" style="background:#714b67;color:#fff;padding:10px 16px;text-decoration:none;border-radius:4px;">Truy cập hệ thống để ký số</a>
+                        <a t-if="ctx.get('reject_url')" t-att-href="ctx.get('reject_url')" style="background:#b42318;color:#fff;padding:10px 16px;margin-left:8px;text-decoration:none;border-radius:4px;">Từ chối ký</a>
+                    </p>
+                    <p>Đề nghị Anh/Chị kiểm tra hồ sơ scan và thông tin gia hạn trước khi ký. Trường hợp từ chối, vui lòng ghi rõ lý do để đơn vị phụ trách hoàn thiện hồ sơ.</p>
+                </div>
+            </field>
+        </record>
+
+        <record id="mail_template_renewal_signature_completed" model="mail.template">
+            <field name="name">Gia hạn - BGĐ đã ký</field>
+            <field name="model_id" ref="model_bts_contract_renewal"/>
+            <field name="subject">[DTC BTS] Xác nhận hoàn tất ký hợp đồng gia hạn - {{ object.renewal_code }} - {{ object.project_id.display_name }}</field>
+            <field name="email_from">{{ user.email_formatted }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="font-family:Arial,sans-serif;color:#1f2937;max-width:760px;margin:0 auto;background:#ffffff;border:1px solid #bfdbfe;border-top:8px solid #0b5ed7;border-radius:10px;padding:26px">
+                    <h1 style="margin:0 0 24px;color:#0b5ed7;font-size:26px;line-height:1.3;font-weight:700">Hồ sơ gia hạn đã ký hoàn tất</h1>
+                    <p>Kính gửi <strong><t t-out="ctx.get('recipient_name') or 'Anh/Chị'"/></strong>,</p>
+                    <p>Hệ thống trân trọng xác nhận Ban Giám đốc đã hoàn tất ký số hồ sơ gia hạn.</p>
+                    <p><strong>Mã gia hạn:</strong> <t t-out="object.renewal_code"/></p>
+                    <p><strong>Dự án / Trạm:</strong> <t t-out="object.project_id.display_name"/> / <t t-out="object.station_id.display_name"/></p>
+                    <p><strong>Hợp đồng / Loại:</strong> <t t-out="object.contract_id.contract_code"/> / <t t-out="ctx.get('contract_type_label')"/></p>
+                    <p><strong>Người ký / Thời gian:</strong> <t t-out="object.signed_by_id.display_name"/> / <t t-out="format_datetime(object.signed_date)"/></p>
+                    <p><strong>Trạng thái:</strong> <t t-out="ctx.get('state_label')"/></p>
+                    <p t-if="ctx.get('record_url')"><a t-att-href="ctx.get('record_url')">Mở hồ sơ gia hạn trong Odoo</a></p>
+                    <p>Vui lòng tiếp tục quản lý hợp đồng theo ngày hiệu lực và ngày hết hạn mới.</p>
+                </div>
+            </field>
+        </record>
+
+        <record id="mail_template_renewal_signature_rejected" model="mail.template">
+            <field name="name">Gia hạn - BGĐ từ chối ký</field>
+            <field name="model_id" ref="model_bts_contract_renewal"/>
+            <field name="subject">[DTC BTS] Thông báo từ chối ký hợp đồng gia hạn - {{ object.renewal_code }} - {{ object.project_id.display_name }}</field>
+            <field name="email_from">{{ user.email_formatted }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="font-family:Arial,sans-serif;color:#1f2937;max-width:760px;margin:0 auto;background:#ffffff;border:1px solid #bfdbfe;border-top:8px solid #0b5ed7;border-radius:10px;padding:26px">
+                    <h1 style="margin:0 0 24px;color:#0b5ed7;font-size:26px;line-height:1.3;font-weight:700">Hồ sơ gia hạn bị từ chối</h1>
+                    <p>Kính gửi <strong><t t-out="ctx.get('recipient_name') or 'Anh/Chị'"/></strong>,</p>
+                    <p>Hệ thống trân trọng thông báo Ban Giám đốc đã từ chối ký hồ sơ gia hạn và yêu cầu đơn vị phụ trách chỉnh sửa.</p>
+                    <p><strong>Mã gia hạn:</strong> <t t-out="object.renewal_code"/></p>
+                    <p><strong>Dự án / Trạm:</strong> <t t-out="object.project_id.display_name"/> / <t t-out="object.station_id.display_name"/></p>
+                    <p><strong>Hợp đồng / Loại:</strong> <t t-out="object.contract_id.contract_code"/> / <t t-out="ctx.get('contract_type_label')"/></p>
+                    <p><strong>Người từ chối / Thời gian:</strong> <t t-out="object.rejected_by_id.display_name"/> / <t t-out="format_datetime(object.rejected_date)"/></p>
+                    <p><strong>Lý do:</strong> <t t-out="object.rejection_reason"/></p>
+                    <p><strong>Trạng thái:</strong> <t t-out="ctx.get('state_label')"/></p>
+                    <p t-if="ctx.get('record_url')"><a t-att-href="ctx.get('record_url')">Mở hồ sơ gia hạn trong Odoo</a></p>
+                    <p>Vui lòng xem lý do, đưa hồ sơ về dự thảo và chỉnh sửa trước khi gửi lại.</p>
+                </div>
+            </field>
+        </record>
+
+        <record id="mail_template_initial_land_negotiation_failed" model="mail.template">
+            <field name="name">Ban đầu - Không thương lượng được thuê đất</field>
+            <field name="model_id" ref="model_bts_negotiation_minutes"/>
+            <field name="subject">[DTC BTS] Báo cáo thương lượng hợp đồng thuê đất không thành công - {{ object.project_id.display_name }}</field>
+            <field name="email_from">{{ user.email_formatted }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="font-family:Arial,sans-serif;color:#1f2937;max-width:760px;margin:0 auto;background:#ffffff;border:1px solid #bfdbfe;border-top:8px solid #0b5ed7;border-radius:10px;padding:26px">
+                    <h1 style="margin:0 0 24px;color:#0b5ed7;font-size:26px;line-height:1.3;font-weight:700">Thương lượng thuê đất không thành công</h1>
+                    <p>Kính gửi <strong><t t-out="ctx.get('recipient_name') or 'Anh/Chị'"/></strong>,</p>
+                    <p>KSGS kính báo việc thương lượng hợp đồng thuê đất ban đầu không thành công. Đề nghị Giám đốc Xí nghiệp xem xét trình Ban Giám đốc hoặc quyết định hủy dự án theo thẩm quyền.</p>
+                    <p><strong>Dự án / Trạm:</strong> <t t-out="object.project_id.display_name"/> / <t t-out="object.station_id.display_name"/></p>
+                    <p><strong>Biên bản:</strong> <t t-out="object.memo_code"/></p>
+                    <p><strong>KSGS:</strong> <t t-out="object.land_negotiation_failed_by_id.display_name"/></p>
+                    <p><strong>Thời gian:</strong> <t t-out="format_datetime(object.land_negotiation_failed_at)"/></p>
+                    <p><strong>Lý do:</strong> <t t-out="object.land_negotiation_failed_reason"/></p>
+                    <p t-if="ctx.get('record_url')"><a t-att-href="ctx.get('record_url')">Mở hồ sơ trong Odoo</a></p>
+                    <p>Vui lòng mở hồ sơ để xử lý báo cáo thương lượng thất bại.</p>
+                </div>
+            </field>
+        </record>
+
+        <record id="mail_template_initial_failure_escalated" model="mail.template">
+            <field name="name">Ban đầu - Giám đốc Xí nghiệp trình BGĐ</field>
+            <field name="model_id" ref="model_bts_negotiation_minutes"/>
+            <field name="subject">[DTC BTS] Đề nghị xem xét chấp thuận hủy dự án - {{ object.project_id.display_name }}</field>
+            <field name="email_from">{{ user.email_formatted }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="font-family:Arial,sans-serif;color:#1f2937;max-width:760px;margin:0 auto;background:#ffffff;border:1px solid #bfdbfe;border-top:8px solid #0b5ed7;border-radius:10px;padding:26px">
+                    <h1 style="margin:0 0 24px;color:#0b5ed7;font-size:26px;line-height:1.3;font-weight:700">Đề nghị xem xét hủy trạm hoặc dự án</h1>
+                    <p>Kính gửi <strong><t t-out="ctx.get('recipient_name') or 'Anh/Chị'"/></strong>,</p>
+                    <p>Giám đốc Xí nghiệp kính trình Ban Giám đốc xem xét trường hợp thương lượng hợp đồng thuê đất không thành công.</p>
+                    <p><strong>Dự án / Trạm:</strong> <t t-out="object.project_id.display_name"/> / <t t-out="object.station_id.display_name"/></p>
+                    <p><strong>Lý do:</strong> <t t-out="object.land_negotiation_failed_reason"/></p>
+                    <p t-if="ctx.get('record_url')"><a t-att-href="ctx.get('record_url')" style="background:#714b67;color:#fff;padding:10px 16px;text-decoration:none;border-radius:4px">Mở hồ sơ và chấp thuận</a></p>
+                </div>
+            </field>
+        </record>
+
+        <record id="mail_template_initial_project_station_cancelled" model="mail.template">
+            <field name="name">Ban đầu - BGĐ quyết định hủy trạm/dự án</field>
+            <field name="model_id" ref="model_bts_negotiation_minutes"/>
+            <field name="subject">[DTC BTS] Thông báo quyết định {{ ctx.get('decision_label') }} - {{ object.project_id.display_name }}</field>
+            <field name="email_from">{{ user.email_formatted }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="font-family:Arial,sans-serif;color:#1f2937;max-width:760px;margin:0 auto;background:#ffffff;border:1px solid #bfdbfe;border-top:8px solid #0b5ed7;border-radius:10px;padding:26px">
+                    <h1 style="margin:0 0 24px;color:#0b5ed7;font-size:26px;line-height:1.3;font-weight:700">Quyết định hủy trạm hoặc dự án</h1>
+                    <p>Kính gửi <strong><t t-out="ctx.get('recipient_name') or 'Anh/Chị'"/></strong>,</p>
+                    <p>Hệ thống trân trọng thông báo quyết định xử lý đối với hồ sơ thương lượng không thành công.</p>
+                    <p><strong>Quyết định:</strong> <t t-out="ctx.get('decision_label')"/></p>
+                    <p><strong>Dự án / Trạm:</strong> <t t-out="object.project_id.display_name"/> / <t t-out="object.station_id.display_name"/></p>
+                    <p><strong>Người quyết định / Thời gian:</strong> <t t-out="object.decision_by_id.display_name"/> / <t t-out="format_datetime(object.decision_at)"/></p>
+                    <p><strong>Lý do:</strong> <t t-out="object.decision_reason"/></p>
+                    <p><strong>Trạng thái Project / Trạm:</strong> <t t-out="ctx.get('project_state_label')"/> / <t t-out="ctx.get('station_state_label')"/></p>
+                    <p t-if="ctx.get('record_url')"><a t-att-href="ctx.get('record_url')">Mở hồ sơ trong Odoo</a></p>
+                </div>
+            </field>
+        </record>
+
+        <record id="mail_template_renewal_land_not_renewable" model="mail.template">
+            <field name="name">Gia hạn - Không gia hạn được thuê đất</field>
+            <field name="model_id" ref="model_bts_contract_renewal"/>
+            <field name="subject">[DTC BTS] Báo cáo không gia hạn được hợp đồng thuê đất - {{ object.renewal_code }}</field>
+            <field name="email_from">{{ user.email_formatted }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="font-family:Arial,sans-serif;color:#1f2937;max-width:760px;margin:0 auto;background:#ffffff;border:1px solid #bfdbfe;border-top:8px solid #0b5ed7;border-radius:10px;padding:26px">
+                    <h1 style="margin:0 0 24px;color:#0b5ed7;font-size:26px;line-height:1.3;font-weight:700">Không gia hạn được hợp đồng thuê đất</h1>
+                    <p>Kính gửi <strong><t t-out="ctx.get('recipient_name') or 'Anh/Chị'"/></strong>,</p>
+                    <p>Tổ hạ tầng kính báo việc gia hạn hợp đồng thuê đất không thành công. Đề nghị Giám đốc Xí nghiệp xem xét trình Ban Giám đốc hoặc quyết định hủy dự án theo thẩm quyền.</p>
+                    <p><strong>Mã gia hạn / Hợp đồng:</strong> <t t-out="object.renewal_code"/> / <t t-out="object.contract_id.contract_code"/></p>
+                    <p><strong>Dự án / Trạm:</strong> <t t-out="object.project_id.display_name"/> / <t t-out="object.station_id.display_name"/></p>
+                    <p><strong>Người báo / Thời gian:</strong> <t t-out="object.non_renewal_reported_by_id.display_name"/> / <t t-out="format_datetime(object.non_renewal_reported_at)"/></p>
+                    <p><strong>Lý do:</strong> <t t-out="object.non_renewal_reason"/></p>
+                    <p><strong>Trạng thái:</strong> <t t-out="ctx.get('state_label')"/></p>
+                    <p t-if="ctx.get('record_url')"><a t-att-href="ctx.get('record_url')">Mở hồ sơ gia hạn trong Odoo</a></p>
+                    <p>Vui lòng mở hồ sơ để xử lý báo cáo không gia hạn được.</p>
+                </div>
+            </field>
+        </record>
+
+        <record id="mail_template_renewal_station_not_renewable" model="mail.template">
+            <field name="name">Gia hạn - Không gia hạn được thuê trạm</field>
+            <field name="model_id" ref="model_bts_contract_renewal"/>
+            <field name="subject">[DTC BTS] Báo cáo không gia hạn được hợp đồng thuê trạm - {{ object.renewal_code }}</field>
+            <field name="email_from">{{ user.email_formatted }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="font-family:Arial,sans-serif;color:#1f2937;max-width:760px;margin:0 auto;background:#ffffff;border:1px solid #bfdbfe;border-top:8px solid #0b5ed7;border-radius:10px;padding:26px">
+                    <h1 style="margin:0 0 24px;color:#0b5ed7;font-size:26px;line-height:1.3;font-weight:700">Không gia hạn được hợp đồng thuê trạm</h1>
+                    <p>Kính gửi <strong><t t-out="ctx.get('recipient_name') or 'Anh/Chị'"/></strong>,</p>
+                    <p>Tổ hạ tầng kính báo việc gia hạn hợp đồng thuê trạm không thành công. Đề nghị Giám đốc Xí nghiệp xem xét trình Ban Giám đốc hoặc quyết định hủy dự án theo thẩm quyền.</p>
+                    <p><strong>Mã gia hạn / Hợp đồng:</strong> <t t-out="object.renewal_code"/> / <t t-out="object.contract_id.contract_code"/></p>
+                    <p><strong>Dự án / Trạm:</strong> <t t-out="object.project_id.display_name"/> / <t t-out="object.station_id.display_name"/></p>
+                    <p><strong>Người báo / Thời gian:</strong> <t t-out="object.non_renewal_reported_by_id.display_name"/> / <t t-out="format_datetime(object.non_renewal_reported_at)"/></p>
+                    <p><strong>Lý do:</strong> <t t-out="object.non_renewal_reason"/></p>
+                    <p><strong>Trạng thái:</strong> <t t-out="ctx.get('state_label')"/></p>
+                    <p t-if="ctx.get('record_url')"><a t-att-href="ctx.get('record_url')">Mở hồ sơ gia hạn trong Odoo</a></p>
+                    <p>Vui lòng mở hồ sơ để xử lý báo cáo không gia hạn được.</p>
+                </div>
+            </field>
+        </record>
+
+        <record id="mail_template_renewal_failure_escalated" model="mail.template">
+            <field name="name">Gia hạn - Giám đốc Xí nghiệp trình BGĐ</field>
+            <field name="model_id" ref="model_bts_contract_renewal"/>
+            <field name="subject">[DTC BTS] Đề nghị xem xét hủy dự án do không thể gia hạn - {{ object.project_id.display_name }}</field>
+            <field name="email_from">{{ user.email_formatted }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="font-family:Arial,sans-serif;color:#1f2937;max-width:760px;margin:0 auto;background:#ffffff;border:1px solid #bfdbfe;border-top:8px solid #0b5ed7;border-radius:10px;padding:26px">
+                    <h1 style="margin:0 0 24px;color:#0b5ed7;font-size:26px;line-height:1.3;font-weight:700">Đề nghị quyết định do không thể gia hạn</h1>
+                    <p>Kính gửi <strong><t t-out="ctx.get('recipient_name') or 'Anh/Chị'"/></strong>,</p>
+                    <p>Giám đốc Xí nghiệp kính trình Ban Giám đốc xem xét trường hợp không thể gia hạn hợp đồng.</p>
+                    <p><strong>Dự án / Trạm:</strong> <t t-out="object.project_id.display_name"/> / <t t-out="object.station_id.display_name"/></p>
+                    <p><strong>Lý do:</strong> <t t-out="object.non_renewal_reason"/></p>
+                    <p t-if="ctx.get('record_url')"><a t-att-href="ctx.get('record_url')" style="background:#714b67;color:#fff;padding:10px 16px;text-decoration:none;border-radius:4px">Mở hồ sơ và chấp thuận</a></p>
+                </div>
+            </field>
+        </record>
+
+        <record id="mail_template_renewal_project_station_cancelled" model="mail.template">
+            <field name="name">Gia hạn - BGĐ quyết định hủy trạm/dự án</field>
+            <field name="model_id" ref="model_bts_contract_renewal"/>
+            <field name="subject">[DTC BTS] Thông báo quyết định {{ ctx.get('decision_label') }} - {{ object.renewal_code }}</field>
+            <field name="email_from">{{ user.email_formatted }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="font-family:Arial,sans-serif;color:#1f2937;max-width:760px;margin:0 auto;background:#ffffff;border:1px solid #bfdbfe;border-top:8px solid #0b5ed7;border-radius:10px;padding:26px">
+                    <h1 style="margin:0 0 24px;color:#0b5ed7;font-size:26px;line-height:1.3;font-weight:700">Quyết định sau khi không thể gia hạn</h1>
+                    <p>Kính gửi <strong><t t-out="ctx.get('recipient_name') or 'Anh/Chị'"/></strong>,</p>
+                    <p>Hệ thống trân trọng thông báo quyết định xử lý sau báo cáo không thể gia hạn hợp đồng.</p>
+                    <p><strong>Quyết định:</strong> <t t-out="ctx.get('decision_label')"/></p>
+                    <p><strong>Mã gia hạn / Hợp đồng:</strong> <t t-out="object.renewal_code"/> / <t t-out="object.contract_id.contract_code"/></p>
+                    <p><strong>Dự án / Trạm:</strong> <t t-out="object.project_id.display_name"/> / <t t-out="object.station_id.display_name"/></p>
+                    <p><strong>Người quyết định / Thời gian:</strong> <t t-out="object.decision_by_id.display_name"/> / <t t-out="format_datetime(object.decision_at)"/></p>
+                    <p><strong>Lý do:</strong> <t t-out="object.decision_reason"/></p>
+                    <p t-if="ctx.get('record_url')"><a t-att-href="ctx.get('record_url')">Mở hồ sơ gia hạn trong Odoo</a></p>
+                </div>
+            </field>
+        </record>
+
+        <record id="mail_template_contract_renewal_due_digest" model="mail.template">
+            <field name="name">Hợp đồng - Digest nhắc gia hạn</field>
+            <field name="model_id" ref="model_bts_contract"/>
+            <field name="subject">[DTC BTS] Danh sách hợp đồng sắp hết hạn cần xử lý gia hạn</field>
+            <field name="email_from">{{ user.email_formatted }}</field>
+            <field name="auto_delete" eval="False"/>
+            <field name="body_html" type="html">
+                <div style="font-family:Arial,sans-serif;color:#1f2937;max-width:760px;margin:0 auto;background:#ffffff;border:1px solid #bfdbfe;border-top:8px solid #0b5ed7;border-radius:10px;padding:26px">
+                    <p style="margin:0 0 8px;color:#0b5ed7;font-size:13px;font-weight:bold;letter-spacing:.6px">HỆ THỐNG QUẢN LÝ HỢP ĐỒNG BTS</p>
+                    <h1 style="margin:0 0 24px;color:#0b5ed7;font-size:26px;line-height:1.3;font-weight:700">Danh sách hợp đồng sắp hết hạn</h1>
+                    <p>Kính gửi <strong><t t-out="ctx.get('recipient_name') or 'Anh/Chị'"/></strong>,</p>
+                    <p>Hệ thống kính gửi danh sách hợp đồng thuộc phạm vi phụ trách đang sắp hết hạn để Tổ hạ tầng theo dõi và triển khai thủ tục gia hạn.</p>
+                    <p><strong>Ngày báo cáo:</strong> <t t-out="ctx.get('report_date')"/> · <strong>Số dự án:</strong> <t t-out="ctx.get('project_count')"/> · <strong>Số hợp đồng:</strong> <t t-out="ctx.get('contract_count')"/></p>
+                    <t t-foreach="ctx.get('digest_projects') or []" t-as="project">
+                        <h3><t t-out="project.get('name')"/> <t t-if="project.get('code')">(<t t-out="project.get('code')"/>)</t></h3>
+                        <p t-if="project.get('responsible')"><strong>Người phụ trách Project:</strong> <t t-out="project.get('responsible')"/></p>
+                        <table style="border-collapse: collapse; width: 100%; margin-bottom: 18px;">
+                            <thead><tr>
+                                <th style="border:1px solid #ddd;padding:6px">Hợp đồng</th>
+                                <th style="border:1px solid #ddd;padding:6px">Loại / Trạm</th>
+                                <th style="border:1px solid #ddd;padding:6px">Đối tác</th>
+                                <th style="border:1px solid #ddd;padding:6px">Hiệu lực / Hết hạn</th>
+                                <th style="border:1px solid #ddd;padding:6px">Còn lại</th>
+                                <th style="border:1px solid #ddd;padding:6px">Trạng thái</th>
+                            </tr></thead>
+                            <tbody>
+                                <tr t-foreach="project.get('contracts') or []" t-as="contract">
+                                    <td style="border:1px solid #ddd;padding:6px"><a t-if="contract.get('url')" t-att-href="contract.get('url')"><t t-out="contract.get('code')"/></a><t t-if="not contract.get('url')" t-out="contract.get('code')"/></td>
+                                    <td style="border:1px solid #ddd;padding:6px"><t t-out="contract.get('type')"/> / <t t-out="contract.get('station')"/></td>
+                                    <td style="border:1px solid #ddd;padding:6px"><t t-out="contract.get('partner')"/></td>
+                                    <td style="border:1px solid #ddd;padding:6px"><t t-out="contract.get('start_date')"/> / <t t-out="contract.get('expiration_date')"/></td>
+                                    <td style="border:1px solid #ddd;padding:6px"><strong t-if="contract.get('priority')" style="color:#b42318"><t t-out="contract.get('days_left')"/> ngày</strong><t t-if="not contract.get('priority')"><t t-out="contract.get('days_left')"/> ngày</t></td>
+                                    <td style="border:1px solid #ddd;padding:6px"><t t-out="contract.get('state')"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </t>
+                    <p>Đề nghị Anh/Chị ưu tiên các hợp đồng có số ngày còn lại thấp, mở từng hồ sơ để bắt đầu hoặc tiếp tục quy trình gia hạn.</p>
+                </div>
+            </field>
+        </record>
+    </data>
+</odoo>

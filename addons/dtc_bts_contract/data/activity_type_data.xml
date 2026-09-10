@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo noupdate="1">
+    <record id="mail_activity_type_signature_batch_pending" model="mail.activity.type">
+        <field name="name">BTS – Batch chờ ký</field>
+        <field name="summary">Batch hồ sơ BTS chờ ký</field>
+        <field name="res_model">bts.contract.signature.batch</field>
+        <field name="icon">fa-pencil-square-o</field>
+        <field name="delay_count">3</field>
+        <field name="delay_unit">days</field>
+    </record>
+
+    <record id="mail_activity_type_contract_expiring" model="mail.activity.type">
+        <field name="name">BTS – Hợp đồng sắp hết hạn</field>
+        <field name="summary">Hợp đồng BTS sắp hết hạn</field>
+        <field name="res_model">bts.contract</field>
+        <field name="icon">fa-calendar-times-o</field>
+        <field name="delay_count">0</field>
+        <field name="delay_unit">days</field>
+    </record>
+</odoo>

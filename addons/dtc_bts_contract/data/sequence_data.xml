@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="seq_bts_contract_land" model="ir.sequence">
+            <field name="name">Hợp đồng thuê đất BTS</field>
+            <field name="code">dtc.bts.contract.land</field>
+            <field name="prefix">HĐ-ĐẤT-</field>
+            <field name="padding">4</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+        </record>
+
+        <record id="seq_bts_contract_infra" model="ir.sequence">
+            <field name="name">Hợp đồng thuê hạ tầng BTS</field>
+            <field name="code">dtc.bts.contract.infra</field>
+            <field name="prefix">HĐ-HT-</field>
+            <field name="padding">4</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+        </record>
+
+        <record id="seq_bts_negotiation_minutes" model="ir.sequence">
+            <field name="name">Biên bản đàm phán BTS</field>
+            <field name="code">dtc.bts.negotiation.minutes</field>
+            <field name="prefix">BBĐP-</field>
+            <field name="padding">4</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+        </record>
+
+        <record id="seq_bts_station_handover" model="ir.sequence">
+            <field name="name">Hồ sơ bàn giao trạm BTS</field>
+            <field name="code">dtc.bts.station.handover</field>
+            <field name="prefix">BGT-</field>
+            <field name="padding">4</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+        </record>
+
+        <record id="seq_bts_contract_renewal" model="ir.sequence">
+            <field name="name">Bản ghi gia hạn hợp đồng BTS</field>
+            <field name="code">dtc.bts.contract.renewal</field>
+            <field name="prefix">GH-</field>
+            <field name="padding">4</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+        </record>
+
+        <record id="seq_bts_contract_signature_batch" model="ir.sequence">
+            <field name="name">Batch ký số hợp đồng BTS</field>
+            <field name="code">dtc.bts.contract.signature.batch</field>
+            <field name="prefix">KS-HĐ-</field>
+            <field name="padding">4</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+        </record>
+
+    </data>
+</odoo>

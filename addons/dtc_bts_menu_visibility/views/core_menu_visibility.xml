@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Keep core modules installed, but hide their root menus by default. -->
+    <record id="mail.menu_root_discuss" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [ref('dtc_bts_menu_visibility.group_show_core_apps')])]"/>
+    </record>
+
+    <record id="project_todo.menu_todo_todos" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [ref('dtc_bts_menu_visibility.group_show_core_apps')])]"/>
+    </record>
+
+    <record id="project.menu_main_pm" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [ref('dtc_bts_menu_visibility.group_show_core_apps')])]"/>
+    </record>
+
+    <record id="purchase.menu_purchase_root" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [ref('dtc_bts_menu_visibility.group_show_core_apps')])]"/>
+    </record>
+
+    <record id="stock.menu_stock_root" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [ref('dtc_bts_menu_visibility.group_show_core_apps')])]"/>
+    </record>
+
+    <record id="maintenance.menu_maintenance_title" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [ref('dtc_bts_menu_visibility.group_show_core_apps')])]"/>
+    </record>
+
+    <record id="account.menu_finance" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [ref('dtc_bts_menu_visibility.group_show_core_apps')])]"/>
+    </record>
+
+    <record id="spreadsheet_dashboard.spreadsheet_dashboard_menu_root" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [ref('dtc_bts_menu_visibility.group_show_core_apps')])]"/>
+    </record>
+
+    <record id="base.menu_management" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [ref('dtc_bts_menu_visibility.group_show_core_apps')])]"/>
+    </record>
+
+    <record id="base.menu_administration" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [
+            ref('dtc_bts_menu_visibility.group_show_core_apps'),
+            ref('dtc_bts_base.group_dtc_bts_admin')
+        ])]"/>
+    </record>
+
+    <record id="base.menu_action_res_groups" model="ir.ui.menu">
+        <field name="groups_id"
+               eval="[(4, ref('dtc_bts_base.group_dtc_bts_admin'))]"/>
+    </record>
+
+    <record id="base.menu_tests" model="ir.ui.menu">
+        <field name="groups_id" eval="[(6, 0, [ref('dtc_bts_menu_visibility.group_show_core_apps')])]"/>
+    </record>
+
+    <!-- BGĐ and Planning see every DTC application, dashboard entries only. -->
+    <record id="dtc_bts_base.menu_dtc_bts_root" model="ir.ui.menu">
+        <field name="groups_id" eval="[
+            (4, ref('dtc_bts_base.group_dtc_bts_pkh')),
+            (4, ref('dtc_bts_contract.group_dtc_bts_contract_director'))
+        ]"/>
+    </record>
+
+    <record id="dtc_bts_base.menu_dtc_bts_dashboard" model="ir.ui.menu">
+        <field name="groups_id" eval="[
+            (4, ref('dtc_bts_base.group_dtc_bts_pkh')),
+            (4, ref('dtc_bts_contract.group_dtc_bts_contract_director'))
+        ]"/>
+    </record>
+
+    <record id="dtc_bts_inventory.menu_dtc_bts_inventory_root" model="ir.ui.menu">
+        <field name="groups_id" eval="[
+            (4, ref('dtc_bts_base.group_dtc_bts_pkh')),
+            (4, ref('dtc_bts_contract.group_dtc_bts_contract_director'))
+        ]"/>
+    </record>
+
+    <record id="dtc_bts_inventory.menu_dtc_bts_inventory_dashboard" model="ir.ui.menu">
+        <field name="groups_id" eval="[
+            (4, ref('dtc_bts_base.group_dtc_bts_pkh')),
+            (4, ref('dtc_bts_contract.group_dtc_bts_contract_director'))
+        ]"/>
+    </record>
+
+    <record id="dtc_bts_maintenance.menu_dtc_bts_maintenance_root" model="ir.ui.menu">
+        <field name="groups_id" eval="[
+            (4, ref('dtc_bts_base.group_dtc_bts_pkh')),
+            (4, ref('dtc_bts_contract.group_dtc_bts_contract_director'))
+        ]"/>
+    </record>
+
+    <record id="dtc_bts_maintenance.menu_dtc_bts_maintenance_dashboard" model="ir.ui.menu">
+        <field name="groups_id" eval="[
+            (4, ref('dtc_bts_base.group_dtc_bts_pkh')),
+            (4, ref('dtc_bts_contract.group_dtc_bts_contract_director'))
+        ]"/>
+    </record>
+
+    <record id="dtc_bts_contract.menu_dtc_bts_contract_root" model="ir.ui.menu">
+        <field name="groups_id" eval="[
+            (4, ref('dtc_bts_base.group_dtc_bts_pkh')),
+            (4, ref('dtc_bts_contract.group_dtc_bts_contract_director'))
+        ]"/>
+    </record>
+
+    <record id="dtc_bts_contract.menu_bts_contract_dashboard" model="ir.ui.menu">
+        <field name="groups_id" eval="[
+            (4, ref('dtc_bts_base.group_dtc_bts_pkh')),
+            (4, ref('dtc_bts_contract.group_dtc_bts_contract_director'))
+        ]"/>
+    </record>
+
+</odoo>

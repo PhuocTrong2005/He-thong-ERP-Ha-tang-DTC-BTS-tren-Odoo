@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_dtc_bts_maintenance_request_tree" model="ir.ui.view">
+        <field name="name">dtc.bts.maintenance.request.tree</field>
+        <field name="model">maintenance.request</field>
+        <field name="arch" type="xml">
+            <tree string="Phiếu bảo trì trạm BTS">
+                <field name="maintenance_batch_id"/>
+                <field name="station_sequence"/>
+                <field name="name"/>
+                <field name="equipment_id"/>
+                <field name="station_id"/>
+                <field name="bts_project_id"/>
+                <field name="category_id"/>
+                <field name="executor_type"/>
+                <field name="user_id"/>
+                <field name="schedule_date"/>
+                <field name="actual_date"/>
+                <field name="has_failure"/>
+                <field name="repair_completed_date"/>
+                <field name="station_page_state"/>
+                <field name="stage_id"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_dtc_bts_maintenance_request_form" model="ir.ui.view">
+        <field name="name">dtc.bts.maintenance.request.form</field>
+        <field name="model">maintenance.request</field>
+        <field name="arch" type="xml">
+            <form string="Phiếu bảo trì trạm BTS">
+                <field name="company_id" invisible="1"/>
+                <field name="archive" invisible="1"/>
+                <field name="done" invisible="1"/>
+                <header>
+                    <button
+                        name="action_start_station_inspection"
+                        string="Bắt đầu kiểm tra"
+                        type="object"
+                        class="btn-primary"
+                        invisible="not maintenance_batch_id or station_page_state != 'not_started'"/>
+                    <button
+                        name="action_complete_station_inspection"
+                        string="Hoàn tất trạm"
+                        type="object"
+                        class="btn-primary"
+                        invisible="not maintenance_batch_id or station_page_state not in ('not_started', 'in_progress')"/>
+                    <button
+                        name="action_next_station"
+                        string="Trạm tiếp theo"
+                        type="object"
+                        invisible="not maintenance_batch_id or station_page_state not in ('in_progress', 'done', 'failed')"/>
+                    <button
+                        name="action_generate_bts_checklist"
+                        string="Sinh checklist bảo trì"
+                        type="object"
+                        class="btn-primary"
+                        invisible="maintenance_batch_id or not equipment_id or checklist_result_ids"/>
+                    <button
+                        name="action_create_repair_proposal"
+                        string="Tạo đề xuất sửa chữa"
+                        type="object"
+                        invisible="maintenance_batch_id or not equipment_id"/>
+                    <field name="station_page_state"
+                           widget="statusbar"
+                           statusbar_visible="not_started,in_progress,done,failed"
+                           invisible="not maintenance_batch_id"/>
+                    <field name="stage_id" widget="statusbar" options="{'clickable': '1'}"/>
+                </header>
+                <sheet>
+                    <field name="kanban_state" widget="state_selection"/>
+                    <div class="oe_title">
+                        <label for="name" string="Phiếu bảo trì"/>
+                        <h1>
+                            <field name="name" placeholder="Nhập nội dung bảo trì..."/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Thông tin trạm BTS">
+                            <field name="maintenance_batch_id"
+                                   options="{'no_create': True}"/>
+                            <field name="station_sequence"
+                                   invisible="not maintenance_batch_id"/>
+                            <field
+                                name="equipment_id"
+                                domain="[('station_id', '!=', False)]"
+                                options="{'no_create': True}"/>
+                            <field name="station_id" readonly="1"/>
+                            <field name="bts_project_id" readonly="1"/>
+                            <field name="category_id" readonly="1"/>
+                        </group>
+                        <group string="Thực hiện bảo trì">
+                            <field name="executor_type"/>
+                            <field
+                                name="user_id"
+                                string="Kỹ thuật viên nội bộ"
+                                invisible="executor_type != 'internal'"
+                                required="executor_type == 'internal'"/>
+                            <field
+                                name="external_technician_partner_id"
+                                domain="[('partner_type', '=', 'external_technician')]"
+                                options="{'no_create': True}"
+                                invisible="executor_type != 'external'"
+                                required="executor_type == 'external'"/>
+                            <field name="request_date"/>
+                            <field name="schedule_date"/>
+                            <field name="actual_date"/>
+                            <field name="has_failure" readonly="1"/>
+                            <field name="repair_completed_date" readonly="1"/>
+                            <field name="repair_result_summary" readonly="1"/>
+                            <field name="maintenance_team_id" options="{'no_create': True}"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page name="bts_checklist_results" string="Kết quả checklist">
+                            <field name="checklist_result_ids" nolabel="1">
+                                <tree editable="bottom" create="false" delete="false">
+                                    <field name="item_id" readonly="1"/>
+                                    <field name="frequency_months" readonly="1"/>
+                                    <field name="is_external_required" readonly="1"/>
+                                    <field name="result_state"/>
+                                    <field name="is_resolved" readonly="1"/>
+                                    <field name="repair_proposal_id" readonly="1"/>
+                                    <field name="measurement_value"/>
+                                    <field name="note"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page name="bts_request_notes" string="Ghi chú chung">
+                            <field name="description" nolabel="1"/>
+                        </page>
+                        <page name="bts_repair_proposals" string="Đề xuất sửa chữa">
+                            <field name="repair_proposal_ids" nolabel="1" readonly="1">
+                                <tree create="false" delete="false">
+                                    <field name="name"/>
+                                    <field name="issue_summary"/>
+                                    <field name="priority"/>
+                                    <field name="estimated_cost"/>
+                                    <field name="proposed_by_id"/>
+                                    <field name="state"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_dtc_bts_maintenance_request_search" model="ir.ui.view">
+        <field name="name">dtc.bts.maintenance.request.search</field>
+        <field name="model">maintenance.request</field>
+        <field name="arch" type="xml">
+            <search string="Tìm phiếu bảo trì trạm BTS">
+                <field name="maintenance_batch_id"/>
+                <field name="name"/>
+                <field name="equipment_id"/>
+                <field name="station_id"/>
+                <field name="bts_project_id"/>
+                <field name="user_id"/>
+                <field name="stage_id"/>
+                <filter name="has_failure" string="Có lỗi" domain="[('has_failure', '=', True)]"/>
+                <filter name="request_date" date="request_date"/>
+                <filter name="schedule_date" date="schedule_date"/>
+                <group expand="0" string="Nhóm theo">
+                    <filter name="group_project" string="Dự án BTS" context="{'group_by': 'bts_project_id'}"/>
+                    <filter name="group_batch" string="Phiếu bảo trì dự án" context="{'group_by': 'maintenance_batch_id'}"/>
+                    <filter name="group_station" string="Trạm BTS" context="{'group_by': 'station_id'}"/>
+                    <filter name="group_stage" string="Trạng thái" context="{'group_by': 'stage_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+</odoo>

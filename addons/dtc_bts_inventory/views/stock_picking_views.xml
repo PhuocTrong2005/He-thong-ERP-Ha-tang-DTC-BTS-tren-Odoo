@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_stock_picking_form_bts_inventory" model="ir.ui.view">
+        <field name="name">stock.picking.form.bts.inventory</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="mode">primary</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="bts_project_id" options="{'no_create': True}"/>
+                <field name="bts_project_code" readonly="1"/>
+                <field name="bts_material_request_id" options="{'no_create': True}"/>
+                <field name="bts_material_request_name" readonly="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_stock_picking_tree_bts_inventory" model="ir.ui.view">
+        <field name="name">stock.picking.tree.bts.inventory</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.vpicktree"/>
+        <field name="mode">primary</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='origin']" position="after">
+                <field name="bts_project_code"/>
+                <field name="bts_material_request_name"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_stock_picking_tree_bts_planning_readonly" model="ir.ui.view">
+        <field name="name">stock.picking.tree.bts.planning.readonly</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="view_stock_picking_tree_bts_inventory"/>
+        <field name="arch" type="xml">
+            <xpath
+                expr="//tree"
+                position="attributes"
+                groups="dtc_bts_base.group_dtc_bts_pkh">
+                <attribute name="create">0</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_stock_picking_search_bts_inventory" model="ir.ui.view">
+        <field name="name">stock.picking.search.bts.inventory</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_internal_search"/>
+        <field name="mode">primary</field>
+        <field name="priority">20</field>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <field name="bts_project_id"/>
+                <field name="bts_material_request_id"/>
+                <filter string="Theo dự án BTS" name="group_bts_project" context="{'group_by': 'bts_project_id'}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_dtc_bts_stock_incoming" model="ir.actions.act_window">
+        <field name="name">Nhập kho vật tư BTS</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">tree,form,calendar</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('view_stock_picking_tree_bts_inventory')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_stock_picking_form_bts_inventory')})
+        ]"/>
+        <field name="search_view_id" ref="view_stock_picking_search_bts_inventory"/>
+        <field name="domain">[('bts_project_id', '!=', False), ('picking_type_code', '=', 'incoming')]</field>
+        <field name="context">{'contact_display': 'partner_address'}</field>
+    </record>
+
+    <record id="action_dtc_bts_stock_outgoing" model="ir.actions.act_window">
+        <field name="name">Xuất kho vật tư BTS</field>
+        <field name="res_model">stock.picking</field>
+        <field name="view_mode">tree,form,calendar</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('view_stock_picking_tree_bts_inventory')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_stock_picking_form_bts_inventory')})
+        ]"/>
+        <field name="search_view_id" ref="view_stock_picking_search_bts_inventory"/>
+        <field name="domain">[('bts_project_id', '!=', False), ('picking_type_code', '=', 'outgoing')]</field>
+        <field name="context">{'contact_display': 'partner_address'}</field>
+    </record>
+
+</odoo>

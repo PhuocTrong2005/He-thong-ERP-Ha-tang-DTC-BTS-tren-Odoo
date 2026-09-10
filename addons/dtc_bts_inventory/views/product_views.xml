@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_product_template_form_bts_inventory" model="ir.ui.view">
+        <field name="name">product.template.form.bts.inventory</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='type']" position="after">
+                <field name="is_bts_material"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_product_template_tree_bts_inventory" model="ir.ui.view">
+        <field name="name">product.template.tree.bts.inventory</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='type']" position="after">
+                <field name="is_bts_material"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_dtc_bts_material_product" model="ir.actions.act_window">
+        <field name="name">Danh mục vật tư BTS</field>
+        <field name="res_model">product.template</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('is_bts_material', '=', True)]</field>
+        <field name="context">{'default_is_bts_material': True, 'default_type': 'product'}</field>
+    </record>
+
+    <record id="view_product_template_tree_bts_inventory_warehouse" model="ir.ui.view">
+        <field name="name">product.template.tree.bts.inventory.warehouse</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="view_product_template_tree_bts_inventory"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="attributes">
+                <attribute name="create">0</attribute>
+                <attribute name="edit">0</attribute>
+                <attribute name="delete">0</attribute>
+                <attribute name="import">0</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_product_template_form_bts_inventory_warehouse" model="ir.ui.view">
+        <field name="name">product.template.form.bts.inventory.warehouse</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="view_product_template_form_bts_inventory"/>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="attributes">
+                <attribute name="create">0</attribute>
+                <attribute name="edit">0</attribute>
+                <attribute name="delete">0</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="action_dtc_bts_material_product_warehouse" model="ir.actions.act_window">
+        <field name="name">Danh mục vật tư BTS</field>
+        <field name="res_model">product.template</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_ids" eval="[(5, 0, 0),
+            (0, 0, {'view_mode': 'tree', 'view_id': ref('view_product_template_tree_bts_inventory_warehouse')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_product_template_form_bts_inventory_warehouse')})
+        ]"/>
+        <field name="domain">[('is_bts_material', '=', True)]</field>
+        <field name="context">{'bts_warehouse_readonly': True}</field>
+    </record>
+
+</odoo>

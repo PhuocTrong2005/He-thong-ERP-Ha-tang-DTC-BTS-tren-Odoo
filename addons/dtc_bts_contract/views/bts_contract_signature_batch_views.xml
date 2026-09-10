@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <record id="view_bts_contract_signature_batch_form" model="ir.ui.view">
+        <field name="name">bts.contract.signature.batch.form</field>
+        <field name="model">bts.contract.signature.batch</field>
+        <field name="arch" type="xml">
+            <form string="Batch ký số hợp đồng">
+                <header>
+                    <button name="action_submit"
+                            string="Gửi BGĐ ký số"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'draft'"
+                            groups="dtc_bts_base.group_dtc_bts_ksgs,base.group_system"/>
+                    <button name="action_reject"
+                            string="Từ chối batch"
+                            type="object"
+                            invisible="state != 'submitted'"
+                            groups="dtc_bts_contract.group_dtc_bts_contract_director,base.group_system"/>
+                    <button name="action_complete"
+                            string="Hoàn thành batch"
+                            type="object"
+                            class="btn-success"
+                            invisible="state not in ('submitted', 'partially_signed') or line_count == 0 or signed_line_count != line_count"
+                            groups="dtc_bts_contract.group_dtc_bts_contract_director,base.group_system"/>
+                    <field name="state"
+                           widget="statusbar"
+                           statusbar_visible="draft,submitted,partially_signed,done,rejected"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Thông tin batch">
+                            <field name="project_id" readonly="state != 'draft'"/>
+                            <field name="phase" readonly="state != 'draft'"/>
+                            <field name="created_by_id" readonly="1"/>
+                        </group>
+                        <group string="Tiến độ ký số">
+                            <field name="line_count" readonly="1"/>
+                            <field name="signed_line_count" readonly="1"/>
+                            <field name="submitted_date" readonly="1"/>
+                            <field name="completed_date" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Từ chối batch"
+                           invisible="state not in ('submitted', 'rejected')">
+                        <field name="rejection_reason"
+                               placeholder="Nhập lý do trước khi bấm Từ chối batch..."
+                               groups="dtc_bts_contract.group_dtc_bts_contract_director,base.group_system"/>
+                        <field name="rejection_reason"
+                               readonly="1"
+                               groups="dtc_bts_base.group_dtc_bts_ksgs,dtc_bts_base.group_dtc_bts_infrastructure,dtc_bts_base.group_dtc_bts_pkh,!dtc_bts_contract.group_dtc_bts_contract_director,!base.group_system"/>
+                        <field name="rejected_by_id" readonly="1"/>
+                        <field name="rejected_date" readonly="1"/>
+                    </group>
+                    <notebook>
+                        <page string="Hồ sơ trong batch">
+                            <field name="line_ids"
+                                   readonly="state in ('done', 'rejected')">
+                                <tree editable="bottom"
+                                      create="false"
+                                      delete="false"
+                                      decoration-success="state == 'signed'"
+                                      decoration-danger="state == 'rejected'">
+                                    <field name="station_id" readonly="1"/>
+                                    <field name="document_type" readonly="1"/>
+                                    <field name="contract_id"
+                                           readonly="1"
+                                           invisible="not contract_id"/>
+                                    <field name="negotiation_minutes_id"
+                                           readonly="1"
+                                           invisible="not negotiation_minutes_id"/>
+                                    <field name="source_document"
+                                           filename="source_document_filename"
+                                           readonly="1"/>
+                                    <field name="source_document_filename"
+                                           column_invisible="True"/>
+                                    <field name="otp_state"
+                                           widget="badge"
+                                           readonly="1"
+                                           decoration-info="otp_state == 'sent'"
+                                           decoration-success="otp_state == 'used'"
+                                           decoration-danger="otp_state in ('expired', 'locked')"/>
+                                    <field name="signed_by_id" readonly="1"/>
+                                    <field name="signed_date" readonly="1"/>
+                                    <field name="state"
+                                           widget="badge"
+                                           readonly="1"
+                                           decoration-success="state == 'signed'"
+                                           decoration-warning="state == 'pending'"
+                                           decoration-danger="state == 'rejected'"/>
+                                    <button name="action_sign"
+                                            string="Ký số"
+                                            type="object"
+                                            icon="fa-check"
+                                            invisible="state != 'pending'"
+                                            groups="dtc_bts_contract.group_dtc_bts_contract_director,base.group_system"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bts_contract_signature_otp_form" model="ir.ui.view">
+        <field name="name">bts.contract.signature.otp.form</field>
+        <field name="model">bts.contract.signature.batch.line</field>
+        <field name="arch" type="xml">
+            <form string="Ký số hồ sơ" create="false" delete="false">
+                <sheet>
+                    <field name="state" invisible="1"/>
+                    <div class="oe_title">
+                        <h2>Ký số hồ sơ bằng OTP</h2>
+                    </div>
+                    <group>
+                        <group string="Hồ sơ ký số">
+                            <field name="batch_id" readonly="1"/>
+                            <field name="station_id" readonly="1"/>
+                            <field name="document_type" readonly="1"/>
+                            <field name="contract_id"
+                                   readonly="1"
+                                   invisible="not contract_id"/>
+                            <field name="negotiation_minutes_id"
+                                   readonly="1"
+                                   invisible="not negotiation_minutes_id"/>
+                            <field name="source_document"
+                                   filename="source_document_filename"
+                                   readonly="1"/>
+                            <field name="source_document_filename" invisible="1"/>
+                        </group>
+                        <group string="Xác thực OTP">
+                            <field name="otp_channel"
+                                   readonly="otp_state == 'used'"/>
+                            <button name="action_send_signature_otp"
+                                    string="Gửi mã OTP"
+                                    type="object"
+                                    class="btn-secondary"
+                                    invisible="state != 'pending'"/>
+                            <field name="otp_state" widget="badge" readonly="1"/>
+                            <field name="otp_destination"
+                                   readonly="1"
+                                   invisible="otp_state == 'none'"/>
+                            <field name="otp_user_id"
+                                   readonly="1"
+                                   invisible="otp_state == 'none'"/>
+                            <field name="otp_expires_at"
+                                   readonly="1"
+                                   invisible="otp_state == 'none'"/>
+                            <field name="otp_attempt_count"
+                                   readonly="1"
+                                   invisible="otp_state not in ('sent', 'locked')"/>
+                            <field name="otp_max_attempts" invisible="1"/>
+                            <field name="otp_code_input"
+                                   password="True"
+                                   placeholder="Nhập mã OTP gồm 6 chữ số"
+                                   invisible="otp_state != 'sent'"/>
+                            <field name="otp_feedback"
+                                   readonly="1"
+                                   invisible="not otp_feedback"/>
+                        </group>
+                    </group>
+                    <group string="Thông tin chữ ký"
+                           invisible="state != 'signed'">
+                        <group>
+                            <field name="signed_by_id" readonly="1"/>
+                            <field name="signed_date" readonly="1"/>
+                            <field name="certificate_serial" readonly="1"/>
+                            <field name="signature_valid" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="signature_hash" readonly="1"/>
+                            <field name="document_hash" readonly="1"/>
+                            <field name="signature_ip" readonly="1"/>
+                            <field name="signature_device" readonly="1"/>
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_confirm_digital_signature"
+                            string="Xác nhận và ký số"
+                            type="object"
+                            class="btn-primary"
+                            invisible="otp_state != 'sent' or state != 'pending'"/>
+                    <button string="Đóng"
+                            special="cancel"
+                            class="btn-secondary"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bts_contract_signature_batch_tree" model="ir.ui.view">
+        <field name="name">bts.contract.signature.batch.tree</field>
+        <field name="model">bts.contract.signature.batch</field>
+        <field name="arch" type="xml">
+            <tree string="Batch ký số hợp đồng"
+                  create="false"
+                  decoration-success="state == 'done'"
+                  decoration-warning="state in ('submitted', 'partially_signed')"
+                  decoration-danger="state == 'rejected'">
+                <field name="name" string="Mã batch"/>
+                <field name="project_id" string="Dự án"/>
+                <field name="phase" string="Giai đoạn ký số"/>
+                <field name="line_count" string="Tổng hồ sơ"/>
+                <field name="signed_line_count" string="Đã ký"/>
+                <field name="created_by_id" string="Người gửi"/>
+                <field name="submitted_date" string="Ngày gửi BGĐ"/>
+                <field name="completed_date" string="Ngày hoàn tất"/>
+                <field name="state" string="Trạng thái"
+                       widget="badge"
+                       decoration-success="state == 'done'"
+                       decoration-warning="state in ('submitted', 'partially_signed')"
+                       decoration-danger="state == 'rejected'"
+                       decoration-info="state == 'draft'"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_bts_contract_signature_batch_search" model="ir.ui.view">
+        <field name="name">bts.contract.signature.batch.search</field>
+        <field name="model">bts.contract.signature.batch</field>
+        <field name="arch" type="xml">
+            <search string="Tìm batch ký số">
+                <field name="name"/>
+                <field name="project_id"/>
+                <field name="phase"/>
+                <filter name="pending_signature"
+                        string="Đang chờ ký"
+                        domain="[('state', 'in', ('submitted', 'partially_signed'))]"/>
+                <filter name="done"
+                        string="Hoàn tất"
+                        domain="[('state', '=', 'done')]"/>
+                <filter name="rejected"
+                        string="Từ chối"
+                        domain="[('state', '=', 'rejected')]"/>
+                <group expand="0" string="Nhóm theo">
+                    <filter name="group_project"
+                            string="Dự án"
+                            context="{'group_by': 'project_id'}"/>
+                    <filter name="group_phase"
+                            string="Giai đoạn"
+                            context="{'group_by': 'phase'}"/>
+                    <filter name="group_state"
+                            string="Trạng thái"
+                            context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_bts_contract_signature_batch" model="ir.actions.act_window">
+        <field name="name">Batch hợp đồng chờ ký</field>
+        <field name="res_model">bts.contract.signature.batch</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[('state', 'in', ('submitted', 'partially_signed'))]</field>
+        <field name="search_view_id" ref="view_bts_contract_signature_batch_search"/>
+        <field name="context">{'create': False}</field>
+    </record>
+
+</odoo>

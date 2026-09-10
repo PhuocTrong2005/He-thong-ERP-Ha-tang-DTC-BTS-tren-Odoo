@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- ================================================================== -->
+    <!-- FORM VIEW                                                           -->
+    <!-- ================================================================== -->
+    <record id="view_bts_contract_form" model="ir.ui.view">
+        <field name="name">bts.contract.form</field>
+        <field name="model">bts.contract</field>
+        <field name="arch" type="xml">
+            <form string="Hợp đồng BTS">
+                <header>
+                    <!-- Tổ hạ tầng: Trình duyệt lên BGĐ -->
+                    <button name="action_submit"
+                            string="Trình duyệt"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'draft'"
+                            groups="dtc_bts_base.group_dtc_bts_infrastructure,base.group_system"/>
+                    <!-- BGĐ: Ký duyệt hợp đồng -->
+                    <button name="action_activate"
+                            string="Ký số"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'submitted'"
+                            groups="dtc_bts_contract.group_dtc_bts_contract_director,base.group_system"/>
+                    <!-- Tổ hạ tầng: Đánh dấu đã thống nhất gia hạn -->
+                    <button name="action_renewal_agreed"
+                            string="Thống nhất gia hạn"
+                            type="object"
+                            invisible="state != 'active'"
+                            groups="dtc_bts_base.group_dtc_bts_infrastructure,base.group_system"/>
+                    <!-- Tổ hạ tầng: Tạo bản ghi gia hạn -->
+                    <button name="action_create_renewal"
+                            string="Tạo bản ghi gia hạn"
+                            type="object"
+                            invisible="state not in ('active', 'renewal_agreed')"
+                            groups="dtc_bts_base.group_dtc_bts_infrastructure,base.group_system"/>
+                    <button name="action_report_renewal_failure"
+                            string="Báo gia hạn thất bại"
+                            type="object"
+                            class="btn-warning"
+                            invisible="state not in ('active', 'renewal_agreed', 'expired')"
+                            groups="dtc_bts_base.group_dtc_bts_infrastructure,base.group_system"/>
+                    <!-- BGĐ: Ký duyệt chấm dứt hợp đồng -->
+                    <button name="action_liquidate"
+                            string="Thanh lý hợp đồng"
+                            type="object"
+                            invisible="state not in ('active', 'renewal_agreed', 'expired')"
+                            groups="dtc_bts_contract.group_dtc_bts_contract_director,base.group_system"/>
+                    <button name="action_cancel"
+                            string="Từ chối"
+                            type="object"
+                            invisible="state != 'submitted'"
+                            groups="dtc_bts_contract.group_dtc_bts_contract_director,base.group_system"/>
+                    <button name="action_cancel"
+                            string="Hủy"
+                            type="object"
+                            invisible="state in ('submitted', 'liquidated', 'expired', 'cancelled')"
+                            groups="dtc_bts_base.group_dtc_bts_infrastructure,base.group_system"/>
+                    <button name="action_reset_to_draft"
+                            string="Đặt lại Dự thảo"
+                            type="object"
+                            invisible="state not in ('cancelled', 'submitted')"
+                            groups="dtc_bts_base.group_dtc_bts_infrastructure,base.group_system"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,submitted,active,renewal_agreed,liquidated"/>
+                </header>
+                <sheet>
+                    <!-- Fields ẩn cần thiết cho modifier -->
+                    <field name="is_expiring_soon" invisible="1"/>
+                    <field name="is_expiring_within_30_days" invisible="1"/>
+                    <field name="days_to_expiration" invisible="1"/>
+
+                    <!-- Banner cảnh báo sắp hết hạn -->
+                    <div class="alert alert-warning"
+                         role="alert"
+                         invisible="not is_expiring_within_30_days">
+                        <strong>Cảnh báo:</strong> Hợp đồng này sắp hết hạn. Vui lòng kiểm tra và gia hạn kịp thời.
+                    </div>
+
+                    <!-- Smart buttons -->
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_create_renewal"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-refresh"
+                                invisible="state not in ('active', 'renewal_agreed')"
+                                groups="dtc_bts_base.group_dtc_bts_infrastructure,base.group_system">
+                            <field name="renewal_count" widget="statinfo" string="Gia hạn"/>
+                        </button>
+                    </div>
+
+                    <div class="oe_title">
+                        <label for="contract_code"/>
+                        <h1>
+                            <field name="contract_code" readonly="state != 'draft'"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Thông tin chung">
+                            <field name="contract_type" readonly="state != 'draft'"/>
+                            <field name="station_id" readonly="state != 'draft'"
+                                   domain="[('project_id', '!=', False)]"/>
+                            <field name="project_id" readonly="1"/>
+                            <field name="partner_id"
+                                   domain="[('partner_type', 'in', ['landowner', 'telecom_partner'])]"
+                                   readonly="state != 'draft'"/>
+                            <field name="created_by_id" readonly="1"/>
+                            <field name="digital_signature_state"
+                                   widget="badge"
+                                   readonly="1"/>
+                            <field name="related_land_contract_id"
+                                   invisible="contract_type != 'infrastructure_lease'"
+                                   readonly="state != 'draft'"/>
+                        </group>
+                        <group string="Thời hạn và thanh toán">
+                            <field name="sign_date"/>
+                            <field name="effective_date"/>
+                            <field name="expiration_date"/>
+                            <field name="term_years"/>
+                            <field name="rental_price" widget="monetary"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="payment_cycle"/>
+                            <field name="alert_before_days"/>
+                        </group>
+                    </group>
+
+                    <group string="Ký duyệt (BGĐ)"
+                           invisible="state not in ('active', 'renewal_agreed', 'liquidated', 'expired')">
+                        <field name="approved_by_id" readonly="1"/>
+                        <field name="signed_date" readonly="1"/>
+                    </group>
+
+                    <notebook>
+                        <page string="Hồ sơ hợp đồng" name="contract_documents">
+                            <group>
+                                <group string="Hồ sơ ban đầu">
+                                    <field name="initial_document"
+                                           filename="initial_document_filename"
+                                           readonly="state != 'draft'"/>
+                                    <field name="initial_document_filename" invisible="1"/>
+                                </group>
+                                <group string="Ký số bởi BGĐ">
+                                    <field name="signed_document"
+                                           filename="signed_document_filename"
+                                           readonly="1"
+                                           groups="dtc_bts_contract.group_dtc_bts_contract_director,base.group_system"/>
+                                    <field name="signed_document"
+                                           filename="signed_document_filename"
+                                           readonly="1"
+                                           groups="dtc_bts_base.group_dtc_bts_ksgs,dtc_bts_base.group_dtc_bts_infrastructure,dtc_bts_base.group_dtc_bts_pkh,!dtc_bts_contract.group_dtc_bts_contract_director,!base.group_system"/>
+                                    <field name="signed_document_filename" invisible="1"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Ghi chú">
+                            <field name="notes"/>
+                        </page>
+                        <page string="Lịch sử gia hạn" name="renewal_tab">
+                            <field name="renewal_ids" readonly="1">
+                                <tree>
+                                    <field name="renewal_code"/>
+                                    <field name="renewal_date"/>
+                                    <field name="new_expiration_date"/>
+                                    <field name="new_rental_price" widget="monetary"/>
+                                    <field name="performed_by_id"/>
+                                    <field name="state" widget="badge"
+                                           decoration-success="state == 'completed'"
+                                           decoration-warning="state == 'in_progress'"
+                                           decoration-danger="state == 'cancelled'"
+                                           decoration-info="state == 'draft'"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Lịch sử ký số"
+                              name="digital_signature_history">
+                            <field name="signature_line_ids" readonly="1">
+                                <tree create="false"
+                                      delete="false"
+                                      decoration-success="state == 'signed'">
+                                    <field name="batch_id"/>
+                                    <field name="document_type"/>
+                                    <field name="state"
+                                           widget="badge"
+                                           decoration-success="state == 'signed'"
+                                           decoration-warning="state == 'pending'"
+                                           decoration-danger="state == 'rejected'"/>
+                                    <field name="signed_by_id"/>
+                                    <field name="signed_date"/>
+                                    <field name="signature_hash"/>
+                                    <field name="certificate_serial"/>
+                                    <field name="signature_valid"/>
+                                    <field name="signature_ip" optional="hide"/>
+                                    <field name="signature_device"
+                                           optional="hide"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+
+                    <field name="message_attachment_count" invisible="1"/>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bts_contract_project_dossier_form" model="ir.ui.view">
+        <field name="name">bts.contract.project.dossier.form</field>
+        <field name="model">bts.contract</field>
+        <field name="arch" type="xml">
+            <form string="Hồ sơ hợp đồng trạm">
+                <sheet>
+                    <field name="state" invisible="1"/>
+                    <field name="currency_id" invisible="1"/>
+                    <div class="oe_title">
+                        <label for="contract_code"/>
+                        <h1>
+                            <field name="contract_code"
+                                   readonly="state != 'draft'"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Thông tin hợp đồng">
+                            <field name="contract_type"
+                                   readonly="state != 'draft'"/>
+                            <field name="station_id"
+                                   domain="[('project_id', '!=', False)]"
+                                   readonly="state != 'draft'"/>
+                            <field name="project_id" readonly="1"/>
+                            <field name="partner_id"
+                                   domain="[('partner_type', 'in', ['landowner', 'telecom_partner'])]"
+                                   readonly="state != 'draft'"/>
+                            <field name="sign_date"
+                                   string="Ngày ký trên bản giấy"
+                                   readonly="state != 'draft'"/>
+                        </group>
+                        <group string="Thời hạn và thanh toán">
+                            <field name="effective_date"
+                                   readonly="state != 'draft'"/>
+                            <field name="expiration_date"
+                                   readonly="state != 'draft'"/>
+                            <field name="term_years"
+                                   readonly="state != 'draft'"/>
+                            <field name="rental_price"
+                                   widget="monetary"
+                                   readonly="state != 'draft'"/>
+                            <field name="payment_cycle"
+                                   readonly="state != 'draft'"/>
+                        </group>
+                    </group>
+                    <group string="File scan hợp đồng">
+                        <field name="initial_document"
+                               filename="initial_document_filename"
+                               readonly="state != 'draft'"/>
+                        <field name="initial_document_filename" invisible="1"/>
+                    </group>
+                    <group string="Ghi chú">
+                        <field name="notes"
+                               nolabel="1"
+                               colspan="2"
+                               readonly="state != 'draft'"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_bts_contract_project_dossier_tree" model="ir.ui.view">
+        <field name="name">bts.contract.project.dossier.tree</field>
+        <field name="model">bts.contract</field>
+        <field name="arch" type="xml">
+            <tree string="Hồ sơ hợp đồng trạm"
+                  decoration-info="state == 'draft'"
+                  decoration-warning="state == 'submitted'"
+                  decoration-success="state == 'active'"
+                  decoration-danger="state == 'cancelled'">
+                <field name="contract_code"/>
+                <field name="contract_type"/>
+                <field name="station_id"/>
+                <field name="project_id"/>
+                <field name="partner_id"/>
+                <field name="effective_date"/>
+                <field name="expiration_date"/>
+                <field name="initial_document"
+                       filename="initial_document_filename"/>
+                <field name="initial_document_filename"
+                       column_invisible="True"/>
+                <field name="state"
+                       widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state == 'submitted'"
+                       decoration-success="state == 'active'"
+                       decoration-danger="state == 'cancelled'"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- ================================================================== -->
+    <!-- TREE VIEW                                                           -->
+    <!-- ================================================================== -->
+    <record id="view_bts_contract_tree" model="ir.ui.view">
+        <field name="name">bts.contract.tree</field>
+        <field name="model">bts.contract</field>
+        <field name="arch" type="xml">
+            <tree string="Hợp đồng BTS"
+                  decoration-danger="days_to_expiration &gt;= 0 and days_to_expiration &lt;= 30"
+                  decoration-muted="state in ('expired', 'cancelled', 'liquidated')">
+                <field name="contract_code" string="Mã hợp đồng"/>
+                <field name="contract_type" string="Loại hợp đồng"/>
+                <field name="station_id" string="Trạm BTS"/>
+                <field name="project_id" string="Dự án"/>
+                <field name="partner_id" string="Đối tác"/>
+                <field name="effective_date" string="Ngày hiệu lực"/>
+                <field name="expiration_date" string="Ngày hết hạn"/>
+                <field name="days_to_expiration" string="Còn lại (ngày)"/>
+                <field name="state" string="Trạng thái" widget="badge"
+                       decoration-success="state == 'active'"
+                       decoration-warning="state in ('renewal_agreed', 'submitted')"
+                       decoration-danger="state in ('expired', 'cancelled')"
+                       decoration-info="state == 'draft'"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- ================================================================== -->
+    <!-- SEARCH VIEW                                                         -->
+    <!-- ================================================================== -->
+    <record id="view_bts_contract_search" model="ir.ui.view">
+        <field name="name">bts.contract.search</field>
+        <field name="model">bts.contract</field>
+        <field name="arch" type="xml">
+            <search string="Tìm kiếm hợp đồng">
+                <field name="contract_code" string="Mã hợp đồng"/>
+                <field name="station_id" string="Trạm BTS"/>
+                <field name="partner_id" string="Đối tác"/>
+                <field name="project_id" string="Dự án"/>
+                <separator/>
+                <filter name="filter_active" string="Đang hiệu lực"
+                        domain="[('state', '=', 'active')]"/>
+                <filter name="filter_submitted" string="Chờ ký duyệt"
+                        domain="[('state', '=', 'submitted')]"/>
+                <filter name="filter_expiring" string="Sắp hết hạn"
+                        domain="[('is_expiring_within_30_days', '=', True)]"/>
+                <filter name="filter_expired" string="Đã hết hạn"
+                        domain="[('state', '=', 'expired')]"/>
+                <filter name="filter_land" string="Thuê đất"
+                        domain="[('contract_type', '=', 'land_lease')]"/>
+                <filter name="filter_infra" string="Cho thuê trạm"
+                        domain="[('contract_type', '=', 'infrastructure_lease')]"/>
+                <separator/>
+                <group expand="0" string="Nhóm theo">
+                    <filter name="group_state" string="Trạng thái"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_type" string="Loại hợp đồng"
+                            context="{'group_by': 'contract_type'}"/>
+                    <filter name="group_project" string="Dự án"
+                            context="{'group_by': 'project_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ================================================================== -->
+    <!-- ACTIONS                                                             -->
+    <!-- ================================================================== -->
+    <record id="action_bts_contract" model="ir.actions.act_window">
+        <field name="name">Hợp đồng BTS</field>
+        <field name="res_model">bts.contract</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="view_bts_contract_tree"/>
+        <field name="search_view_id" ref="view_bts_contract_search"/>
+        <field name="context">{'create': False}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Chưa có hợp đồng nào.
+            </p>
+            <p>
+                Hợp đồng ban đầu được tạo từ tab Hợp đồng trạm trên form Dự án.
+            </p>
+        </field>
+    </record>
+
+    <record id="action_bts_contract_tree" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_bts_contract_tree"/>
+        <field name="act_window_id" ref="action_bts_contract"/>
+    </record>
+
+    <record id="action_bts_contract_form" model="ir.actions.act_window.view">
+        <field name="sequence" eval="2"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_bts_contract_form"/>
+        <field name="act_window_id" ref="action_bts_contract"/>
+    </record>
+
+</odoo>

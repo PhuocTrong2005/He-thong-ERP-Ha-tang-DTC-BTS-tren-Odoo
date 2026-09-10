@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <menuitem
+        id="menu_dtc_bts_root"
+        name="Quản lý dự án BTS"
+        action="action_dtc_bts_dashboard"
+        groups="dtc_bts_base.group_dtc_bts_ksgs,dtc_bts_base.group_bts_enterprise_director,base.group_system"
+        sequence="10"/>
+
+    <menuitem
+        id="menu_dtc_bts_dashboard"
+        name="Bảng tổng hợp"
+        parent="menu_dtc_bts_root"
+        action="action_dtc_bts_dashboard"
+        groups="dtc_bts_base.group_dtc_bts_ksgs,dtc_bts_base.group_bts_enterprise_director,base.group_system"
+        sequence="10"/>
+
+    <menuitem
+        id="menu_dtc_bts_project"
+        name="Danh sách dự án"
+        parent="menu_dtc_bts_root"
+        action="action_dtc_bts_project"
+        groups="dtc_bts_base.group_dtc_bts_ksgs,dtc_bts_base.group_bts_enterprise_director,base.group_system"
+        sequence="20"/>
+
+    <menuitem
+        id="menu_dtc_bts_station"
+        name="Danh sách trạm BTS"
+        parent="menu_dtc_bts_root"
+        action="action_dtc_bts_station"
+        groups="dtc_bts_base.group_dtc_bts_ksgs,dtc_bts_base.group_bts_enterprise_director,base.group_system"
+        sequence="30"/>
+
+    <menuitem
+        id="menu_dtc_bts_partner"
+        name="Đối tác"
+        parent="menu_dtc_bts_root"
+        action="action_dtc_bts_partner"
+        groups="dtc_bts_base.group_dtc_bts_ksgs,dtc_bts_base.group_bts_enterprise_director,base.group_system"
+        sequence="40"/>
+
+</odoo>
