@@ -1,5 +1,13 @@
 # Environment
 .env
+.env.*
+!.env.example
+demo/.local/
+demo/**/credentials.json
+demo/*.log
+demo/*.png
+demo/*.db
+demo/*.sqlite*
 
 # Python cache
 __pycache__/
