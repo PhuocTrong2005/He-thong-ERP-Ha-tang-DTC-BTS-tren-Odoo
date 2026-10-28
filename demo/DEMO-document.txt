@@ -1,0 +1,4 @@
+TÀI LIỆU DEMO
+Hồ sơ giả phục vụ phỏng vấn BA/ERP.
+Không có giá trị pháp lý.
+Thao tác xác nhận ký nội bộ Odoo không phải chữ ký số được chứng thực bên ngoài.

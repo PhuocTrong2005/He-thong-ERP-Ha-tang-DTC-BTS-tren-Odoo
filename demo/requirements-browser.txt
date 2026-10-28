@@ -1,0 +1,2 @@
+# Optional host-side browser smoke checks; Odoo itself runs in Docker.
+selenium>=4.25,<5
